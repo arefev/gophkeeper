@@ -31,8 +31,8 @@ func (lp loginProcessing) Init() tea.Cmd {
 	return tea.Batch(lp.spinner.Tick, lp.ProcessingCmd)
 }
 
-func (lp loginProcessing) NewProgram() *tea.Program {
-	return tea.NewProgram(lp)
+func (lp loginProcessing) Exec() (tea.Model, tea.Cmd) {
+	return lp, lp.Init()
 }
 
 func (lp loginProcessing) Update(msg tea.Msg) (tea.Model, tea.Cmd) {

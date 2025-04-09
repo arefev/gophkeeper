@@ -37,11 +37,9 @@ func (s Start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			switch s.choices[s.cursor] {
 			case "Авторизация":
-				login := NewLogin()
-				return login, login.Init()
+				return NewLogin().Exec()
 			case "Регистрация":
-				reg := NewReg()
-				return reg, reg.Init()
+				return NewReg().Exec()
 			default:
 				return s, tea.Quit
 			}

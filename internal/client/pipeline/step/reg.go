@@ -56,6 +56,10 @@ func (r reg) Init() tea.Cmd {
 	return textinput.Blink
 }
 
+func (r reg) Exec() (tea.Model, tea.Cmd) {
+	return r, r.Init()
+}
+
 func (r reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -67,8 +71,7 @@ func (r reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return r, tea.Quit
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
 			if msg.Type == tea.KeyEnter && r.focusIndex == len(r.inputs) {
-				pr := NewRegProcessing()
-				return pr, pr.Init()
+				return NewRegProcessing().Exec()
 			}
 
 			if msg.Type == tea.KeyUp || msg.Type == tea.KeyShiftTab {

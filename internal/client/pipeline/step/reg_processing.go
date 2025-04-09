@@ -29,8 +29,8 @@ func (rp regProcessing) Init() tea.Cmd {
 	return tea.Batch(rp.spinner.Tick, rp.ProcessingCmd)
 }
 
-func (rp regProcessing) NewProgram() *tea.Program {
-	return tea.NewProgram(rp)
+func (rp regProcessing) Exec() (tea.Model, tea.Cmd) {
+	return rp, rp.Init()
 }
 
 func (rp regProcessing) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
