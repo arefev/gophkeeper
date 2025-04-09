@@ -1,8 +1,6 @@
 package step
 
 import (
-	step_auth "github.com/arefev/gophkeeper/internal/client/pipeline/step/auth"
-	step_reg "github.com/arefev/gophkeeper/internal/client/pipeline/step/reg"
 	"github.com/arefev/gophkeeper/internal/client/pipeline/view"
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -31,7 +29,7 @@ func (s Start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.Type {
-		case tea.KeyCtrlC, tea.KeyEsc:
+		case tea.KeyCtrlC:
 			return s, tea.Quit
 
 		case tea.KeyEnter:
@@ -39,10 +37,11 @@ func (s Start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			switch s.choices[s.cursor] {
 			case "Авторизация":
-				login := step_auth.NewLogin()
+				login := NewLogin()
 				return login, login.Init()
 			case "Регистрация":
-				return step_reg.NewReg(), nil
+				reg := NewReg()
+				return reg, reg.Init()
 			default:
 				return s, tea.Quit
 			}

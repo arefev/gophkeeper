@@ -1,4 +1,4 @@
-package step_auth
+package step
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 )
-
 
 type login struct {
 	focusIndex int
@@ -28,12 +27,12 @@ func NewLogin() login {
 
 		switch i {
 		case 0:
-			t.Placeholder = "Login"
+			t.Placeholder = "Логин"
 			t.Focus()
 			t.PromptStyle = view.FocusedStyle
 			t.TextStyle = view.FocusedStyle
 		case 1:
-			t.Placeholder = "Password"
+			t.Placeholder = "Пароль"
 			t.EchoMode = textinput.EchoPassword
 			t.EchoCharacter = '•'
 		}
@@ -57,11 +56,14 @@ func (l login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.Type {
-		case tea.KeyCtrlC, tea.KeyEsc:
+		case tea.KeyEsc:
+			scr := NewStart()
+			return scr, scr.Init()
+		case tea.KeyCtrlC:
 			return l, tea.Quit
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
 			if msg.Type == tea.KeyEnter && l.focusIndex == len(l.inputs) {
-				pr := NewProcessing()
+				pr := NewLoginProcessing()
 				return pr, pr.Init()
 			}
 
@@ -109,7 +111,7 @@ func (l *login) updateInputs(msg tea.Msg) tea.Cmd {
 }
 
 func (l login) View() string {
-	str := view.Title("Укажите логин/пароль")
+	str := view.Title("Авторизация")
 	if l.err != "" {
 		str += view.Error(l.err)
 	}
@@ -122,6 +124,6 @@ func (l login) View() string {
 	}
 
 	str += view.Button("Войти", l.focusIndex == len(l.inputs))
-	str += view.Quit()
+	str += view.Quit() + view.ToStart()
 	return str
 }

@@ -58,7 +58,11 @@ func Spinner() spinner.Model {
 }
 
 func Quit() string {
-	return HelpStyle.Render("\n(Esc или Ctrl+C - завершение программы)\n")
+	return HelpStyle.Render("\nCtrl+C - завершение программы")
+}
+
+func ToStart() string {
+	return HelpStyle.Render("\nEsc - домой")
 }
 
 func Button(label string, isFocused bool) string {
