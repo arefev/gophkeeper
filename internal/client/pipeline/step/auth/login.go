@@ -54,18 +54,18 @@ func (l login) Init() tea.Cmd {
 }
 
 func (l login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch message := msg.(type) {
+	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch message.Type {
+		switch msg.Type {
 		case tea.KeyCtrlC, tea.KeyEsc:
 			return l, tea.Quit
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
-			if message.Type == tea.KeyEnter && l.focusIndex == len(l.inputs) {
+			if msg.Type == tea.KeyEnter && l.focusIndex == len(l.inputs) {
 				pr := NewProcessing()
 				return pr, pr.Init()
 			}
 
-			if message.Type == tea.KeyUp || message.Type == tea.KeyShiftTab {
+			if msg.Type == tea.KeyUp || msg.Type == tea.KeyShiftTab {
 				l.focusIndex--
 			} else {
 				l.focusIndex++

@@ -20,6 +20,9 @@ var (
 )
 
 func Break(count int) string {
+	if count <= 0 {
+		count = 1
+	}
 	return strings.Repeat("\n", count)
 }
 
