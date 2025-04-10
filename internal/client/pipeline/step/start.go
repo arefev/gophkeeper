@@ -11,21 +11,21 @@ type Start struct {
 	choices []string
 }
 
-func NewStart() Start {
-	return Start{
+func NewStart() *Start {
+	return &Start{
 		choices: []string{"Авторизация", "Регистрация"},
 	}
 }
 
-func (s Start) Init() tea.Cmd {
+func (s *Start) Init() tea.Cmd {
 	return nil
 }
 
-func (s Start) NewProgram() *tea.Program {
+func (s *Start) NewProgram() *tea.Program {
 	return tea.NewProgram(s, tea.WithAltScreen())
 }
 
-func (s Start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (s *Start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.Type {
@@ -61,7 +61,7 @@ func (s Start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return s, nil
 }
 
-func (s Start) View() string {
+func (s *Start) View() string {
 	str := view.Title("Добро пожаловать ⭐")
 
 	for i := range s.choices {

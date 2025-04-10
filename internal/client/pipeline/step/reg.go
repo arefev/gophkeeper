@@ -1,8 +1,6 @@
 package step
 
 import (
-	"fmt"
-
 	"github.com/arefev/gophkeeper/internal/client/pipeline/view"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -14,7 +12,7 @@ type reg struct {
 	err        string
 }
 
-func NewReg() reg {
+func NewReg() *reg {
 	m := reg{
 		inputs: make([]textinput.Model, 3),
 	}
@@ -44,23 +42,23 @@ func NewReg() reg {
 		m.inputs[i] = t
 	}
 
-	return m
+	return &m
 }
 
-func (r reg) WithError(err string) reg {
-	r.err = fmt.Sprintf("Ошибка: %s", err)
+func (r *reg) WithError(err error) *reg {
+	r.err = "Ошибка: " + err.Error()
 	return r
 }
 
-func (r reg) Init() tea.Cmd {
+func (r *reg) Init() tea.Cmd {
 	return textinput.Blink
 }
 
-func (r reg) Exec() (tea.Model, tea.Cmd) {
+func (r *reg) Exec() (tea.Model, tea.Cmd) {
 	return r, r.Init()
 }
 
-func (r reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (r *reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.Type {
@@ -71,7 +69,7 @@ func (r reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return r, tea.Quit
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
 			if msg.Type == tea.KeyEnter && r.focusIndex == len(r.inputs) {
-				return NewRegProcessing().Exec()
+				return NewRegAction().Exec()
 			}
 
 			if msg.Type == tea.KeyUp || msg.Type == tea.KeyShiftTab {
@@ -117,7 +115,7 @@ func (r *reg) updateInputs(msg tea.Msg) tea.Cmd {
 	return tea.Batch(cmds...)
 }
 
-func (r reg) View() string {
+func (r *reg) View() string {
 	str := view.Title("Регистрация")
 	if r.err != "" {
 		str += view.Error(r.err)

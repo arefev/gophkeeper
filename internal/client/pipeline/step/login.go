@@ -1,8 +1,6 @@
 package step
 
 import (
-	"fmt"
-
 	"github.com/arefev/gophkeeper/internal/client/pipeline/view"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -14,7 +12,7 @@ type login struct {
 	err        string
 }
 
-func NewLogin() login {
+func NewLogin() *login {
 	m := login{
 		inputs: make([]textinput.Model, 2),
 	}
@@ -40,23 +38,23 @@ func NewLogin() login {
 		m.inputs[i] = t
 	}
 
-	return m
+	return &m
 }
 
-func (l login) WithError(err string) login {
-	l.err = fmt.Sprintf("Ошибка: %s", err)
+func (l *login) WithError(err error) *login {
+	l.err = "Ошибка: " + err.Error()
 	return l
 }
 
-func (l login) Init() tea.Cmd {
+func (l *login) Init() tea.Cmd {
 	return textinput.Blink
 }
 
-func (l login) Exec() (tea.Model, tea.Cmd) {
+func (l *login) Exec() (tea.Model, tea.Cmd) {
 	return l, l.Init()
 }
 
-func (l login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (l *login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.Type {
@@ -67,7 +65,7 @@ func (l login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return l, tea.Quit
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
 			if msg.Type == tea.KeyEnter && l.focusIndex == len(l.inputs) {
-				return NewLoginProcessing().Exec()
+				return NewLoginAction().Exec()
 			}
 
 			if msg.Type == tea.KeyUp || msg.Type == tea.KeyShiftTab {
@@ -113,7 +111,7 @@ func (l *login) updateInputs(msg tea.Msg) tea.Cmd {
 	return tea.Batch(cmds...)
 }
 
-func (l login) View() string {
+func (l *login) View() string {
 	str := view.Title("Авторизация")
 	if l.err != "" {
 		str += view.Error(l.err)

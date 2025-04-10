@@ -1,0 +1,67 @@
+package step
+
+import (
+	"errors"
+	"time"
+
+	"github.com/arefev/gophkeeper/internal/client/pipeline/view"
+	"github.com/charmbracelet/bubbles/spinner"
+	tea "github.com/charmbracelet/bubbletea"
+)
+
+type RegActionSuccess struct {
+}
+
+type RegActionFail struct {
+	Err error
+}
+
+type regAction struct {
+	spinner spinner.Model
+}
+
+func NewRegAction() *regAction {
+	return &regAction{spinner: view.Spinner()}
+}
+
+func (rp *regAction) ProcessingCmd() tea.Msg {
+	time.Sleep(time.Second * 2)
+	return RegActionFail{Err: errors.New("неверно введены данные")}
+}
+
+func (rp *regAction) Init() tea.Cmd {
+	return tea.Batch(rp.spinner.Tick, rp.ProcessingCmd)
+}
+
+func (rp *regAction) Exec() (tea.Model, tea.Cmd) {
+	return rp, rp.Init()
+}
+
+func (rp *regAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case RegActionSuccess:
+		return NewReg().Exec()
+	case RegActionFail:
+		return NewReg().WithError(msg.Err).Exec()
+	case tea.KeyMsg:
+		switch msg.Type {
+		case tea.KeyCtrlC:
+			return rp, tea.Quit
+		default:
+			return rp, nil
+		}
+
+	default:
+		var cmd tea.Cmd
+		rp.spinner, cmd = rp.spinner.Update(msg)
+		return rp, cmd
+	}
+}
+
+func (rp *regAction) View() string {
+	str := view.Break(2)
+	str += rp.spinner.View()
+	str += " Минутку..." + view.Break(1)
+	str += view.Quit()
+	return str
+}
