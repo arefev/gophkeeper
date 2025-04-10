@@ -6,9 +6,9 @@ import (
 )
 
 type Start struct {
-	cursor  int
 	choice  string
 	choices []string
+	cursor  int
 }
 
 func NewStart() *Start {
@@ -30,8 +30,7 @@ func (s *Start) NewProgram() *tea.Program {
 }
 
 func (s *Start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
+	if msg, ok := msg.(tea.KeyMsg); ok {
 		switch msg.Type {
 		case tea.KeyCtrlC:
 			return s, tea.Quit
@@ -74,7 +73,7 @@ func (s *Start) View() string {
 		} else {
 			str += "( ) "
 		}
-		str += s.choices[i] + view.Break(1)
+		str += s.choices[i] + view.BreakLine().One()
 	}
 	str += view.Quit()
 

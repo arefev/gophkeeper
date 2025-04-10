@@ -50,7 +50,6 @@ func (rp *regAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		default:
 			return rp, nil
 		}
-
 	default:
 		var cmd tea.Cmd
 		rp.spinner, cmd = rp.spinner.Update(msg)
@@ -59,9 +58,9 @@ func (rp *regAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (rp *regAction) View() string {
-	str := view.Break(2)
+	str := view.BreakLine().Two()
 	str += rp.spinner.View()
-	str += " Минутку..." + view.Break(1)
+	str += " Минутку..." + view.BreakLine().One()
 	str += view.Quit()
 	return str
 }

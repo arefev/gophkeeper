@@ -7,14 +7,15 @@ import (
 )
 
 type login struct {
-	focusIndex int
-	inputs     []textinput.Model
 	err        string
+	inputs     []textinput.Model
+	focusIndex int
 }
 
 func NewLogin() *login {
+	const inputCount = 2
 	m := login{
-		inputs: make([]textinput.Model, 2),
+		inputs: make([]textinput.Model, inputCount),
 	}
 
 	var t textinput.Model
@@ -55,8 +56,7 @@ func (l *login) Exec() (tea.Model, tea.Cmd) {
 }
 
 func (l *login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
+	if msg, ok := msg.(tea.KeyMsg); ok {
 		switch msg.Type {
 		case tea.KeyEsc:
 			return NewStart().Exec()
@@ -119,7 +119,7 @@ func (l *login) View() string {
 	for i := range l.inputs {
 		str += l.inputs[i].View()
 		if i < len(l.inputs)-1 {
-			str += view.Break(1)
+			str += view.BreakLine().One()
 		}
 	}
 

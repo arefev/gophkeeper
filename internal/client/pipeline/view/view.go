@@ -19,32 +19,40 @@ var (
 	CursorModeHelpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("244"))
 )
 
-func Break(count int) string {
-	if count <= 0 {
-		count = 1
-	}
-	return strings.Repeat("\n", count)
+type breakLine struct{}
+
+func BreakLine() *breakLine {
+	return &breakLine{}
+}
+
+func (bl *breakLine) One() string {
+	return "\n"
+}
+
+func (bl *breakLine) Two() string {
+	return "\n\n"
 }
 
 func Error(err string) string {
-	count := utf8.RuneCountInString(err) + 3
+	const emLen = 3
+	count := utf8.RuneCountInString(err) + emLen
 
 	str := ErrorStyle.Render(strings.Repeat("-", count))
-	str += Break(1)
+	str += BreakLine().One()
 	str += "❗ "
 	str += ErrorStyle.Render(err)
-	str += Break(1)
+	str += BreakLine().One()
 	str += ErrorStyle.Render(strings.Repeat("-", count))
-	str += Break(2)
+	str += BreakLine().Two()
 
 	return str
 }
 
 func Title(t string) string {
-	str := Break(1)
+	str := BreakLine().One()
 	str += TitleStyle.Render("## ")
 	str += TitleStyle.Render(t)
-	str += Break(2)
+	str += BreakLine().Two()
 
 	return str
 }
@@ -71,9 +79,9 @@ func Button(label string, isFocused bool) string {
 		button = FocusedStyle.Render("[", label, "]")
 	}
 
-	str := Break(2)
+	str := BreakLine().Two()
 	str += button
-	str += Break(1)
+	str += BreakLine().One()
 
 	return str
 }

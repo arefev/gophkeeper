@@ -54,7 +54,6 @@ func (la *loginAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		default:
 			return la, nil
 		}
-
 	default:
 		var cmd tea.Cmd
 		la.spinner, cmd = la.spinner.Update(msg)
@@ -63,9 +62,9 @@ func (la *loginAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (la *loginAction) View() string {
-	str := view.Break(2)
+	str := view.BreakLine().Two()
 	str += la.spinner.View()
-	str += " Минутку..." + view.Break(1)
+	str += " Минутку..." + view.BreakLine().One()
 	str += view.Quit()
 	return str
 }
