@@ -21,6 +21,10 @@ func (s *Start) Init() tea.Cmd {
 	return nil
 }
 
+func (s *Start) Exec() (tea.Model, tea.Cmd) {
+	return s, s.Init()
+}
+
 func (s *Start) NewProgram() *tea.Program {
 	return tea.NewProgram(s, tea.WithAltScreen())
 }

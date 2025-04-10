@@ -63,8 +63,7 @@ func (r *reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEsc:
-			scr := NewStart()
-			return scr, scr.Init()
+			return NewStart().Exec()
 		case tea.KeyCtrlC:
 			return r, tea.Quit
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
