@@ -98,16 +98,16 @@ func FormWithFields(fields []*form.Input, title, btnLabel, err string, isBtnFocu
 
 func UpdateFocusInFields(focusIndex int, fields []*form.Input) tea.Cmd {
 	cmds := make([]tea.Cmd, len(fields))
-	for i := 0; i <= len(fields)-1; i++ {
+	for i, f := range fields {
 		if i == focusIndex {
-			cmds[i] = fields[i].Model().Focus()
-			fields[i].Model().PromptStyle = style.FocusedStyle
-			fields[i].Model().TextStyle = style.FocusedStyle
+			cmds[i] = f.Model().Focus()
+			f.Model().PromptStyle = style.FocusedStyle
+			f.Model().TextStyle = style.FocusedStyle
 			continue
 		}
-		fields[i].Model().Blur()
-		fields[i].Model().PromptStyle = style.NoStyle
-		fields[i].Model().TextStyle = style.NoStyle
+		f.Model().Blur()
+		f.Model().PromptStyle = style.NoStyle
+		f.Model().TextStyle = style.NoStyle
 	}
 
 	return tea.Batch(cmds...)

@@ -5,15 +5,23 @@ import (
 )
 
 var (
-	FocusedStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
-	BlurredStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
-	TitleStyle          = lipgloss.NewStyle().Foreground(lipgloss.Color("111"))
-	ErrorStyle          = lipgloss.NewStyle().Italic(true).Foreground(lipgloss.Color("1"))
+	focusedColor = "205"
+	blurredColor = "240"
+	titleColor   = "111"
+	errorColor   = "1"
+	cursorColor  = "244"
+)
+
+var (
+	FocusedStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color(focusedColor))
+	BlurredStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color(blurredColor))
+	TitleStyle          = lipgloss.NewStyle().Foreground(lipgloss.Color(titleColor))
+	ErrorStyle          = lipgloss.NewStyle().Italic(true).Foreground(lipgloss.Color(errorColor))
 	CursorStyle         = FocusedStyle
 	NoStyle             = lipgloss.NewStyle()
 	HelpStyle           = BlurredStyle
-	CursorModeHelpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("244"))
-	BaseStyle           = lipgloss.NewStyle().
+	CursorModeHelpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(cursorColor))
+	BorderStyle         = lipgloss.NewStyle().
 				BorderStyle(lipgloss.NormalBorder()).
-				BorderForeground(lipgloss.Color("240"))
+				BorderForeground(lipgloss.Color(blurredColor))
 )
