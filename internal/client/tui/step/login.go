@@ -1,6 +1,7 @@
 package step
 
 import (
+	"github.com/arefev/gophkeeper/internal/client/tui"
 	"github.com/arefev/gophkeeper/internal/client/tui/form"
 	"github.com/arefev/gophkeeper/internal/client/tui/model"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
@@ -68,13 +69,13 @@ func (l *login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			for i := 0; i <= len(l.fields)-1; i++ {
 				if i == l.focusIndex {
 					cmds[i] = l.fields[i].Model().Focus()
-					l.fields[i].Model().PromptStyle = view.FocusedStyle
-					l.fields[i].Model().TextStyle = view.FocusedStyle
+					l.fields[i].Model().PromptStyle = tui.FocusedStyle
+					l.fields[i].Model().TextStyle = tui.FocusedStyle
 					continue
 				}
 				l.fields[i].Model().Blur()
-				l.fields[i].Model().PromptStyle = view.NoStyle
-				l.fields[i].Model().TextStyle = view.NoStyle
+				l.fields[i].Model().PromptStyle = tui.NoStyle
+				l.fields[i].Model().TextStyle = tui.NoStyle
 			}
 
 			return l, tea.Batch(cmds...)
@@ -98,21 +99,7 @@ func (l *login) updateInputs(msg tea.Msg) tea.Cmd {
 }
 
 func (l *login) View() string {
-	str := view.Title("Авторизация")
-	if l.err != "" {
-		str += view.Error(l.err)
-	}
-
-	for i := range l.fields {
-		str += l.fields[i].Model().View()
-		if i < len(l.fields)-1 {
-			str += view.BreakLine().One()
-		}
-	}
-
-	str += view.Button("Войти", l.focusIndex == len(l.fields))
-	str += view.Quit() + view.ToStart()
-	return str
+	return view.FormWithFields(l.fields, "Авторизация", "Войти", l.err, l.focusIndex == len(l.fields))
 }
 
 func (l *login) getAuthData() *model.LoginData {

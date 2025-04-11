@@ -1,6 +1,7 @@
 package step
 
 import (
+	"github.com/arefev/gophkeeper/internal/client/tui"
 	"github.com/arefev/gophkeeper/internal/client/tui/form"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -68,13 +69,13 @@ func (r *reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			for i := 0; i <= len(r.fields)-1; i++ {
 				if i == r.focusIndex {
 					cmds[i] = r.fields[i].Model().Focus()
-					r.fields[i].Model().PromptStyle = view.FocusedStyle
-					r.fields[i].Model().TextStyle = view.FocusedStyle
+					r.fields[i].Model().PromptStyle = tui.FocusedStyle
+					r.fields[i].Model().TextStyle = tui.FocusedStyle
 					continue
 				}
 				r.fields[i].Model().Blur()
-				r.fields[i].Model().PromptStyle = view.NoStyle
-				r.fields[i].Model().TextStyle = view.NoStyle
+				r.fields[i].Model().PromptStyle = tui.NoStyle
+				r.fields[i].Model().TextStyle = tui.NoStyle
 			}
 
 			return r, tea.Batch(cmds...)
@@ -98,19 +99,5 @@ func (r *reg) updateInputs(msg tea.Msg) tea.Cmd {
 }
 
 func (r *reg) View() string {
-	str := view.Title("Регистрация")
-	if r.err != "" {
-		str += view.Error(r.err)
-	}
-
-	for i := range r.fields {
-		str += r.fields[i].Model().View()
-		if i < len(r.fields)-1 {
-			str += view.BreakLine().One()
-		}
-	}
-
-	str += view.Button("Отправить", r.focusIndex == len(r.fields))
-	str += view.Quit() + view.ToStart()
-	return str
+	return view.FormWithFields(r.fields, "Регистрация", "Отправить", r.err, r.focusIndex == len(r.fields))
 }
