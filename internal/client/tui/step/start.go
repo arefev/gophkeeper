@@ -22,7 +22,8 @@ func (s *Start) Init() tea.Cmd {
 }
 
 func (s *Start) Exec() (tea.Model, tea.Cmd) {
-	return s, s.Init()
+	cmd := s.Init()
+	return s, cmd
 }
 
 func (s *Start) NewProgram() *tea.Program {

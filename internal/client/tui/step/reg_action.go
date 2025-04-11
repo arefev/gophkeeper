@@ -34,7 +34,8 @@ func (rp *regAction) Init() tea.Cmd {
 }
 
 func (rp *regAction) Exec() (tea.Model, tea.Cmd) {
-	return rp, rp.Init()
+	cmd := rp.Init()
+	return rp, cmd
 }
 
 func (rp *regAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {

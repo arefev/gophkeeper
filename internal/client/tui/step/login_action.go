@@ -44,7 +44,8 @@ func (la *loginAction) Init() tea.Cmd {
 }
 
 func (la *loginAction) Exec() (tea.Model, tea.Cmd) {
-	return la, la.Init()
+	cmd := la.Init()
+	return la, cmd
 }
 
 func (la *loginAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
