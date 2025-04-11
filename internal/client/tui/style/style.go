@@ -13,4 +13,7 @@ var (
 	NoStyle             = lipgloss.NewStyle()
 	HelpStyle           = BlurredStyle
 	CursorModeHelpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("244"))
+	BaseStyle           = lipgloss.NewStyle().
+				BorderStyle(lipgloss.NormalBorder()).
+				BorderForeground(lipgloss.Color("240"))
 )

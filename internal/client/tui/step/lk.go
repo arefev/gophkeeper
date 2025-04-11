@@ -37,10 +37,10 @@ func (lk *lk) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			switch lk.choices[lk.cursor] {
 			case "Получить данные":
-				return NewLogin().Exec()
+				return NewList().Exec()
 
 			case "Загрузить данные":
-				return NewReg().Exec()
+				return lk, nil
 
 			default:
 				return lk, tea.Quit
