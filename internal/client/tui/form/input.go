@@ -1,7 +1,7 @@
 package form
 
 import (
-	"github.com/arefev/gophkeeper/internal/client/tui"
+	"github.com/arefev/gophkeeper/internal/client/tui/style"
 	"github.com/charmbracelet/bubbles/textinput"
 )
 
@@ -18,14 +18,14 @@ func NewInput(code, placeholder string, isFocused, isPwd bool) *Input {
 	i := &Input{code: code}
 
 	t := textinput.New()
-	t.Cursor.Style = tui.CursorStyle
+	t.Cursor.Style = style.CursorStyle
 	t.CharLimit = CharLimit
 	t.Placeholder = placeholder
 
 	if isFocused {
 		t.Focus()
-		t.PromptStyle = tui.FocusedStyle
-		t.TextStyle = tui.FocusedStyle
+		t.PromptStyle = style.FocusedStyle
+		t.TextStyle = style.FocusedStyle
 	}
 
 	if isPwd {

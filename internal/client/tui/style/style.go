@@ -1,6 +1,8 @@
-package tui
+package style
 
-import "github.com/charmbracelet/lipgloss"
+import (
+	"github.com/charmbracelet/lipgloss"
+)
 
 var (
 	FocusedStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))

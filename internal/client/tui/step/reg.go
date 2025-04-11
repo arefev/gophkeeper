@@ -1,7 +1,6 @@
 package step
 
 import (
-	"github.com/arefev/gophkeeper/internal/client/tui"
 	"github.com/arefev/gophkeeper/internal/client/tui/form"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -68,20 +67,7 @@ func (r *reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				r.focusIndex = len(r.fields)
 			}
 
-			cmds := make([]tea.Cmd, len(r.fields))
-			for i := 0; i <= len(r.fields)-1; i++ {
-				if i == r.focusIndex {
-					cmds[i] = r.fields[i].Model().Focus()
-					r.fields[i].Model().PromptStyle = tui.FocusedStyle
-					r.fields[i].Model().TextStyle = tui.FocusedStyle
-					continue
-				}
-				r.fields[i].Model().Blur()
-				r.fields[i].Model().PromptStyle = tui.NoStyle
-				r.fields[i].Model().TextStyle = tui.NoStyle
-			}
-
-			return r, tea.Batch(cmds...)
+			return r, view.UpdateFocusInFields(r.focusIndex, r.fields)
 
 		default:
 			cmd := r.updateInputs(msg)
@@ -89,7 +75,8 @@ func (r *reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	return r, nil
+	cmd := r.updateInputs(msg)
+	return r, cmd
 }
 
 func (r *reg) updateInputs(msg tea.Msg) tea.Cmd {

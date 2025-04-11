@@ -4,9 +4,10 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/arefev/gophkeeper/internal/client/tui"
 	"github.com/arefev/gophkeeper/internal/client/tui/form"
+	"github.com/arefev/gophkeeper/internal/client/tui/style"
 	"github.com/charmbracelet/bubbles/spinner"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -28,12 +29,12 @@ func Error(err string) string {
 	const emLen = 3
 	count := utf8.RuneCountInString(err) + emLen
 
-	str := tui.ErrorStyle.Render(strings.Repeat("-", count))
+	str := style.ErrorStyle.Render(strings.Repeat("-", count))
 	str += BreakLine().One()
 	str += "❗ "
-	str += tui.ErrorStyle.Render(err)
+	str += style.ErrorStyle.Render(err)
 	str += BreakLine().One()
-	str += tui.ErrorStyle.Render(strings.Repeat("-", count))
+	str += style.ErrorStyle.Render(strings.Repeat("-", count))
 	str += BreakLine().Two()
 
 	return str
@@ -41,8 +42,8 @@ func Error(err string) string {
 
 func Title(t string) string {
 	str := BreakLine().One()
-	str += tui.TitleStyle.Render("## ")
-	str += tui.TitleStyle.Render(t)
+	str += style.TitleStyle.Render("## ")
+	str += style.TitleStyle.Render(t)
 	str += BreakLine().Two()
 
 	return str
@@ -57,17 +58,17 @@ func Spinner() spinner.Model {
 }
 
 func Quit() string {
-	return tui.HelpStyle.Render("\nCtrl+C - завершение программы")
+	return style.HelpStyle.Render("\nCtrl+C - завершение программы")
 }
 
 func ToStart() string {
-	return tui.HelpStyle.Render("\nEsc - домой")
+	return style.HelpStyle.Render("\nEsc - домой")
 }
 
 func Button(label string, isFocused bool) string {
-	button := tui.BlurredStyle.Render("[", label, "]")
+	button := style.BlurredStyle.Render("[", label, "]")
 	if isFocused {
-		button = tui.FocusedStyle.Render("[", label, "]")
+		button = style.FocusedStyle.Render("[", label, "]")
 	}
 
 	str := BreakLine().Two()
@@ -93,4 +94,21 @@ func FormWithFields(fields []*form.Input, title, btnLabel, err string, isBtnFocu
 	str += Button(btnLabel, isBtnFocused)
 	str += Quit() + ToStart()
 	return str
+}
+
+func UpdateFocusInFields(focusIndex int, fields []*form.Input) tea.Cmd {
+	cmds := make([]tea.Cmd, len(fields))
+	for i := 0; i <= len(fields)-1; i++ {
+		if i == focusIndex {
+			cmds[i] = fields[i].Model().Focus()
+			fields[i].Model().PromptStyle = style.FocusedStyle
+			fields[i].Model().TextStyle = style.FocusedStyle
+			continue
+		}
+		fields[i].Model().Blur()
+		fields[i].Model().PromptStyle = style.NoStyle
+		fields[i].Model().TextStyle = style.NoStyle
+	}
+
+	return tea.Batch(cmds...)
 }
