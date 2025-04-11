@@ -31,7 +31,8 @@ func NewLoginAction(data *model.LoginData) *loginAction {
 }
 
 func (la *loginAction) ActionCmd() tea.Msg {
-	time.Sleep(time.Second * 2)
+	const s = 2
+	time.Sleep(time.Second * s)
 	if la.loginData.Login == "" {
 		return LoginActionFail{Err: errors.New("неверный логин/пароль")}
 	}
@@ -52,15 +53,19 @@ func (la *loginAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case LoginActionSuccess:
 		return NewLogin().Exec()
+
 	case LoginActionFail:
 		return NewLogin().WithError(msg.Err).Exec()
+
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlC:
 			return la, tea.Quit
+
 		default:
 			return la, nil
 		}
+
 	default:
 		var cmd tea.Cmd
 		la.spinner, cmd = la.spinner.Update(msg)

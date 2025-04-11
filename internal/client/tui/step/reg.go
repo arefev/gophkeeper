@@ -47,8 +47,10 @@ func (r *reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.Type {
 		case tea.KeyEsc:
 			return NewStart().Exec()
+
 		case tea.KeyCtrlC:
 			return r, tea.Quit
+
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
 			if msg.Type == tea.KeyEnter && r.focusIndex == len(r.fields) {
 				return NewRegAction().Exec()
@@ -80,11 +82,14 @@ func (r *reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			return r, tea.Batch(cmds...)
+
+		default:
+			cmd := r.updateInputs(msg)
+			return r, cmd
 		}
 	}
 
-	cmd := r.updateInputs(msg)
-	return r, cmd
+	return r, nil
 }
 
 func (r *reg) updateInputs(msg tea.Msg) tea.Cmd {

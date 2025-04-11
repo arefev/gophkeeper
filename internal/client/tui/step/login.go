@@ -47,8 +47,10 @@ func (l *login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.Type {
 		case tea.KeyEsc:
 			return NewStart().Exec()
+
 		case tea.KeyCtrlC:
 			return l, tea.Quit
+
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
 			if msg.Type == tea.KeyEnter && l.focusIndex == len(l.fields) {
 				return NewLoginAction(l.getAuthData()).Exec()
@@ -80,11 +82,14 @@ func (l *login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 			return l, tea.Batch(cmds...)
+
+		default:
+			cmd := l.updateInputs(msg)
+			return l, cmd
 		}
 	}
 
-	cmd := l.updateInputs(msg)
-	return l, cmd
+	return l, nil
 }
 
 func (l *login) updateInputs(msg tea.Msg) tea.Cmd {

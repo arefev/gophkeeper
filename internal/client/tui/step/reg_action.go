@@ -25,7 +25,8 @@ func NewRegAction() *regAction {
 }
 
 func (rp *regAction) ProcessingCmd() tea.Msg {
-	time.Sleep(time.Second * 2)
+	const s = 2
+	time.Sleep(time.Second * s)
 	return RegActionFail{Err: errors.New("неверно введены данные")}
 }
 
@@ -42,8 +43,10 @@ func (rp *regAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case RegActionSuccess:
 		return NewReg().Exec()
+
 	case RegActionFail:
 		return NewReg().WithError(msg.Err).Exec()
+
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlC:
@@ -51,6 +54,7 @@ func (rp *regAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		default:
 			return rp, nil
 		}
+
 	default:
 		var cmd tea.Cmd
 		rp.spinner, cmd = rp.spinner.Update(msg)
