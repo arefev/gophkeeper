@@ -1,6 +1,7 @@
 package step
 
 import (
+	"github.com/arefev/gophkeeper/internal/client/tui/form"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -8,42 +9,22 @@ import (
 
 type reg struct {
 	err        string
-	inputs     []textinput.Model
+	fields     []*form.Input
 	focusIndex int
 }
 
 func NewReg() *reg {
-	const inputCount = 3
-	m := reg{
-		inputs: make([]textinput.Model, inputCount),
-	}
-
-	var t textinput.Model
-	for i := range m.inputs {
-		t = textinput.New()
-		t.Cursor.Style = view.CursorStyle
-		t.CharLimit = 32
-
-		switch i {
-		case 0:
-			t.Placeholder = "Логин"
-			t.Focus()
-			t.PromptStyle = view.FocusedStyle
-			t.TextStyle = view.FocusedStyle
-		case 1:
-			t.Placeholder = "Пароль"
-			t.EchoMode = textinput.EchoPassword
-			t.EchoCharacter = '•'
-		case 2:
-			t.Placeholder = "Еще раз пароль"
-			t.EchoMode = textinput.EchoPassword
-			t.EchoCharacter = '•'
-		}
-
-		m.inputs[i] = t
-	}
-
+	m := reg{}
+	m.createFields()
 	return &m
+}
+
+func (r *reg) createFields() {
+	const fieldCount = 3
+	r.fields = make([]*form.Input, fieldCount)
+	r.fields[0] = form.NewInput("login", "Логин", true, false)
+	r.fields[1] = form.NewInput("pwd", "Пароль", false, true)
+	r.fields[2] = form.NewInput("pwdConfirm", "Повторите пароль", false, true)
 }
 
 func (r *reg) WithError(err error) *reg {
@@ -67,7 +48,7 @@ func (r *reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyCtrlC:
 			return r, tea.Quit
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
-			if msg.Type == tea.KeyEnter && r.focusIndex == len(r.inputs) {
+			if msg.Type == tea.KeyEnter && r.focusIndex == len(r.fields) {
 				return NewRegAction().Exec()
 			}
 
@@ -77,23 +58,23 @@ func (r *reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				r.focusIndex++
 			}
 
-			if r.focusIndex > len(r.inputs) {
+			if r.focusIndex > len(r.fields) {
 				r.focusIndex = 0
 			} else if r.focusIndex < 0 {
-				r.focusIndex = len(r.inputs)
+				r.focusIndex = len(r.fields)
 			}
 
-			cmds := make([]tea.Cmd, len(r.inputs))
-			for i := 0; i <= len(r.inputs)-1; i++ {
+			cmds := make([]tea.Cmd, len(r.fields))
+			for i := 0; i <= len(r.fields)-1; i++ {
 				if i == r.focusIndex {
-					cmds[i] = r.inputs[i].Focus()
-					r.inputs[i].PromptStyle = view.FocusedStyle
-					r.inputs[i].TextStyle = view.FocusedStyle
+					cmds[i] = r.fields[i].Model().Focus()
+					r.fields[i].Model().PromptStyle = view.FocusedStyle
+					r.fields[i].Model().TextStyle = view.FocusedStyle
 					continue
 				}
-				r.inputs[i].Blur()
-				r.inputs[i].PromptStyle = view.NoStyle
-				r.inputs[i].TextStyle = view.NoStyle
+				r.fields[i].Model().Blur()
+				r.fields[i].Model().PromptStyle = view.NoStyle
+				r.fields[i].Model().TextStyle = view.NoStyle
 			}
 
 			return r, tea.Batch(cmds...)
@@ -105,10 +86,12 @@ func (r *reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (r *reg) updateInputs(msg tea.Msg) tea.Cmd {
-	cmds := make([]tea.Cmd, len(r.inputs))
+	cmds := make([]tea.Cmd, len(r.fields))
 
-	for i := range r.inputs {
-		r.inputs[i], cmds[i] = r.inputs[i].Update(msg)
+	for i := range r.fields {
+		input, cmd := r.fields[i].Model().Update(msg)
+		r.fields[i].SetModel(&input)
+		cmds[i] = cmd
 	}
 
 	return tea.Batch(cmds...)
@@ -120,14 +103,14 @@ func (r *reg) View() string {
 		str += view.Error(r.err)
 	}
 
-	for i := range r.inputs {
-		str += r.inputs[i].View()
-		if i < len(r.inputs)-1 {
+	for i := range r.fields {
+		str += r.fields[i].Model().View()
+		if i < len(r.fields)-1 {
 			str += view.BreakLine().One()
 		}
 	}
 
-	str += view.Button("Отправить", r.focusIndex == len(r.inputs))
+	str += view.Button("Отправить", r.focusIndex == len(r.fields))
 	str += view.Quit() + view.ToStart()
 	return str
 }

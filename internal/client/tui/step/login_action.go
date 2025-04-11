@@ -19,8 +19,8 @@ type LoginActionFail struct {
 }
 
 type loginAction struct {
-	spinner   spinner.Model
 	loginData *model.LoginData
+	spinner   spinner.Model
 }
 
 func NewLoginAction(data *model.LoginData) *loginAction {
