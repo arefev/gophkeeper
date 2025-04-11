@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/arefev/gophkeeper/internal/client/pipeline/step"
+	"github.com/arefev/gophkeeper/internal/client/tui/step"
 )
 
 func main() {

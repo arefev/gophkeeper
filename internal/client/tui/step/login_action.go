@@ -4,7 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/arefev/gophkeeper/internal/client/pipeline/view"
+	"github.com/arefev/gophkeeper/internal/client/tui/model"
+	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -18,17 +19,24 @@ type LoginActionFail struct {
 }
 
 type loginAction struct {
-	spinner spinner.Model
+	spinner   spinner.Model
+	loginData *model.LoginData
 }
 
-func NewLoginAction() *loginAction {
-	return &loginAction{spinner: view.Spinner()}
+func NewLoginAction(data *model.LoginData) *loginAction {
+	return &loginAction{
+		spinner:   view.Spinner(),
+		loginData: data,
+	}
 }
 
 func (la *loginAction) ActionCmd() tea.Msg {
 	time.Sleep(time.Second * 2)
-	return LoginActionFail{Err: errors.New("неверный логин/пароль")}
-	// return LoginActionSuccess{AuthToken: "rkjjfhrehgehrgkhf234231421jeefewf"}
+	if la.loginData.Login == "" {
+		return LoginActionFail{Err: errors.New("неверный логин/пароль")}
+	}
+
+	return LoginActionSuccess{AuthToken: "rkjjfhrehgehrgkhf234231421jeefewf"}
 }
 
 func (la *loginAction) Init() tea.Cmd {
@@ -42,11 +50,9 @@ func (la *loginAction) Exec() (tea.Model, tea.Cmd) {
 func (la *loginAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case LoginActionSuccess:
-		login := NewLogin()
-		return login, login.Init()
+		return NewLogin().Exec()
 	case LoginActionFail:
-		login := NewLogin().WithError(msg.Err)
-		return login, login.Init()
+		return NewLogin().WithError(msg.Err).Exec()
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlC:

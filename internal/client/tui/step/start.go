@@ -1,7 +1,7 @@
 package step
 
 import (
-	"github.com/arefev/gophkeeper/internal/client/pipeline/view"
+	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	tea "github.com/charmbracelet/bubbletea"
 )
 

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/arefev/gophkeeper/internal/client/pipeline/view"
+	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 )
