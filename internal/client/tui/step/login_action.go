@@ -11,7 +11,7 @@ import (
 )
 
 type LoginActionSuccess struct {
-	AuthToken string
+	AuthData model.AuthData
 }
 
 type LoginActionFail struct {
@@ -33,11 +33,15 @@ func NewLoginAction(data *model.LoginData) *loginAction {
 func (la *loginAction) ActionCmd() tea.Msg {
 	const s = 2
 	time.Sleep(time.Second * s)
-	if la.loginData.Login == "" {
+	if la.loginData.Login == "" || la.loginData.Password == "" {
 		return LoginActionFail{Err: errors.New("неверный логин/пароль")}
 	}
 
-	return LoginActionSuccess{AuthToken: "rkjjfhrehgehrgkhf234231421jeefewf"}
+	d := model.AuthData{
+		Token: "rkjjfhrehgehrgkhf234231421jeefewf",
+	}
+
+	return LoginActionSuccess{AuthData: d}
 }
 
 func (la *loginAction) Init() tea.Cmd {

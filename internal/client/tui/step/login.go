@@ -52,7 +52,7 @@ func (l *login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
 			if msg.Type == tea.KeyEnter && l.focusIndex == len(l.fields) {
-				return NewLoginAction(l.getAuthData()).Exec()
+				return NewLoginAction(l.getLoginData()).Exec()
 			}
 
 			if msg.Type == tea.KeyUp || msg.Type == tea.KeyShiftTab {
@@ -95,7 +95,7 @@ func (l *login) View() string {
 	return view.FormWithFields(l.fields, "Авторизация", "Войти", l.err, l.focusIndex == len(l.fields))
 }
 
-func (l *login) getAuthData() *model.LoginData {
+func (l *login) getLoginData() *model.LoginData {
 	data := &model.LoginData{}
 	for _, f := range l.fields {
 		code := f.Code()
