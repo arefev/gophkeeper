@@ -4,24 +4,30 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-var (
-	focusedColor = "205"
-	blurredColor = "240"
-	titleColor   = "111"
-	errorColor   = "1"
-	cursorColor  = "244"
+const (
+	FocusedColor            = "205"
+	BlurredColor            = "240"
+	TitleColor              = "111"
+	ErrorColor              = "1"
+	CursorColor             = "244"
+	SelectedForegroundColor = "229"
+	SelectedBackgroundColor = "57"
+	ColumnWidthS            = 5
+	ColumnWidthM            = 15
+	ColumnWitdthL           = 20
+	TableHeight             = 7
 )
 
 var (
-	FocusedStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color(focusedColor))
-	BlurredStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color(blurredColor))
-	TitleStyle          = lipgloss.NewStyle().Foreground(lipgloss.Color(titleColor))
-	ErrorStyle          = lipgloss.NewStyle().Italic(true).Foreground(lipgloss.Color(errorColor))
+	FocusedStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color(FocusedColor))
+	BlurredStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color(BlurredColor))
+	TitleStyle          = lipgloss.NewStyle().Foreground(lipgloss.Color(TitleColor))
+	ErrorStyle          = lipgloss.NewStyle().Italic(true).Foreground(lipgloss.Color(ErrorColor))
 	CursorStyle         = FocusedStyle
 	NoStyle             = lipgloss.NewStyle()
 	HelpStyle           = BlurredStyle
-	CursorModeHelpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(cursorColor))
+	CursorModeHelpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color(CursorColor))
 	BorderStyle         = lipgloss.NewStyle().
 				BorderStyle(lipgloss.NormalBorder()).
-				BorderForeground(lipgloss.Color(blurredColor))
+				BorderForeground(lipgloss.Color(BlurredColor))
 )

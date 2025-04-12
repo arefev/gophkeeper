@@ -7,6 +7,7 @@ import (
 	"github.com/arefev/gophkeeper/internal/client/tui/form"
 	"github.com/arefev/gophkeeper/internal/client/tui/style"
 	"github.com/charmbracelet/bubbles/spinner"
+	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -111,4 +112,27 @@ func UpdateFocusInFields(focusIndex int, fields []*form.Input) tea.Cmd {
 	}
 
 	return tea.Batch(cmds...)
+}
+
+func Table(c []table.Column, r []table.Row) table.Model {
+	t := table.New(
+		table.WithColumns(c),
+		table.WithRows(r),
+		table.WithFocused(true),
+		table.WithHeight(style.TableHeight),
+	)
+
+	s := table.DefaultStyles()
+	s.Header = s.Header.
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color(style.BlurredColor)).
+		BorderBottom(true).
+		Bold(false)
+	s.Selected = s.Selected.
+		Foreground(lipgloss.Color(style.SelectedForegroundColor)).
+		Background(lipgloss.Color(style.SelectedBackgroundColor)).
+		Bold(false)
+	t.SetStyles(s)
+
+	return t
 }

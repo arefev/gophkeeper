@@ -8,7 +8,6 @@ import (
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 )
 
 type list struct {
@@ -68,10 +67,10 @@ func (lt *list) View() string {
 
 func getTable() table.Model {
 	columns := []table.Column{
-		{Title: "Uuid", Width: 5},
-		{Title: "Тип", Width: 15},
-		{Title: "Имя", Width: 20},
-		{Title: "Дата создания", Width: 15},
+		{Title: "Uuid", Width: style.ColumnWidthS},
+		{Title: "Тип", Width: style.ColumnWidthM},
+		{Title: "Имя", Width: style.ColumnWitdthL},
+		{Title: "Дата создания", Width: style.ColumnWidthM},
 	}
 
 	rows := []table.Row{
@@ -119,24 +118,5 @@ func getTable() table.Model {
 		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
 	}
 
-	t := table.New(
-		table.WithColumns(columns),
-		table.WithRows(rows),
-		table.WithFocused(true),
-		table.WithHeight(7),
-	)
-
-	s := table.DefaultStyles()
-	s.Header = s.Header.
-		BorderStyle(lipgloss.NormalBorder()).
-		BorderForeground(lipgloss.Color("240")).
-		BorderBottom(true).
-		Bold(false)
-	s.Selected = s.Selected.
-		Foreground(lipgloss.Color("229")).
-		Background(lipgloss.Color("57")).
-		Bold(false)
-	t.SetStyles(s)
-
-	return t
+	return view.Table(columns, rows)
 }
