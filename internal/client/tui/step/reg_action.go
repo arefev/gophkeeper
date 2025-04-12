@@ -18,14 +18,14 @@ type RegActionFail struct {
 }
 
 type regAction struct {
-	spinner spinner.Model
 	app     *app.App
+	spinner spinner.Model
 }
 
-func NewRegAction(app *app.App) *regAction {
+func NewRegAction(a *app.App) *regAction {
 	return &regAction{
 		spinner: view.Spinner(),
-		app:     app,
+		app:     a,
 	}
 }
 

@@ -11,13 +11,13 @@ import (
 
 type login struct {
 	err        string
+	app        *app.App
 	fields     []*form.Input
 	focusIndex int
-	app        *app.App
 }
 
-func NewLogin(app *app.App) *login {
-	m := login{app: app}
+func NewLogin(a *app.App) *login {
+	m := login{app: a}
 	m.createFields()
 	return &m
 }

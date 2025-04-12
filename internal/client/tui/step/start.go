@@ -8,15 +8,15 @@ import (
 
 type Start struct {
 	choice  string
+	app     *app.App
 	choices []string
 	cursor  int
-	app     *app.App
 }
 
-func NewStart(app *app.App) *Start {
+func NewStart(a *app.App) *Start {
 	return &Start{
 		choices: []string{"Авторизация", "Регистрация"},
-		app:     app,
+		app:     a,
 	}
 }
 

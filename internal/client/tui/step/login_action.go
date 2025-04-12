@@ -20,16 +20,16 @@ type LoginActionFail struct {
 }
 
 type loginAction struct {
+	app       *app.App
 	loginData *model.LoginData
 	spinner   spinner.Model
-	app       *app.App
 }
 
-func NewLoginAction(data *model.LoginData, app *app.App) *loginAction {
+func NewLoginAction(data *model.LoginData, a *app.App) *loginAction {
 	return &loginAction{
 		spinner:   view.Spinner(),
 		loginData: data,
-		app:       app,
+		app:       a,
 	}
 }
 

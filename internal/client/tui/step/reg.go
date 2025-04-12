@@ -10,13 +10,13 @@ import (
 
 type reg struct {
 	err        string
+	app        *app.App
 	fields     []*form.Input
 	focusIndex int
-	app        *app.App
 }
 
-func NewReg(app *app.App) *reg {
-	m := reg{app: app}
+func NewReg(a *app.App) *reg {
+	m := reg{app: a}
 	m.createFields()
 	return &m
 }
