@@ -8,10 +8,12 @@ import (
 )
 
 const (
+	address     string = "3200"
 	databaseDSN string = ""
 )
 
 type Config struct {
+	Address     string `env:"ADDRESS" json:"address"`
 	DatabaseDSN string `env:"DATABASE_URI"`
 }
 
@@ -31,6 +33,7 @@ func NewConfig(params []string) (Config, error) {
 
 func (cnf *Config) initFlags(params []string) error {
 	f := flag.NewFlagSet("main", flag.ExitOnError)
+	f.StringVar(&cnf.Address, "a", cnf.Address, "address to run server")
 	f.StringVar(&cnf.DatabaseDSN, "d", databaseDSN, "db connection string")
 	if err := f.Parse(params); err != nil {
 		return fmt.Errorf("InitFlags: parse flags fail: %w", err)
