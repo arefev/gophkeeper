@@ -59,7 +59,7 @@ func (la *loginAction) Exec() (tea.Model, tea.Cmd) {
 func (la *loginAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case LoginActionSuccess:
-		return NewLK().Exec()
+		return NewLK(la.app).Exec()
 
 	case LoginActionFail:
 		return NewLogin(la.app).WithError(msg.Err).Exec()

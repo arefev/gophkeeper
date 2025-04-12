@@ -1,19 +1,22 @@
 package step
 
 import (
+	"github.com/arefev/gophkeeper/internal/client/app"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type lk struct {
 	choice  string
+	app     *app.App
 	choices []string
 	cursor  int
 }
 
-func NewLK() *lk {
+func NewLK(a *app.App) *lk {
 	return &lk{
 		choices: []string{"Получить данные", "Загрузить данные"},
+		app:     a,
 	}
 }
 
@@ -37,7 +40,7 @@ func (lk *lk) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			switch lk.choices[lk.cursor] {
 			case "Получить данные":
-				return NewList().Exec()
+				return NewList(lk.app).Exec()
 
 			case "Загрузить данные":
 				return lk, nil

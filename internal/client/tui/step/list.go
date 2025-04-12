@@ -3,6 +3,7 @@ package step
 import (
 	"fmt"
 
+	"github.com/arefev/gophkeeper/internal/client/app"
 	"github.com/arefev/gophkeeper/internal/client/tui/style"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/table"
@@ -11,12 +12,14 @@ import (
 )
 
 type list struct {
+	app   *app.App
 	table table.Model
 }
 
-func NewList() *list {
+func NewList(a *app.App) *list {
 	return &list{
 		table: getTable(),
+		app:   a,
 	}
 }
 
@@ -34,7 +37,7 @@ func (lt *list) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if msg, ok := msg.(tea.KeyMsg); ok {
 		switch msg.Type {
 		case tea.KeyEsc:
-			return NewLK().Exec()
+			return NewLK(lt.app).Exec()
 
 		case tea.KeyCtrlC:
 			return lt, tea.Quit
