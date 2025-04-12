@@ -1,6 +1,7 @@
 package step
 
 import (
+	"github.com/arefev/gophkeeper/internal/client/app"
 	"github.com/arefev/gophkeeper/internal/client/tui/form"
 	"github.com/arefev/gophkeeper/internal/client/tui/model"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
@@ -12,10 +13,11 @@ type login struct {
 	err        string
 	fields     []*form.Input
 	focusIndex int
+	app        *app.App
 }
 
-func NewLogin() *login {
-	m := login{}
+func NewLogin(app *app.App) *login {
+	m := login{app: app}
 	m.createFields()
 	return &m
 }
@@ -45,14 +47,14 @@ func (l *login) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if msg, ok := msg.(tea.KeyMsg); ok {
 		switch msg.Type {
 		case tea.KeyEsc:
-			return NewStart().Exec()
+			return NewStart(l.app).Exec()
 
 		case tea.KeyCtrlC:
 			return l, tea.Quit
 
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
 			if msg.Type == tea.KeyEnter && l.focusIndex == len(l.fields) {
-				return NewLoginAction(l.getLoginData()).Exec()
+				return NewLoginAction(l.getLoginData(), l.app).Exec()
 			}
 
 			if msg.Type == tea.KeyUp || msg.Type == tea.KeyShiftTab {

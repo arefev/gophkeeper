@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/arefev/gophkeeper/internal/client/app"
 	"github.com/arefev/gophkeeper/internal/client/tui/model"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/spinner"
@@ -21,12 +22,14 @@ type LoginActionFail struct {
 type loginAction struct {
 	loginData *model.LoginData
 	spinner   spinner.Model
+	app       *app.App
 }
 
-func NewLoginAction(data *model.LoginData) *loginAction {
+func NewLoginAction(data *model.LoginData, app *app.App) *loginAction {
 	return &loginAction{
 		spinner:   view.Spinner(),
 		loginData: data,
+		app:       app,
 	}
 }
 
@@ -59,7 +62,7 @@ func (la *loginAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return NewLK().Exec()
 
 	case LoginActionFail:
-		return NewLogin().WithError(msg.Err).Exec()
+		return NewLogin(la.app).WithError(msg.Err).Exec()
 
 	case tea.KeyMsg:
 		switch msg.Type {

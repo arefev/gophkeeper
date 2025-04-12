@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/arefev/gophkeeper/internal/client/app"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -18,10 +19,14 @@ type RegActionFail struct {
 
 type regAction struct {
 	spinner spinner.Model
+	app     *app.App
 }
 
-func NewRegAction() *regAction {
-	return &regAction{spinner: view.Spinner()}
+func NewRegAction(app *app.App) *regAction {
+	return &regAction{
+		spinner: view.Spinner(),
+		app:     app,
+	}
 }
 
 func (rp *regAction) ProcessingCmd() tea.Msg {
@@ -42,10 +47,10 @@ func (rp *regAction) Exec() (tea.Model, tea.Cmd) {
 func (rp *regAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case RegActionSuccess:
-		return NewReg().Exec()
+		return NewReg(rp.app).Exec()
 
 	case RegActionFail:
-		return NewReg().WithError(msg.Err).Exec()
+		return NewReg(rp.app).WithError(msg.Err).Exec()
 
 	case tea.KeyMsg:
 		switch msg.Type {

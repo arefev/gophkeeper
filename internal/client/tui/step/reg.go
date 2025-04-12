@@ -1,6 +1,7 @@
 package step
 
 import (
+	"github.com/arefev/gophkeeper/internal/client/app"
 	"github.com/arefev/gophkeeper/internal/client/tui/form"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/textinput"
@@ -11,10 +12,11 @@ type reg struct {
 	err        string
 	fields     []*form.Input
 	focusIndex int
+	app        *app.App
 }
 
-func NewReg() *reg {
-	m := reg{}
+func NewReg(app *app.App) *reg {
+	m := reg{app: app}
 	m.createFields()
 	return &m
 }
@@ -45,14 +47,14 @@ func (r *reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if msg, ok := msg.(tea.KeyMsg); ok {
 		switch msg.Type {
 		case tea.KeyEsc:
-			return NewStart().Exec()
+			return NewStart(r.app).Exec()
 
 		case tea.KeyCtrlC:
 			return r, tea.Quit
 
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
 			if msg.Type == tea.KeyEnter && r.focusIndex == len(r.fields) {
-				return NewRegAction().Exec()
+				return NewRegAction(r.app).Exec()
 			}
 
 			if msg.Type == tea.KeyUp || msg.Type == tea.KeyShiftTab {

@@ -1,36 +1,39 @@
 package step
 
 import (
+	"github.com/arefev/gophkeeper/internal/client/app"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type start struct {
+type Start struct {
 	choice  string
 	choices []string
 	cursor  int
+	app     *app.App
 }
 
-func NewStart() *start {
-	return &start{
+func NewStart(app *app.App) *Start {
+	return &Start{
 		choices: []string{"Авторизация", "Регистрация"},
+		app:     app,
 	}
 }
 
-func (s *start) Init() tea.Cmd {
+func (s *Start) Init() tea.Cmd {
 	return nil
 }
 
-func (s *start) Exec() (tea.Model, tea.Cmd) {
+func (s *Start) Exec() (tea.Model, tea.Cmd) {
 	cmd := s.Init()
 	return s, cmd
 }
 
-func (s *start) NewProgram() *tea.Program {
+func (s *Start) NewProgram() *tea.Program {
 	return tea.NewProgram(s, tea.WithAltScreen())
 }
 
-func (s *start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (s *Start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if msg, ok := msg.(tea.KeyMsg); ok {
 		switch msg.Type {
 		case tea.KeyCtrlC:
@@ -41,10 +44,10 @@ func (s *start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			switch s.choices[s.cursor] {
 			case "Авторизация":
-				return NewLogin().Exec()
+				return NewLogin(s.app).Exec()
 
 			case "Регистрация":
-				return NewReg().Exec()
+				return NewReg(s.app).Exec()
 
 			default:
 				return s, tea.Quit
@@ -70,7 +73,7 @@ func (s *start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return s, nil
 }
 
-func (s *start) View() string {
+func (s *Start) View() string {
 	str := view.Title("Добро пожаловать ⭐")
 
 	for i := range s.choices {
