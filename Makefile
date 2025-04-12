@@ -44,6 +44,21 @@ test: client-build-cover
 .PHONY: test
 
 
+server: server-run
+.PHONY: server
+
+
+server-run: server-build
+	./cmd/server/server \
+		-d=${DATABASE_DSN}
+.PHONY: server-run
+
+
+server-build:
+	go build -o ./cmd/server/server ./cmd/server/
+.PHONY: server-build
+
+
 golangci-lint-run: _golangci-lint-rm-unformatted-report
 .PHONY: golangci-lint-run
 
