@@ -6,34 +6,34 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-type Start struct {
+type start struct {
 	choice  string
 	app     *app.App
 	choices []string
 	cursor  int
 }
 
-func NewStart(a *app.App) *Start {
-	return &Start{
+func NewStart(a *app.App) *start {
+	return &start{
 		choices: []string{"Авторизация", "Регистрация"},
 		app:     a,
 	}
 }
 
-func (s *Start) Init() tea.Cmd {
+func (s *start) Init() tea.Cmd {
 	return nil
 }
 
-func (s *Start) Exec() (tea.Model, tea.Cmd) {
+func (s *start) Exec() (tea.Model, tea.Cmd) {
 	cmd := s.Init()
 	return s, cmd
 }
 
-func (s *Start) NewProgram() *tea.Program {
+func (s *start) NewProgram() *tea.Program {
 	return tea.NewProgram(s, tea.WithAltScreen())
 }
 
-func (s *Start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (s *start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	if msg, ok := msg.(tea.KeyMsg); ok {
 		switch msg.Type {
 		case tea.KeyCtrlC:
@@ -73,7 +73,7 @@ func (s *Start) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return s, nil
 }
 
-func (s *Start) View() string {
+func (s *start) View() string {
 	str := view.Title("Добро пожаловать ⭐")
 
 	for i := range s.choices {
