@@ -3,48 +3,62 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/arefev/gophkeeper/internal/client/app"
+	"github.com/arefev/gophkeeper/internal/client/config"
 	"github.com/arefev/gophkeeper/internal/client/connection"
 	"github.com/arefev/gophkeeper/internal/client/tui/step"
 	"github.com/arefev/gophkeeper/internal/logger"
 	tea "github.com/charmbracelet/bubbletea"
+	"go.uber.org/zap"
 )
 
 func main() {
-	// TODO: вынести в конфиг
-	l, err := logger.Build("debug")
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
+	conf, err := config.NewConfig(os.Args[1:])
 	if err != nil {
-		log.Fatal("logger build fail")
+		return fmt.Errorf("run: init config failed: %w", err)
+	}
+
+	l, err := logger.Build(conf.LogLevel)
+	if err != nil {
+		return fmt.Errorf("run: logger build failed: %w", err)
 	}
 
 	conn := connection.NewGRPCClient(l)
-	if err = conn.Connect(":3200"); err != nil {
-		log.Fatalf("connect failed: %s", err.Error())
+	if err = conn.Connect(conf.Address); err != nil {
+		return fmt.Errorf("run: connect to server failed: %w", err)
 	}
 
 	defer func() {
 		if err = conn.Close(); err != nil {
-			log.Fatalf("connect close failed: %s", err.Error())
+			l.Error("connect close failed: %w", zap.Error(err))
 		}
 	}()
 
-	// TODO: вынести в конфиг
-	f, err := tea.LogToFile("debug.log", "debug")
-	if err != nil {
-		log.Fatalf("log to file failed: %s", err.Error())
-	}
-	defer func() {
-		if err = f.Close(); err != nil {
-			log.Fatalf("log to file close failed: %s", err.Error())
+	if conf.LogFilePath != "" {
+		f, err := tea.LogToFile(conf.LogFilePath, conf.LogLevel)
+		if err != nil {
+			return fmt.Errorf("run: log to file failed: %w", err)
 		}
-	}()
+		defer func() {
+			if err = f.Close(); err != nil {
+				l.Error("log file close failed: %w", zap.Error(err))
+			}
+		}()
+	}
 
 	a := app.NewApp(conn, l)
 	_, err = step.NewStart(a).NewProgram().Run()
 	if err != nil {
-		log.Fatalf("app stopped with error: %s", err.Error())
+		return fmt.Errorf("run: app stopped with error: %w", err)
 	}
 
-	fmt.Println("app stopped")
+	return nil
 }

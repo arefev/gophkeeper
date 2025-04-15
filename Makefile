@@ -20,7 +20,7 @@ client: client-run
 
 
 client-run: client-build
-	./cmd/client/client -l="${LOG_LEVEL}"
+	./cmd/client/client
 .PHONY: client-run
 
 
