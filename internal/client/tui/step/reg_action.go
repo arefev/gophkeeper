@@ -3,9 +3,9 @@ package step
 import (
 	"context"
 	"errors"
-	"log"
 
 	"github.com/arefev/gophkeeper/internal/client/app"
+	"github.com/arefev/gophkeeper/internal/client/tui/model"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
@@ -20,27 +20,30 @@ type RegActionFail struct {
 
 type regAction struct {
 	app     *app.App
+	regData *model.RegData
 	spinner spinner.Model
 }
 
-func NewRegAction(a *app.App) *regAction {
+func NewRegAction(a *app.App, data *model.RegData) *regAction {
 	return &regAction{
 		spinner: view.Spinner(),
 		app:     a,
+		regData: data,
 	}
 }
 
-func (rp *regAction) ProcessingCmd() tea.Msg {
-	ctx := context.TODO()
-	err := rp.app.Conn.Register(ctx, "test", "test")
+func (rp *regAction) ActionCmd() tea.Msg {
+	ctx := context.Background()
+	// TODO: validation needed
+	err := rp.app.Conn.Register(ctx, rp.regData.Login, rp.regData.Password)
 	if err != nil {
-		log.Fatalf("reg action failed: %s", err.Error())
+		return RegActionFail{Err: errors.New("неверно введены данные")}
 	}
-	return RegActionFail{Err: errors.New("неверно введены данные")}
+	return RegActionSuccess{}
 }
 
 func (rp *regAction) Init() tea.Cmd {
-	return tea.Batch(rp.spinner.Tick, rp.ProcessingCmd)
+	return tea.Batch(rp.spinner.Tick, rp.ActionCmd)
 }
 
 func (rp *regAction) Exec() (tea.Model, tea.Cmd) {
@@ -51,7 +54,7 @@ func (rp *regAction) Exec() (tea.Model, tea.Cmd) {
 func (rp *regAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case RegActionSuccess:
-		return NewReg(rp.app).Exec()
+		return NewLK(rp.app).Exec()
 
 	case RegActionFail:
 		return NewReg(rp.app).WithError(msg.Err).Exec()

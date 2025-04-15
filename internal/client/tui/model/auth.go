@@ -5,6 +5,12 @@ type LoginData struct {
 	Password string
 }
 
+type RegData struct {
+	Login           string
+	Password        string
+	ConfirmPassword string
+}
+
 type AuthData struct {
 	Token string
 }

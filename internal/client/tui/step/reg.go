@@ -3,6 +3,7 @@ package step
 import (
 	"github.com/arefev/gophkeeper/internal/client/app"
 	"github.com/arefev/gophkeeper/internal/client/tui/form"
+	"github.com/arefev/gophkeeper/internal/client/tui/model"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -54,7 +55,7 @@ func (r *reg) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
 			if msg.Type == tea.KeyEnter && r.focusIndex == len(r.fields) {
-				return NewRegAction(r.app).Exec()
+				return NewRegAction(r.app, r.getRegData()).Exec()
 			}
 
 			if msg.Type == tea.KeyUp || msg.Type == tea.KeyShiftTab {
@@ -95,4 +96,21 @@ func (r *reg) updateInputs(msg tea.Msg) tea.Cmd {
 
 func (r *reg) View() string {
 	return view.FormWithFields(r.fields, "Регистрация", "Отправить", r.err, r.focusIndex == len(r.fields))
+}
+
+func (r *reg) getRegData() *model.RegData {
+	data := &model.RegData{}
+	for _, f := range r.fields {
+		code := f.Code()
+		switch code {
+		case "login":
+			data.Login = f.Model().Value()
+		case "pwd":
+			data.Password = f.Model().Value()
+		case "pwdConfirm":
+			data.ConfirmPassword = f.Model().Value()
+		}
+	}
+
+	return data
 }

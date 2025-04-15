@@ -16,5 +16,6 @@ func (gs *GRPCServer) Register(
 	in *proto.RegistrationRequest,
 ) (*proto.RegistrationResponse, error) {
 	fmt.Println("message recieved")
+	fmt.Printf("reg data %+v", in.User)
 	return &proto.RegistrationResponse{}, nil
 }

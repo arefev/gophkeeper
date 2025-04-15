@@ -2,7 +2,6 @@ package app
 
 import "context"
 
-
 type Connection interface {
 	Register(ctx context.Context, login, pwd string) error
 }

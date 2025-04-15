@@ -42,7 +42,7 @@ func (g *grpcClient) Register(ctx context.Context, login, pwd string) error {
 
 	_, err := client.Register(ctx, &proto.RegistrationRequest{
 		User: &proto.User{
-			Login: login,
+			Login:    login,
 			Password: pwd,
 		},
 	})
