@@ -84,7 +84,7 @@ func runGRPC(ctx context.Context, c *config.Config, l *zap.Logger) error {
 		s.Stop()
 	}()
 
-	l.Info("Server running", zap.String("port", c.Address))
+	l.Info("Server running", zap.String("port", c.Address), zap.String("log level", c.LogLevel))
 
 	if err := s.Serve(listen); err != nil {
 		return fmt.Errorf("runGRPC Serve failed: %w", err)
