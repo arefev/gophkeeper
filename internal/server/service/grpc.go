@@ -49,3 +49,28 @@ func (asrv *authServer) Register(
 
 	return &proto.RegistrationResponse{Token: token.AccessToken}, nil
 }
+
+func (asrv *authServer) Login(
+	ctx context.Context,
+	in *proto.AuthorizationRequest,
+) (*proto.AuthorizationResponse, error) {
+	s := NewUserService(asrv.app)
+	token, err := s.Authorize(ctx, in.User.GetLogin(), in.User.GetPassword())
+	if err != nil {
+		asrv.app.Log.Debug(
+			"login user failed",
+			zap.Error(err),
+			zap.String("login", in.User.GetLogin()),
+			zap.String("pwd", in.User.GetPassword()),
+		)
+
+		return &proto.AuthorizationResponse{}, fmt.Errorf("login authorize user failed: %w", err)
+	}
+
+	asrv.app.Log.Debug(
+		"login user success",
+		zap.String("login", in.User.GetLogin()),
+	)
+
+	return &proto.AuthorizationResponse{Token: token.AccessToken}, nil
+}

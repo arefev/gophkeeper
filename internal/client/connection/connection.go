@@ -73,3 +73,20 @@ func (g *grpcClient) Register(ctx context.Context, login, pwd string) (string, e
 
 	return resp.GetToken(), nil
 }
+
+func (g *grpcClient) Login(ctx context.Context, login, pwd string) (string, error) {
+	client := proto.NewAuthClient(g.conn)
+
+	resp, err := client.Login(ctx, &proto.AuthorizationRequest{
+		User: &proto.User{
+			Login:    login,
+			Password: pwd,
+		},
+	})
+
+	if err != nil {
+		return "", fmt.Errorf("grpc Login failed: %w", err)
+	}
+
+	return resp.GetToken(), nil
+}

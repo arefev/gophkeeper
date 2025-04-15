@@ -1,8 +1,8 @@
 package step
 
 import (
+	"context"
 	"errors"
-	"time"
 
 	"github.com/arefev/gophkeeper/internal/client/app"
 	"github.com/arefev/gophkeeper/internal/client/tui/model"
@@ -12,7 +12,6 @@ import (
 )
 
 type LoginActionSuccess struct {
-	AuthData model.AuthData
 }
 
 type LoginActionFail struct {
@@ -34,17 +33,14 @@ func NewLoginAction(data *model.LoginData, a *app.App) *loginAction {
 }
 
 func (la *loginAction) ActionCmd() tea.Msg {
-	const s = 2
-	time.Sleep(time.Second * s)
-	if la.loginData.Login == "" || la.loginData.Password == "" {
+	ctx := context.Background()
+	// TODO: validation needed
+	token, err := la.app.Conn.Login(ctx, la.loginData.Login, la.loginData.Password)
+	if err != nil {
 		return LoginActionFail{Err: errors.New("неверный логин/пароль")}
 	}
-
-	d := model.AuthData{
-		Token: "rkjjfhrehgehrgkhf234231421jeefewf",
-	}
-
-	return LoginActionSuccess{AuthData: d}
+	la.app.Conn.SetToken(token)
+	return LoginActionSuccess{}
 }
 
 func (la *loginAction) Init() tea.Cmd {

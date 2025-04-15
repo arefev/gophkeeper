@@ -10,7 +10,3 @@ type RegData struct {
 	Password        string
 	ConfirmPassword string
 }
-
-type AuthData struct {
-	Token string
-}

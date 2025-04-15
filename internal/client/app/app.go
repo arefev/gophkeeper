@@ -9,6 +9,7 @@ import (
 
 type Connection interface {
 	Register(ctx context.Context, login, pwd string) (string, error)
+	Login(ctx context.Context, login, pwd string) (string, error)
 	SetToken(t string)
 	CheckTokenCmd() tea.Msg
 }
