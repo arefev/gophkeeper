@@ -54,8 +54,7 @@ func run() error {
 		}()
 	}
 
-	a := app.NewApp(conn, l)
-	_, err = step.NewStart(a).NewProgram().Run()
+	_, err = step.NewStart(app.NewApp(conn, l)).NewProgram().Run()
 	if err != nil {
 		return fmt.Errorf("run: app stopped with error: %w", err)
 	}
