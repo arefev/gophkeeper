@@ -35,10 +35,11 @@ func NewRegAction(a *app.App, data *model.RegData) *regAction {
 func (rp *regAction) ActionCmd() tea.Msg {
 	ctx := context.Background()
 	// TODO: validation needed
-	err := rp.app.Conn.Register(ctx, rp.regData.Login, rp.regData.Password)
+	token, err := rp.app.Conn.Register(ctx, rp.regData.Login, rp.regData.Password)
 	if err != nil {
 		return RegActionFail{Err: errors.New("неверно введены данные")}
 	}
+	rp.app.Conn.SetToken(token)
 	return RegActionSuccess{}
 }
 

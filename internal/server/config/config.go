@@ -32,15 +32,15 @@ type Config struct {
 	TokenDuration int    `env:"TOKEN_DURATION"`
 }
 
-func NewConfig(params []string) (Config, error) {
-	cnf := Config{}
+func NewConfig(params []string) (*Config, error) {
+	cnf := &Config{}
 
 	if err := cnf.initFlags(params); err != nil {
-		return Config{}, err
+		return &Config{}, err
 	}
 
 	if err := cnf.initEnvs(); err != nil {
-		return Config{}, err
+		return &Config{}, err
 	}
 
 	return cnf, nil

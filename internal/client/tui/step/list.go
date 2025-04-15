@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/arefev/gophkeeper/internal/client/app"
+	"github.com/arefev/gophkeeper/internal/client/connection"
 	"github.com/arefev/gophkeeper/internal/client/tui/style"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/table"
@@ -23,7 +24,7 @@ func NewList(a *app.App) *list {
 }
 
 func (lt *list) Init() tea.Cmd {
-	return nil
+	return lt.app.Conn.CheckTokenCmd
 }
 
 func (lt *list) Exec() (tea.Model, tea.Cmd) {
@@ -33,7 +34,11 @@ func (lt *list) Exec() (tea.Model, tea.Cmd) {
 
 func (lt *list) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
-	if msg, ok := msg.(tea.KeyMsg); ok {
+	switch msg := msg.(type) {
+	case connection.CheckAuthFail:
+		return NewStart(lt.app).Exec()
+
+	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEsc:
 			return NewLK(lt.app).Exec()

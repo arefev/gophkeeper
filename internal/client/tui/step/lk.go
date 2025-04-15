@@ -2,6 +2,7 @@ package step
 
 import (
 	"github.com/arefev/gophkeeper/internal/client/app"
+	"github.com/arefev/gophkeeper/internal/client/connection"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -21,7 +22,7 @@ func NewLK(a *app.App) *lk {
 }
 
 func (lk *lk) Init() tea.Cmd {
-	return nil
+	return lk.app.Conn.CheckTokenCmd
 }
 
 func (lk *lk) Exec() (tea.Model, tea.Cmd) {
@@ -30,7 +31,11 @@ func (lk *lk) Exec() (tea.Model, tea.Cmd) {
 }
 
 func (lk *lk) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if msg, ok := msg.(tea.KeyMsg); ok {
+	switch msg := msg.(type) {
+	case connection.CheckAuthFail:
+		return NewStart(lk.app).Exec()
+
+	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyCtrlC:
 			return lk, tea.Quit

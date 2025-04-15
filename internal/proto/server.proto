@@ -15,7 +15,7 @@ message RegistrationRequest {
 }
 
 message RegistrationResponse {
-  string error = 1;
+  string token = 1;
 }
 
 service Registration {

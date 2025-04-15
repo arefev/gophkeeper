@@ -1,3 +1,4 @@
 cmd/client/client
 cmd/server/server
 golangci-lint/
+*.log

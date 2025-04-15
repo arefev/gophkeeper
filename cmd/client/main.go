@@ -8,6 +8,7 @@ import (
 	"github.com/arefev/gophkeeper/internal/client/connection"
 	"github.com/arefev/gophkeeper/internal/client/tui/step"
 	"github.com/arefev/gophkeeper/internal/logger"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 func main() {
@@ -27,7 +28,17 @@ func main() {
 		}
 	}()
 
-	a := app.NewApp(conn)
+	f, err := tea.LogToFile("debug.log", "debug")
+	if err != nil {
+		log.Fatalf("log to file failed: %s", err.Error())
+	}
+	defer func() {
+		if err = f.Close(); err != nil {
+			log.Fatalf("log to file close failed: %s", err.Error())
+		}
+	}()
+
+	a := app.NewApp(conn, l)
 	_, err = step.NewStart(a).NewProgram().Run()
 	if err != nil {
 		log.Fatalf("app stopped with error: %s", err.Error())

@@ -119,7 +119,7 @@ func (x *RegistrationRequest) GetUser() *User {
 
 type RegistrationResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Error         string                 `protobuf:"bytes,1,opt,name=error,proto3" json:"error,omitempty"`
+	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -154,9 +154,9 @@ func (*RegistrationResponse) Descriptor() ([]byte, []int) {
 	return file_internal_proto_server_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *RegistrationResponse) GetError() string {
+func (x *RegistrationResponse) GetToken() string {
 	if x != nil {
-		return x.Error
+		return x.Token
 	}
 	return ""
 }
@@ -173,7 +173,7 @@ const file_internal_proto_server_proto_rawDesc = "" +
 	"\x13RegistrationRequest\x12$\n" +
 	"\x04User\x18\x01 \x01(\v2\x10.gophkeeper.UserR\x04User\",\n" +
 	"\x14RegistrationResponse\x12\x14\n" +
-	"\x05error\x18\x01 \x01(\tR\x05error2]\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token2]\n" +
 	"\fRegistration\x12M\n" +
 	"\bRegister\x12\x1f.gophkeeper.RegistrationRequest\x1a .gophkeeper.RegistrationResponseB\x12Z\x10gophkeeper/protob\x06proto3"
 

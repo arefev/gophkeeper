@@ -13,9 +13,12 @@ import (
 
 	"github.com/arefev/gophkeeper/internal/logger"
 	"github.com/arefev/gophkeeper/internal/proto"
+	"github.com/arefev/gophkeeper/internal/server/application"
 	"github.com/arefev/gophkeeper/internal/server/config"
 	"github.com/arefev/gophkeeper/internal/server/db/postgresql"
+	"github.com/arefev/gophkeeper/internal/server/repository"
 	"github.com/arefev/gophkeeper/internal/server/service"
+	"github.com/arefev/gophkeeper/internal/server/trm"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -44,7 +47,7 @@ func run(ctx context.Context) error {
 		return fmt.Errorf("run: logger build fail: %w", err)
 	}
 
-	databaseDSN := databaseDSN(&conf)
+	databaseDSN := databaseDSN(conf)
 	db, err := postgresql.NewDB(l).Connect(databaseDSN)
 	if err != nil {
 		return fmt.Errorf("run: db trm connect fail: %w", err)
@@ -61,7 +64,17 @@ func run(ctx context.Context) error {
 		return fmt.Errorf("run: migration up fail: %w", err)
 	}
 
-	err = runGRPC(ctx, &conf, l)
+	tr := trm.NewTr(db.Connection())
+	app := &application.App{
+		Rep: application.Repository{
+			User: repository.NewUser(tr, l),
+		},
+		TrManager: trm.NewTrm(tr, l),
+		Log:       l,
+		Conf:      conf,
+	}
+
+	err = runServer(ctx, app, conf, l)
 	if err != nil {
 		return fmt.Errorf("run: runGRPC fail: %w", err)
 	}
@@ -69,14 +82,14 @@ func run(ctx context.Context) error {
 	return nil
 }
 
-func runGRPC(ctx context.Context, c *config.Config, l *zap.Logger) error {
+func runServer(ctx context.Context, app *application.App, c *config.Config, l *zap.Logger) error {
 	listen, err := net.Listen("tcp", c.Address)
 	if err != nil {
 		return fmt.Errorf("runGRPC Listen failed: %w", err)
 	}
 
 	s := grpc.NewServer()
-	proto.RegisterRegistrationServer(s, &service.GRPCServer{})
+	proto.RegisterRegistrationServer(s, service.NewRegServer(app))
 
 	go func() {
 		<-ctx.Done()
