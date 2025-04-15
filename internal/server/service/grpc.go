@@ -9,25 +9,25 @@ import (
 	"go.uber.org/zap"
 )
 
-type regServer struct {
-	proto.UnimplementedRegistrationServer
+type authServer struct {
+	proto.UnimplementedAuthServer
 	app *application.App
 }
 
-func NewRegServer(app *application.App) *regServer {
-	return &regServer{
+func NewAuthServer(app *application.App) *authServer {
+	return &authServer{
 		app: app,
 	}
 }
 
-func (rs *regServer) Register(
+func (asrv *authServer) Register(
 	ctx context.Context,
 	in *proto.RegistrationRequest,
 ) (*proto.RegistrationResponse, error) {
-	s := NewUserService(rs.app)
+	s := NewUserService(asrv.app)
 	err := s.Create(ctx, in.User.GetLogin(), in.User.GetPassword())
 	if err != nil {
-		rs.app.Log.Debug(
+		asrv.app.Log.Debug(
 			"register user failed",
 			zap.Error(err),
 			zap.String("login", in.User.GetLogin()),
@@ -37,7 +37,7 @@ func (rs *regServer) Register(
 		return &proto.RegistrationResponse{}, fmt.Errorf("register create user failed: %w", err)
 	}
 
-	rs.app.Log.Debug(
+	asrv.app.Log.Debug(
 		"register user success",
 		zap.String("login", in.User.GetLogin()),
 	)

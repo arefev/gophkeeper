@@ -89,7 +89,7 @@ func runServer(ctx context.Context, app *application.App, c *config.Config, l *z
 	}
 
 	s := grpc.NewServer()
-	proto.RegisterRegistrationServer(s, service.NewRegServer(app))
+	proto.RegisterAuthServer(s, service.NewAuthServer(app))
 
 	go func() {
 		<-ctx.Done()

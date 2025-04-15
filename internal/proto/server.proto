@@ -18,6 +18,16 @@ message RegistrationResponse {
   string token = 1;
 }
 
-service Registration {
-  rpc Register(RegistrationRequest) returns (RegistrationResponse);
+message AuthorizationRequest {
+  User User = 1;
 }
+
+message AuthorizationResponse {
+  string token = 1;
+}
+
+service Auth {
+  rpc Register(RegistrationRequest) returns (RegistrationResponse);
+  rpc Login(AuthorizationRequest) returns (AuthorizationResponse);
+}
+

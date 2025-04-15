@@ -161,6 +161,94 @@ func (x *RegistrationResponse) GetToken() string {
 	return ""
 }
 
+type AuthorizationRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	User          *User                  `protobuf:"bytes,1,opt,name=User,proto3" json:"User,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AuthorizationRequest) Reset() {
+	*x = AuthorizationRequest{}
+	mi := &file_internal_proto_server_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AuthorizationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AuthorizationRequest) ProtoMessage() {}
+
+func (x *AuthorizationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_proto_server_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AuthorizationRequest.ProtoReflect.Descriptor instead.
+func (*AuthorizationRequest) Descriptor() ([]byte, []int) {
+	return file_internal_proto_server_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *AuthorizationRequest) GetUser() *User {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
+type AuthorizationResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AuthorizationResponse) Reset() {
+	*x = AuthorizationResponse{}
+	mi := &file_internal_proto_server_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AuthorizationResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AuthorizationResponse) ProtoMessage() {}
+
+func (x *AuthorizationResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_proto_server_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AuthorizationResponse.ProtoReflect.Descriptor instead.
+func (*AuthorizationResponse) Descriptor() ([]byte, []int) {
+	return file_internal_proto_server_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *AuthorizationResponse) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
 var File_internal_proto_server_proto protoreflect.FileDescriptor
 
 const file_internal_proto_server_proto_rawDesc = "" +
@@ -173,9 +261,14 @@ const file_internal_proto_server_proto_rawDesc = "" +
 	"\x13RegistrationRequest\x12$\n" +
 	"\x04User\x18\x01 \x01(\v2\x10.gophkeeper.UserR\x04User\",\n" +
 	"\x14RegistrationResponse\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token2]\n" +
-	"\fRegistration\x12M\n" +
-	"\bRegister\x12\x1f.gophkeeper.RegistrationRequest\x1a .gophkeeper.RegistrationResponseB\x12Z\x10gophkeeper/protob\x06proto3"
+	"\x05token\x18\x01 \x01(\tR\x05token\"<\n" +
+	"\x14AuthorizationRequest\x12$\n" +
+	"\x04User\x18\x01 \x01(\v2\x10.gophkeeper.UserR\x04User\"-\n" +
+	"\x15AuthorizationResponse\x12\x14\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token2\xa3\x01\n" +
+	"\x04Auth\x12M\n" +
+	"\bRegister\x12\x1f.gophkeeper.RegistrationRequest\x1a .gophkeeper.RegistrationResponse\x12L\n" +
+	"\x05Login\x12 .gophkeeper.AuthorizationRequest\x1a!.gophkeeper.AuthorizationResponseB\x12Z\x10gophkeeper/protob\x06proto3"
 
 var (
 	file_internal_proto_server_proto_rawDescOnce sync.Once
@@ -189,21 +282,26 @@ func file_internal_proto_server_proto_rawDescGZIP() []byte {
 	return file_internal_proto_server_proto_rawDescData
 }
 
-var file_internal_proto_server_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_internal_proto_server_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_internal_proto_server_proto_goTypes = []any{
-	(*User)(nil),                 // 0: gophkeeper.User
-	(*RegistrationRequest)(nil),  // 1: gophkeeper.RegistrationRequest
-	(*RegistrationResponse)(nil), // 2: gophkeeper.RegistrationResponse
+	(*User)(nil),                  // 0: gophkeeper.User
+	(*RegistrationRequest)(nil),   // 1: gophkeeper.RegistrationRequest
+	(*RegistrationResponse)(nil),  // 2: gophkeeper.RegistrationResponse
+	(*AuthorizationRequest)(nil),  // 3: gophkeeper.AuthorizationRequest
+	(*AuthorizationResponse)(nil), // 4: gophkeeper.AuthorizationResponse
 }
 var file_internal_proto_server_proto_depIdxs = []int32{
 	0, // 0: gophkeeper.RegistrationRequest.User:type_name -> gophkeeper.User
-	1, // 1: gophkeeper.Registration.Register:input_type -> gophkeeper.RegistrationRequest
-	2, // 2: gophkeeper.Registration.Register:output_type -> gophkeeper.RegistrationResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // 1: gophkeeper.AuthorizationRequest.User:type_name -> gophkeeper.User
+	1, // 2: gophkeeper.Auth.Register:input_type -> gophkeeper.RegistrationRequest
+	3, // 3: gophkeeper.Auth.Login:input_type -> gophkeeper.AuthorizationRequest
+	2, // 4: gophkeeper.Auth.Register:output_type -> gophkeeper.RegistrationResponse
+	4, // 5: gophkeeper.Auth.Login:output_type -> gophkeeper.AuthorizationResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_internal_proto_server_proto_init() }
@@ -217,7 +315,7 @@ func file_internal_proto_server_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_proto_server_proto_rawDesc), len(file_internal_proto_server_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

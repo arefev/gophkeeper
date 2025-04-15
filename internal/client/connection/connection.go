@@ -58,7 +58,7 @@ func (g *grpcClient) CheckTokenCmd() tea.Msg {
 }
 
 func (g *grpcClient) Register(ctx context.Context, login, pwd string) (string, error) {
-	client := proto.NewRegistrationClient(g.conn)
+	client := proto.NewAuthClient(g.conn)
 
 	resp, err := client.Register(ctx, &proto.RegistrationRequest{
 		User: &proto.User{

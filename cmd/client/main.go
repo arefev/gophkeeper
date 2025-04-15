@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+	// TODO: вынести в конфиг
 	l, err := logger.Build("debug")
 	if err != nil {
 		log.Fatal("logger build fail")
@@ -28,6 +29,7 @@ func main() {
 		}
 	}()
 
+	// TODO: вынести в конфиг
 	f, err := tea.LogToFile("debug.log", "debug")
 	if err != nil {
 		log.Fatalf("log to file failed: %s", err.Error())
