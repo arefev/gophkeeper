@@ -10,6 +10,7 @@ import (
 
 const (
 	address    string = ":3200"
+	logLevel   string = "info"
 	dbUser     string = ""
 	dbPassword string = ""
 	dbName     string = ""
@@ -18,13 +19,13 @@ const (
 )
 
 type Config struct {
-	Address     string `env:"ADDRESS"`
-	DatabaseDSN string `env:"DATABASE_URI"`
-	DBUser      string `env:"DB_USER"`
-	DBPassword  string `env:"DB_PASSWORD"`
-	DBName      string `env:"DB_NAME"`
-	DBHost      string `env:"DB_HOST"`
-	DBPort      string `env:"DB_PORT"`
+	Address    string `env:"ADDRESS"`
+	LogLevel   string `env:"LOG_LEVEL"`
+	DBUser     string `env:"DB_USER"`
+	DBPassword string `env:"DB_PASSWORD"`
+	DBName     string `env:"DB_NAME"`
+	DBHost     string `env:"DB_HOST"`
+	DBPort     string `env:"DB_PORT"`
 }
 
 func NewConfig(params []string) (Config, error) {
@@ -44,6 +45,7 @@ func NewConfig(params []string) (Config, error) {
 func (cnf *Config) initFlags(params []string) error {
 	f := flag.NewFlagSet("main", flag.ExitOnError)
 	f.StringVar(&cnf.Address, "a", address, "address to run server")
+	f.StringVar(&cnf.LogLevel, "l", logLevel, "log level")
 	f.StringVar(&cnf.DBUser, "db-user", dbUser, "user for db connection")
 	f.StringVar(&cnf.DBPassword, "db-pwd", dbPassword, "password for db connection")
 	f.StringVar(&cnf.DBName, "db-name", dbName, "name for db connection")

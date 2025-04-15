@@ -11,12 +11,15 @@ import (
 	"path/filepath"
 	"syscall"
 
+	"github.com/arefev/gophkeeper/internal/logger"
 	"github.com/arefev/gophkeeper/internal/proto"
 	"github.com/arefev/gophkeeper/internal/server/config"
+	"github.com/arefev/gophkeeper/internal/server/db/postgresql"
 	"github.com/arefev/gophkeeper/internal/server/service"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -36,13 +39,29 @@ func run(ctx context.Context) error {
 		return fmt.Errorf("run: init config fail: %w", err)
 	}
 
+	l, err := logger.Build(conf.LogLevel)
+	if err != nil {
+		return fmt.Errorf("run: logger build fail: %w", err)
+	}
+
 	databaseDSN := databaseDSN(&conf)
+	db, err := postgresql.NewDB(l).Connect(databaseDSN)
+	if err != nil {
+		return fmt.Errorf("run: db trm connect fail: %w", err)
+	}
+
+	defer func() {
+		if err := db.Close(); err != nil {
+			l.Error("db close failed: %w", zap.Error(err))
+		}
+	}()
+
 	err = migrationsUp(databaseDSN)
 	if err != nil {
 		return fmt.Errorf("run: migration up fail: %w", err)
 	}
 
-	err = runGRPC(ctx, &conf)
+	err = runGRPC(ctx, &conf, l)
 	if err != nil {
 		return fmt.Errorf("run: runGRPC fail: %w", err)
 	}
@@ -50,7 +69,7 @@ func run(ctx context.Context) error {
 	return nil
 }
 
-func runGRPC(ctx context.Context, c *config.Config) error {
+func runGRPC(ctx context.Context, c *config.Config, l *zap.Logger) error {
 	listen, err := net.Listen("tcp", c.Address)
 	if err != nil {
 		return fmt.Errorf("runGRPC Listen failed: %w", err)
@@ -61,11 +80,11 @@ func runGRPC(ctx context.Context, c *config.Config) error {
 
 	go func() {
 		<-ctx.Done()
-		fmt.Println("Server stopped")
+		l.Info("Server stopped")
 		s.Stop()
 	}()
 
-	fmt.Println("Server running")
+	l.Info("Server running", zap.String("port", c.Address))
 
 	if err := s.Serve(listen); err != nil {
 		return fmt.Errorf("runGRPC Serve failed: %w", err)
