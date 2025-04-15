@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/arefev/gophkeeper/internal/proto"
 )
@@ -14,6 +15,6 @@ func (gs *GRPCServer) Register(
 	ctx context.Context,
 	in *proto.RegistrationRequest,
 ) (*proto.RegistrationResponse, error) {
-
+	fmt.Println("message recieved")
 	return &proto.RegistrationResponse{}, nil
 }

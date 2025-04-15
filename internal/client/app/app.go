@@ -1,8 +1,18 @@
 package app
 
-type App struct {
+import "context"
+
+
+type Connection interface {
+	Register(ctx context.Context, login, pwd string) error
 }
 
-func NewApp() *App {
-	return &App{}
+type App struct {
+	Conn Connection
+}
+
+func NewApp(conn Connection) *App {
+	return &App{
+		Conn: conn,
+	}
 }

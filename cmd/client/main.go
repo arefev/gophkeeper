@@ -2,18 +2,35 @@ package main
 
 import (
 	"fmt"
-	"os"
+	"log"
 
 	"github.com/arefev/gophkeeper/internal/client/app"
+	"github.com/arefev/gophkeeper/internal/client/connection"
 	"github.com/arefev/gophkeeper/internal/client/tui/step"
+	"github.com/arefev/gophkeeper/internal/logger"
 )
 
 func main() {
-	a := app.NewApp()
-	_, err := step.NewStart(a).NewProgram().Run()
+	l, err := logger.Build("debug")
 	if err != nil {
-		fmt.Println("app stopped with error: ", err.Error())
-		os.Exit(0)
+		log.Fatal("logger build fail")
+	}
+
+	conn := connection.NewGRPCClient(l)
+	if err = conn.Connect(":3200"); err != nil {
+		log.Fatalf("connect failed: %s", err.Error())
+	}
+
+	defer func() {
+		if err = conn.Close(); err != nil {
+			log.Fatalf("connect close failed: %s", err.Error())
+		}
+	}()
+
+	a := app.NewApp(conn)
+	_, err = step.NewStart(a).NewProgram().Run()
+	if err != nil {
+		log.Fatalf("app stopped with error: %s", err.Error())
 	}
 
 	fmt.Println("app stopped")

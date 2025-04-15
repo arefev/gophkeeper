@@ -1,8 +1,9 @@
 package step
 
 import (
+	"context"
 	"errors"
-	"time"
+	"log"
 
 	"github.com/arefev/gophkeeper/internal/client/app"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
@@ -30,8 +31,11 @@ func NewRegAction(a *app.App) *regAction {
 }
 
 func (rp *regAction) ProcessingCmd() tea.Msg {
-	const s = 2
-	time.Sleep(time.Second * s)
+	ctx := context.TODO()
+	err := rp.app.Conn.Register(ctx, "test", "test")
+	if err != nil {
+		log.Fatalf("reg action failed: %s", err.Error())
+	}
 	return RegActionFail{Err: errors.New("неверно введены данные")}
 }
 
