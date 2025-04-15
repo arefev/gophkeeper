@@ -3,7 +3,6 @@ include .env
 GOLANGCI_LINT_CACHE?=/tmp/gophkeeper-golangci-lint-cache
 USER=CURRENT_UID=$$(id -u):0
 DOCKER_PROJECT_NAME=gophkeeper
-DATABASE_DSN="postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_LOCAL_PORT}/${DB_NAME}?sslmode=disable"
 
 
 gofmt:
@@ -21,9 +20,7 @@ client: client-run
 
 
 client-run: client-build
-	./cmd/client/client \
-		-d=${DATABASE_DSN} \
-		-l="${LOG_LEVEL}" \
+	./cmd/client/client -l="${LOG_LEVEL}"
 .PHONY: client-run
 
 
@@ -49,8 +46,7 @@ server: server-run
 
 
 server-run: server-build
-	./cmd/server/server \
-		-d=${DATABASE_DSN}
+	./cmd/server/server
 .PHONY: server-run
 
 

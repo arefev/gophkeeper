@@ -5,7 +5,7 @@ services:
     container_name: gophkeeper_db
     restart: always
     ports:
-      - ${DB_LOCAL_PORT}:${DB_PORT}
+      - ${DB_PORT}:${DB_CONTAINER_PORT}
     volumes:
       - gophkeeper-db-data:/var/lib/postgresql/data
     environment:

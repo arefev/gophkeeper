@@ -5,16 +5,26 @@ import (
 	"fmt"
 
 	"github.com/caarlos0/env"
+	_ "github.com/joho/godotenv/autoload"
 )
 
 const (
-	address     string = "3200"
-	databaseDSN string = ""
+	address    string = ":3200"
+	dbUser     string = ""
+	dbPassword string = ""
+	dbName     string = ""
+	dbHost     string = ""
+	dbPort     string = ""
 )
 
 type Config struct {
-	Address     string `env:"ADDRESS" json:"address"`
+	Address     string `env:"ADDRESS"`
 	DatabaseDSN string `env:"DATABASE_URI"`
+	DBUser      string `env:"DB_USER"`
+	DBPassword  string `env:"DB_PASSWORD"`
+	DBName      string `env:"DB_NAME"`
+	DBHost      string `env:"DB_HOST"`
+	DBPort      string `env:"DB_PORT"`
 }
 
 func NewConfig(params []string) (Config, error) {
@@ -33,8 +43,12 @@ func NewConfig(params []string) (Config, error) {
 
 func (cnf *Config) initFlags(params []string) error {
 	f := flag.NewFlagSet("main", flag.ExitOnError)
-	f.StringVar(&cnf.Address, "a", cnf.Address, "address to run server")
-	f.StringVar(&cnf.DatabaseDSN, "d", databaseDSN, "db connection string")
+	f.StringVar(&cnf.Address, "a", address, "address to run server")
+	f.StringVar(&cnf.DBUser, "db-user", dbUser, "user for db connection")
+	f.StringVar(&cnf.DBPassword, "db-pwd", dbPassword, "password for db connection")
+	f.StringVar(&cnf.DBName, "db-name", dbName, "name for db connection")
+	f.StringVar(&cnf.DBHost, "db-host", dbHost, "host for db connection")
+	f.StringVar(&cnf.DBPort, "db-port", dbPort, "port for db connection")
 	if err := f.Parse(params); err != nil {
 		return fmt.Errorf("InitFlags: parse flags fail: %w", err)
 	}

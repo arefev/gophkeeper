@@ -36,7 +36,8 @@ func run(ctx context.Context) error {
 		return fmt.Errorf("run: init config fail: %w", err)
 	}
 
-	err = migrationsUp(conf.DatabaseDSN)
+	databaseDSN := databaseDSN(&conf)
+	err = migrationsUp(databaseDSN)
 	if err != nil {
 		return fmt.Errorf("run: migration up fail: %w", err)
 	}
@@ -91,4 +92,15 @@ func migrationsUp(dsn string) error {
 	}
 
 	return nil
+}
+
+func databaseDSN(cnf *config.Config) string {
+	return fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		cnf.DBName,
+		cnf.DBPassword,
+		cnf.DBHost,
+		cnf.DBPort,
+		cnf.DBName,
+	)
 }
