@@ -62,8 +62,8 @@ func (g *grpcClient) Register(ctx context.Context, login, pwd string) (string, e
 
 	resp, err := client.Register(ctx, &proto.RegistrationRequest{
 		User: &proto.User{
-			Login:    login,
-			Password: pwd,
+			Login:    &login,
+			Password: &pwd,
 		},
 	})
 
@@ -79,8 +79,8 @@ func (g *grpcClient) Login(ctx context.Context, login, pwd string) (string, erro
 
 	resp, err := client.Login(ctx, &proto.AuthorizationRequest{
 		User: &proto.User{
-			Login:    login,
-			Password: pwd,
+			Login:    &login,
+			Password: &pwd,
 		},
 	})
 

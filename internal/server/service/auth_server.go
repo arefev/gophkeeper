@@ -47,7 +47,7 @@ func (asrv *authServer) Register(
 		return &proto.RegistrationResponse{}, fmt.Errorf("register authorize user failed: %w", err)
 	}
 
-	return &proto.RegistrationResponse{Token: token.AccessToken}, nil
+	return &proto.RegistrationResponse{Token: &token.AccessToken}, nil
 }
 
 func (asrv *authServer) Login(
@@ -72,5 +72,5 @@ func (asrv *authServer) Login(
 		zap.String("login", in.User.GetLogin()),
 	)
 
-	return &proto.AuthorizationResponse{Token: token.AccessToken}, nil
+	return &proto.AuthorizationResponse{Token: &token.AccessToken}, nil
 }
