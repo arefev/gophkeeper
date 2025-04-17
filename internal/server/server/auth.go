@@ -1,4 +1,4 @@
-package service
+package server
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/arefev/gophkeeper/internal/proto"
 	"github.com/arefev/gophkeeper/internal/server/application"
+	"github.com/arefev/gophkeeper/internal/server/service"
 	"go.uber.org/zap"
 )
 
@@ -24,7 +25,7 @@ func (asrv *authServer) Register(
 	ctx context.Context,
 	in *proto.RegistrationRequest,
 ) (*proto.RegistrationResponse, error) {
-	s := NewUserService(asrv.app)
+	s := service.NewUserService(asrv.app)
 	err := s.Create(ctx, in.User.GetLogin(), in.User.GetPassword())
 	if err != nil {
 		asrv.app.Log.Debug(
@@ -54,7 +55,7 @@ func (asrv *authServer) Login(
 	ctx context.Context,
 	in *proto.AuthorizationRequest,
 ) (*proto.AuthorizationResponse, error) {
-	s := NewUserService(asrv.app)
+	s := service.NewUserService(asrv.app)
 	token, err := s.Authorize(ctx, in.User.GetLogin(), in.User.GetPassword())
 	if err != nil {
 		asrv.app.Log.Debug(

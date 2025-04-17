@@ -30,3 +30,18 @@ service Auth {
   rpc Login(AuthorizationRequest) returns (AuthorizationResponse);
 }
 
+
+message FileUploadRequest {
+  bytes chunk = 1;
+  string type = 2;
+  string name = 3;
+  string extension = 4;
+}
+
+message FileUploadResponse {
+  uint32 size = 1;
+}
+
+service File {
+  rpc Upload(stream FileUploadRequest) returns (FileUploadResponse);
+}

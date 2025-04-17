@@ -12,6 +12,7 @@ type Connection interface {
 	Login(ctx context.Context, login, pwd string) (string, error)
 	SetToken(t string)
 	CheckTokenCmd() tea.Msg
+	FileUpload(ctx context.Context, creds []byte) error
 }
 
 type App struct {

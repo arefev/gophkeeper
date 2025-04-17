@@ -90,3 +90,24 @@ func (g *grpcClient) Login(ctx context.Context, login, pwd string) (string, erro
 
 	return resp.GetToken(), nil
 }
+
+func (g *grpcClient) FileUpload(ctx context.Context, creds []byte) error {
+	client := proto.NewFileClient(g.conn)
+	stream, err := client.Upload(ctx)
+	if err != nil {
+		return fmt.Errorf("grpc creds upload stream failed: %w", err)
+	}
+
+	err = stream.Send(&proto.FileUploadRequest{Chunk: creds})
+	if err != nil {
+		return fmt.Errorf("grpc creds upload send failed: %w", err)
+	}
+
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		return fmt.Errorf("grpc creds upload close failed: %w", err)
+	}
+	g.log.Debug("creds sent", zap.Uint32("bytes", res.GetSize()))
+
+	return nil
+}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -36,9 +37,14 @@ func run() error {
 		return fmt.Errorf("run: connect to server failed: %w", err)
 	}
 
+	err = conn.FileUpload(context.Background(), []byte("new file data"))
+	if err != nil {
+		l.Error("FileUpload failed", zap.Error(err))
+	}
+
 	defer func() {
 		if err = conn.Close(); err != nil {
-			l.Error("connect close failed: %w", zap.Error(err))
+			l.Error("connect close failed", zap.Error(err))
 		}
 	}()
 

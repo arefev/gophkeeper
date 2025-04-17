@@ -17,7 +17,7 @@ import (
 	"github.com/arefev/gophkeeper/internal/server/config"
 	"github.com/arefev/gophkeeper/internal/server/db/postgresql"
 	"github.com/arefev/gophkeeper/internal/server/repository"
-	"github.com/arefev/gophkeeper/internal/server/service"
+	"github.com/arefev/gophkeeper/internal/server/server"
 	"github.com/arefev/gophkeeper/internal/server/trm"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -89,7 +89,8 @@ func runServer(ctx context.Context, app *application.App, c *config.Config, l *z
 	}
 
 	s := grpc.NewServer()
-	proto.RegisterAuthServer(s, service.NewAuthServer(app))
+	proto.RegisterAuthServer(s, server.NewAuthServer(app))
+	proto.RegisterFileServer(s, server.NewFileServer(app))
 
 	go func() {
 		<-ctx.Done()
