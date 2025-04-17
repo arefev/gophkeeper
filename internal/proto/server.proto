@@ -30,12 +30,15 @@ service Auth {
   rpc Login(AuthorizationRequest) returns (AuthorizationResponse);
 }
 
+message Meta {
+  string type = 1;
+  string name = 2;
+}
 
 message FileUploadRequest {
   bytes chunk = 1;
-  string type = 2;
-  string name = 3;
-  string extension = 4;
+  string name = 2;
+  Meta meta = 3;
 }
 
 message FileUploadResponse {

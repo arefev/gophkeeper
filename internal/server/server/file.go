@@ -8,6 +8,7 @@ import (
 
 	"github.com/arefev/gophkeeper/internal/proto"
 	"github.com/arefev/gophkeeper/internal/server/application"
+	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
 
@@ -24,8 +25,7 @@ func NewFileServer(app *application.App) *fileServer {
 
 func (c *fileServer) Upload(stream proto.File_UploadServer) error {
 	file := NewFile()
-	var fileSize uint32
-	fileSize = 0
+	var fileSize uint32 = 0
 	defer func() {
 		if err := file.OutputFile.Close(); err != nil {
 			c.app.Log.Error("file upload close failed", zap.Error(err))
@@ -34,7 +34,7 @@ func (c *fileServer) Upload(stream proto.File_UploadServer) error {
 	for {
 		req, err := stream.Recv()
 		if file.FilePath == "" {
-			file.SetFile("test.txt", "./")
+			file.SetFile(req.GetName(), "./storage/"+uuid.NewString())
 		}
 		if err == io.EOF {
 			break

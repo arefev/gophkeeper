@@ -37,10 +37,22 @@ func run() error {
 		return fmt.Errorf("run: connect to server failed: %w", err)
 	}
 
-	err = conn.FileUpload(context.Background(), []byte("new file data"))
+	path := "/home/arefev/dev/study/golang/gophkeeper/for-upload/office.iso"
+	metaName := "office"
+	metaType := "file"
+	err = conn.FileUpload(context.Background(), path, metaName, metaType)
 	if err != nil {
 		l.Error("FileUpload failed", zap.Error(err))
 	}
+
+	// creds := `
+	// 	login wolf
+	// 	password 123456
+	// `
+	// err = conn.TextUpload(context.Background(), []byte(creds), "creds from sber", "creds")
+	// if err != nil {
+	// 	l.Error("TextUpload failed", zap.Error(err))
+	// }
 
 	defer func() {
 		if err = conn.Close(); err != nil {

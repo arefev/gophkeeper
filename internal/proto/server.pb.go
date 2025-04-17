@@ -249,19 +249,70 @@ func (x *AuthorizationResponse) GetToken() string {
 	return ""
 }
 
+type Meta struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Type          *string                `protobuf:"bytes,1,opt,name=type" json:"type,omitempty"`
+	Name          *string                `protobuf:"bytes,2,opt,name=name" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Meta) Reset() {
+	*x = Meta{}
+	mi := &file_internal_proto_server_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Meta) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Meta) ProtoMessage() {}
+
+func (x *Meta) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_proto_server_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Meta.ProtoReflect.Descriptor instead.
+func (*Meta) Descriptor() ([]byte, []int) {
+	return file_internal_proto_server_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *Meta) GetType() string {
+	if x != nil && x.Type != nil {
+		return *x.Type
+	}
+	return ""
+}
+
+func (x *Meta) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
+	}
+	return ""
+}
+
 type FileUploadRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Chunk         []byte                 `protobuf:"bytes,1,opt,name=chunk" json:"chunk,omitempty"`
-	Type          *string                `protobuf:"bytes,2,opt,name=type" json:"type,omitempty"`
-	Name          *string                `protobuf:"bytes,3,opt,name=name" json:"name,omitempty"`
-	Extension     *string                `protobuf:"bytes,4,opt,name=extension" json:"extension,omitempty"`
+	Name          *string                `protobuf:"bytes,2,opt,name=name" json:"name,omitempty"`
+	Meta          *Meta                  `protobuf:"bytes,3,opt,name=meta" json:"meta,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *FileUploadRequest) Reset() {
 	*x = FileUploadRequest{}
-	mi := &file_internal_proto_server_proto_msgTypes[5]
+	mi := &file_internal_proto_server_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -273,7 +324,7 @@ func (x *FileUploadRequest) String() string {
 func (*FileUploadRequest) ProtoMessage() {}
 
 func (x *FileUploadRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_proto_server_proto_msgTypes[5]
+	mi := &file_internal_proto_server_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -286,7 +337,7 @@ func (x *FileUploadRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FileUploadRequest.ProtoReflect.Descriptor instead.
 func (*FileUploadRequest) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{5}
+	return file_internal_proto_server_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *FileUploadRequest) GetChunk() []byte {
@@ -296,13 +347,6 @@ func (x *FileUploadRequest) GetChunk() []byte {
 	return nil
 }
 
-func (x *FileUploadRequest) GetType() string {
-	if x != nil && x.Type != nil {
-		return *x.Type
-	}
-	return ""
-}
-
 func (x *FileUploadRequest) GetName() string {
 	if x != nil && x.Name != nil {
 		return *x.Name
@@ -310,11 +354,11 @@ func (x *FileUploadRequest) GetName() string {
 	return ""
 }
 
-func (x *FileUploadRequest) GetExtension() string {
-	if x != nil && x.Extension != nil {
-		return *x.Extension
+func (x *FileUploadRequest) GetMeta() *Meta {
+	if x != nil {
+		return x.Meta
 	}
-	return ""
+	return nil
 }
 
 type FileUploadResponse struct {
@@ -326,7 +370,7 @@ type FileUploadResponse struct {
 
 func (x *FileUploadResponse) Reset() {
 	*x = FileUploadResponse{}
-	mi := &file_internal_proto_server_proto_msgTypes[6]
+	mi := &file_internal_proto_server_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -338,7 +382,7 @@ func (x *FileUploadResponse) String() string {
 func (*FileUploadResponse) ProtoMessage() {}
 
 func (x *FileUploadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_proto_server_proto_msgTypes[6]
+	mi := &file_internal_proto_server_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -351,7 +395,7 @@ func (x *FileUploadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FileUploadResponse.ProtoReflect.Descriptor instead.
 func (*FileUploadResponse) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{6}
+	return file_internal_proto_server_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *FileUploadResponse) GetSize() uint32 {
@@ -377,12 +421,14 @@ const file_internal_proto_server_proto_rawDesc = "" +
 	"\x14AuthorizationRequest\x12$\n" +
 	"\x04User\x18\x01 \x01(\v2\x10.gophkeeper.UserR\x04User\"-\n" +
 	"\x15AuthorizationResponse\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token\"o\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\".\n" +
+	"\x04Meta\x12\x12\n" +
+	"\x04type\x18\x01 \x01(\tR\x04type\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\"c\n" +
 	"\x11FileUploadRequest\x12\x14\n" +
 	"\x05chunk\x18\x01 \x01(\fR\x05chunk\x12\x12\n" +
-	"\x04type\x18\x02 \x01(\tR\x04type\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1c\n" +
-	"\textension\x18\x04 \x01(\tR\textension\"(\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12$\n" +
+	"\x04meta\x18\x03 \x01(\v2\x10.gophkeeper.MetaR\x04meta\"(\n" +
 	"\x12FileUploadResponse\x12\x12\n" +
 	"\x04size\x18\x01 \x01(\rR\x04size2\xa3\x01\n" +
 	"\x04Auth\x12M\n" +
@@ -403,30 +449,32 @@ func file_internal_proto_server_proto_rawDescGZIP() []byte {
 	return file_internal_proto_server_proto_rawDescData
 }
 
-var file_internal_proto_server_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_internal_proto_server_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_internal_proto_server_proto_goTypes = []any{
 	(*User)(nil),                  // 0: gophkeeper.User
 	(*RegistrationRequest)(nil),   // 1: gophkeeper.RegistrationRequest
 	(*RegistrationResponse)(nil),  // 2: gophkeeper.RegistrationResponse
 	(*AuthorizationRequest)(nil),  // 3: gophkeeper.AuthorizationRequest
 	(*AuthorizationResponse)(nil), // 4: gophkeeper.AuthorizationResponse
-	(*FileUploadRequest)(nil),     // 5: gophkeeper.FileUploadRequest
-	(*FileUploadResponse)(nil),    // 6: gophkeeper.FileUploadResponse
+	(*Meta)(nil),                  // 5: gophkeeper.Meta
+	(*FileUploadRequest)(nil),     // 6: gophkeeper.FileUploadRequest
+	(*FileUploadResponse)(nil),    // 7: gophkeeper.FileUploadResponse
 }
 var file_internal_proto_server_proto_depIdxs = []int32{
 	0, // 0: gophkeeper.RegistrationRequest.User:type_name -> gophkeeper.User
 	0, // 1: gophkeeper.AuthorizationRequest.User:type_name -> gophkeeper.User
-	1, // 2: gophkeeper.Auth.Register:input_type -> gophkeeper.RegistrationRequest
-	3, // 3: gophkeeper.Auth.Login:input_type -> gophkeeper.AuthorizationRequest
-	5, // 4: gophkeeper.File.Upload:input_type -> gophkeeper.FileUploadRequest
-	2, // 5: gophkeeper.Auth.Register:output_type -> gophkeeper.RegistrationResponse
-	4, // 6: gophkeeper.Auth.Login:output_type -> gophkeeper.AuthorizationResponse
-	6, // 7: gophkeeper.File.Upload:output_type -> gophkeeper.FileUploadResponse
-	5, // [5:8] is the sub-list for method output_type
-	2, // [2:5] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	5, // 2: gophkeeper.FileUploadRequest.meta:type_name -> gophkeeper.Meta
+	1, // 3: gophkeeper.Auth.Register:input_type -> gophkeeper.RegistrationRequest
+	3, // 4: gophkeeper.Auth.Login:input_type -> gophkeeper.AuthorizationRequest
+	6, // 5: gophkeeper.File.Upload:input_type -> gophkeeper.FileUploadRequest
+	2, // 6: gophkeeper.Auth.Register:output_type -> gophkeeper.RegistrationResponse
+	4, // 7: gophkeeper.Auth.Login:output_type -> gophkeeper.AuthorizationResponse
+	7, // 8: gophkeeper.File.Upload:output_type -> gophkeeper.FileUploadResponse
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_internal_proto_server_proto_init() }
@@ -440,7 +488,7 @@ func file_internal_proto_server_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_proto_server_proto_rawDesc), len(file_internal_proto_server_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   2,
 		},

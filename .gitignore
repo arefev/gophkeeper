@@ -1,5 +1,8 @@
 cmd/client/client
 cmd/server/server
 golangci-lint/
+for-upload/
+storage/
 *.log
+*.txt
 .env

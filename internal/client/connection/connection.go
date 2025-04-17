@@ -3,6 +3,9 @@ package connection
 import (
 	"context"
 	"fmt"
+	"io"
+	"os"
+	"path/filepath"
 
 	"github.com/arefev/gophkeeper/internal/proto"
 	tea "github.com/charmbracelet/bubbletea"
@@ -91,23 +94,79 @@ func (g *grpcClient) Login(ctx context.Context, login, pwd string) (string, erro
 	return resp.GetToken(), nil
 }
 
-func (g *grpcClient) FileUpload(ctx context.Context, creds []byte) error {
+func (g *grpcClient) TextUpload(ctx context.Context, txt []byte, metaName, metaType string) error {
+	client := proto.NewFileClient(g.conn)
+	stream, err := client.Upload(ctx)
+	if err != nil {
+		return fmt.Errorf("grpc text upload stream failed: %w", err)
+	}
+
+	fileName := "test.txt"
+	err = stream.Send(&proto.FileUploadRequest{
+		Chunk: txt,
+		Name:  &fileName,
+		Meta: &proto.Meta{
+			Name: &metaName,
+			Type: &metaType,
+		},
+	})
+	if err != nil {
+		return fmt.Errorf("grpc text upload send failed: %w", err)
+	}
+
+	res, err := stream.CloseAndRecv()
+	if err != nil {
+		return fmt.Errorf("grpc text upload close failed: %w", err)
+	}
+	g.log.Debug("text sent", zap.Uint32("bytes", res.GetSize()))
+
+	return nil
+}
+
+func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType string) error {
 	client := proto.NewFileClient(g.conn)
 	stream, err := client.Upload(ctx)
 	if err != nil {
 		return fmt.Errorf("grpc creds upload stream failed: %w", err)
 	}
 
-	err = stream.Send(&proto.FileUploadRequest{Chunk: creds})
-	if err != nil {
-		return fmt.Errorf("grpc creds upload send failed: %w", err)
-	}
+	fileName := filepath.Base(path)
 
+	file, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	buf := make([]byte, 1024*1024) // 1МБ
+	batchNumber := 1
+	for {
+		num, err := file.Read(buf)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+		chunk := buf[:num]
+
+		r := &proto.FileUploadRequest{
+			Chunk: chunk,
+			Name:  &fileName,
+			Meta: &proto.Meta{
+				Name: &metaName,
+				Type: &metaType,
+			},
+		}
+		if err := stream.Send(r); err != nil {
+			return err
+		}
+		g.log.Debug("Sent - batch", zap.Int("number", batchNumber), zap.Int("size", len(chunk)))
+		batchNumber += 1
+
+	}
 	res, err := stream.CloseAndRecv()
 	if err != nil {
-		return fmt.Errorf("grpc creds upload close failed: %w", err)
+		return err
 	}
-	g.log.Debug("creds sent", zap.Uint32("bytes", res.GetSize()))
-
+	g.log.Debug("file uploaded", zap.Uint32("bytes", res.GetSize()))
 	return nil
 }
