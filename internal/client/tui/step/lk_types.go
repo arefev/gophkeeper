@@ -53,6 +53,9 @@ func (lkt *lkTypes) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "Банковская карта":
 				return NewLKFormBank(lkt.app).Exec()
 
+			case "Файл":
+				return NewLKFormFile(lkt.app).Exec()
+
 			default:
 				return lkt, tea.Quit
 			}

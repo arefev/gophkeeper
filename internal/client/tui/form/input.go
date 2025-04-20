@@ -48,3 +48,8 @@ func (i *Input) Model() *textinput.Model {
 func (i *Input) SetModel(model *textinput.Model) {
 	i.model = model
 }
+
+func (i *Input) SetCharsLimit(limit int) *Input {
+	i.model.CharLimit = limit
+	return i
+}
