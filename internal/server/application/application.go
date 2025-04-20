@@ -15,6 +15,10 @@ type UserRepo interface {
 	Create(ctx context.Context, login, password string) error
 }
 
+type MetaRepo interface {
+	Create(ctx context.Context, meta *model.Meta, file *model.File) error
+}
+
 type TrManager interface {
 	Do(ctx context.Context, action trm.TrAction) error
 }
@@ -28,4 +32,5 @@ type App struct {
 
 type Repository struct {
 	User UserRepo
+	Meta MetaRepo
 }

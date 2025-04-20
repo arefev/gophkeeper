@@ -10,9 +10,9 @@ type Meta struct {
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`
 	UpdatedAt time.Time `json:"updatedAt" db:"updated_at"`
 	Uuid      uuid.UUID `json:"uuid" db:"uuid"`
-	UserID    string    `json:"userId" db:"user_id"`
 	Type      MetaType  `json:"type" db:"type"`
 	Name      string    `json:"name" db:"name"`
+	UserID    int       `json:"-" db:"user_id"`
 	ID        int       `json:"id" db:"id"`
 	File      File
 }
@@ -20,8 +20,9 @@ type Meta struct {
 type File struct {
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`
 	Name      string    `json:"name" db:"name"`
-	MetaID    int       `json:"metaId" db:"meta_id"`
+	MetaID    int       `json:"-" db:"meta_id"`
 	ID        int       `json:"id" db:"id"`
+	Data      []byte    `json:"data" db:"data"`
 }
 
 type MetaType int

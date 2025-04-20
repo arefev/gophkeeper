@@ -1,7 +1,7 @@
 package main
 
 import (
-	"context"
+	// "context"
 	"fmt"
 	"log"
 	"os"
@@ -37,13 +37,13 @@ func run() error {
 		return fmt.Errorf("run: connect to server failed: %w", err)
 	}
 
-	path := "/home/arefev/dev/study/golang/gophkeeper/for-upload/office.iso"
-	metaName := "office"
-	metaType := "file"
-	err = conn.FileUpload(context.Background(), path, metaName, metaType)
-	if err != nil {
-		l.Error("FileUpload failed", zap.Error(err))
-	}
+	// path := "/home/arefev/dev/study/golang/gophkeeper/for-upload/joxi.exe"
+	// metaName := "office"
+	// metaType := "file"
+	// err = conn.FileUpload(context.Background(), path, metaName, metaType)
+	// if err != nil {
+	// 	l.Error("FileUpload failed", zap.Error(err))
+	// }
 
 	// creds := `
 	// 	login wolf
