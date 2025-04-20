@@ -66,7 +66,7 @@ func (lt *list) View() string {
 	str += style.BorderStyle.Render(lt.table.View()) + view.BreakLine().One()
 	str += fmt.Sprintf("Всего строк: %d", len(lt.table.Rows()))
 	str += view.BreakLine().One()
-	str += view.Quit() + view.ToStart()
+	str += view.Quit() + view.ToPrevScreen()
 	return str
 }
 

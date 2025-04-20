@@ -47,11 +47,11 @@ func (lkt *lkTypes) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			lkt.choice = lkt.choices[lkt.cursor]
 
 			switch lkt.choices[lkt.cursor] {
-			// case "Получить данные":
-			// 	return NewList(lkt.app).Exec()
+			case "Логин/пароль":
+				return NewLKFormCreds(lkt.app).Exec()
 
-			// case "Загрузить данные":
-			// 	return lkt, nil
+			case "Банковская карта":
+				return NewLKFormBank(lkt.app).Exec()
 
 			default:
 				return lkt, tea.Quit
@@ -88,7 +88,7 @@ func (lkt *lkTypes) View() string {
 		}
 		str += lkt.choices[i] + view.BreakLine().One()
 	}
-	str += view.Quit() + view.ToStart()
+	str += view.Quit() + view.ToPrevScreen()
 
 	return str
 }

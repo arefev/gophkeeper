@@ -62,8 +62,8 @@ func Quit() string {
 	return style.HelpStyle.Render("\nCtrl+C - завершение программы")
 }
 
-func ToStart() string {
-	return style.HelpStyle.Render("\nEsc - домой")
+func ToPrevScreen() string {
+	return style.HelpStyle.Render("\nEsc - назад")
 }
 
 func Button(label string, isFocused bool) string {
@@ -93,7 +93,7 @@ func FormWithFields(fields []*form.Input, title, btnLabel, err string, isBtnFocu
 	}
 
 	str += Button(btnLabel, isBtnFocused)
-	str += Quit() + ToStart()
+	str += Quit() + ToPrevScreen()
 	return str
 }
 
