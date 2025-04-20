@@ -3,6 +3,7 @@ include .env
 GOLANGCI_LINT_CACHE?=/tmp/gophkeeper-golangci-lint-cache
 USER=CURRENT_UID=$$(id -u):0
 DOCKER_PROJECT_NAME=gophkeeper
+DATABASE_DSN="postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable"
 
 
 gofmt:
@@ -53,6 +54,16 @@ server-run: server-build
 server-build:
 	go build -o ./cmd/server/server ./cmd/server/
 .PHONY: server-build
+
+
+migrate-up:
+	migrate -path ./cmd/server/db/migrations -database ${DATABASE_DSN} up
+.PHONY: migrate-up
+
+
+migrate-down:
+	migrate -path ./cmd/server/db/migrations -database ${DATABASE_DSN} down
+.PHONY: migrate-down
 
 
 migrate-create:
