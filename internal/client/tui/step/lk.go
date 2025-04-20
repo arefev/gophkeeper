@@ -48,7 +48,7 @@ func (lk *lk) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				return NewList(lk.app).Exec()
 
 			case "Загрузить данные":
-				return lk, nil
+				return NewLKTypes(lk.app).Exec()
 
 			default:
 				return lk, tea.Quit

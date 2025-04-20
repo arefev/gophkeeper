@@ -76,8 +76,6 @@ func run(ctx context.Context) error {
 		Conf:      conf,
 	}
 
-
-
 	// path := "/home/arefev/dev/study/golang/gophkeeper/storage/405524d0-53a7-4a6d-8eee-4914b06b163e/office.iso"
 	// path := "/home/arefev/dev/study/golang/gophkeeper/storage/5372edba-7376-4cc1-88bc-153d2b93421c/test.txt"
 	// path := "/home/arefev/dev/study/golang/gophkeeper/storage/2dc22093-61b4-40fd-9dea-9dacd5cff4c1/joxi.exe"
@@ -85,7 +83,6 @@ func run(ctx context.Context) error {
 	// if err != nil {
 	// 	return fmt.Errorf("run: read file failed: %w", err)
 	// }
-
 
 	// err = app.TrManager.Do(ctx, func(ctx context.Context) error {
 	// 	err = app.Rep.Meta.Create(ctx, &model.Meta{
@@ -102,7 +99,6 @@ func run(ctx context.Context) error {
 	// if err != nil {
 	// 	return fmt.Errorf("run: do transaction failed: %w", err)
 	// }
-	
 
 	err = runServer(ctx, app, conf, l)
 	if err != nil {
