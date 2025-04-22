@@ -23,3 +23,8 @@ type BankData struct {
 	Exp    string
 	CVV    string
 }
+
+type FileData struct {
+	Name string
+	Path string
+}

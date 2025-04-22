@@ -49,7 +49,7 @@ func (lkfc *lkFormCreds) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case connection.CheckAuthFail:
 		return NewStart(lkfc.app).Exec()
-		
+
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEsc:

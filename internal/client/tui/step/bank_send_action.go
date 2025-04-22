@@ -61,7 +61,7 @@ func (bsa *bankSendAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case connection.CheckAuthFail:
 		return NewStart(bsa.app).Exec()
-		
+
 	case BankSendActionSuccess:
 		return NewLKTypes(bsa.app).WithSuccess().Exec()
 

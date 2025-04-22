@@ -51,7 +51,7 @@ func (lkff *lkFormFile) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case connection.CheckAuthFail:
 		return NewStart(lkff.app).Exec()
-		
+
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEsc:
@@ -62,7 +62,7 @@ func (lkff *lkFormFile) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
 			if msg.Type == tea.KeyEnter && lkff.focusIndex == len(lkff.fields) {
-				// return NewLoginAction(lkc.getLoginData(), lkc.app).Exec()
+				return NewFileSendAction(lkff.getData(), lkff.app).Exec()
 			}
 
 			if msg.Type == tea.KeyUp || msg.Type == tea.KeyShiftTab {
@@ -111,15 +111,15 @@ func (lkff *lkFormFile) View() string {
 	)
 }
 
-func (lkff *lkFormFile) getLoginData() *model.LoginData {
-	data := &model.LoginData{}
+func (lkff *lkFormFile) getData() *model.FileData {
+	data := &model.FileData{}
 	for _, f := range lkff.fields {
 		code := f.Code()
 		switch code {
-		case "login":
-			data.Login = f.Model().Value()
-		case "pwd":
-			data.Password = f.Model().Value()
+		case "name":
+			data.Name = f.Model().Value()
+		case "path":
+			data.Path = f.Model().Value()
 		}
 	}
 

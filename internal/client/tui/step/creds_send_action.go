@@ -38,8 +38,8 @@ func NewCredsSendAction(data *model.CredsData, a *app.App) *credsSendAction {
 func (csa *credsSendAction) ActionCmd() tea.Msg {
 	ctx := context.Background()
 	// TODO: validation needed
-	creds := fmt.Sprintf("Login: %s\nPassword: %s", csa.data.Login, csa.data.Password)
-	err := csa.app.Conn.TextUpload(ctx, []byte(creds), csa.data.Name, "creds")
+	data := fmt.Sprintf("Login: %s\nPassword: %s", csa.data.Login, csa.data.Password)
+	err := csa.app.Conn.TextUpload(ctx, []byte(data), csa.data.Name, "creds")
 	if err != nil {
 		csa.app.Log.Error("TextUpload failed", zap.Error(err))
 		return CredsSendActionFail{Err: errors.New("не удалось сохранить данные")}
@@ -61,7 +61,7 @@ func (csa *credsSendAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case connection.CheckAuthFail:
 		return NewStart(csa.app).Exec()
-		
+
 	case CredsSendActionSuccess:
 		return NewLKTypes(csa.app).WithSuccess().Exec()
 

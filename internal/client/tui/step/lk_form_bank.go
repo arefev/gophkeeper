@@ -50,7 +50,7 @@ func (lkfb *lkFormBank) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case connection.CheckAuthFail:
 		return NewStart(lkfb.app).Exec()
-		
+
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEsc:
