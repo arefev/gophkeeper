@@ -41,6 +41,21 @@ func Error(err string) string {
 	return str
 }
 
+func Success(msg string) string {
+	const emLen = 3
+	count := utf8.RuneCountInString(msg) + emLen
+
+	str := style.SuccessStyle.Render(strings.Repeat("-", count))
+	str += BreakLine().One()
+	str += "✅ "
+	str += style.SuccessStyle.Render(msg)
+	str += BreakLine().One()
+	str += style.SuccessStyle.Render(strings.Repeat("-", count))
+	str += BreakLine().Two()
+
+	return str
+}
+
 func Title(t string) string {
 	str := BreakLine().One()
 	str += style.TitleStyle.Render("## ")

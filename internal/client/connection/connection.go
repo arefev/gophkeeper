@@ -101,7 +101,7 @@ func (g *grpcClient) TextUpload(ctx context.Context, txt []byte, metaName, metaT
 		return fmt.Errorf("grpc text upload stream failed: %w", err)
 	}
 
-	fileName := "test.txt"
+	fileName := metaType + ".txt"
 	err = stream.Send(&proto.FileUploadRequest{
 		Chunk: txt,
 		Name:  &fileName,

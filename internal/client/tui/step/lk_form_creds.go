@@ -55,7 +55,7 @@ func (lkfc *lkFormCreds) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
 			if msg.Type == tea.KeyEnter && lkfc.focusIndex == len(lkfc.fields) {
-				// return NewLoginAction(lkc.getLoginData(), lkc.app).Exec()
+				return NewCredsSendAction(lkfc.getData(), lkfc.app).Exec()
 			}
 
 			if msg.Type == tea.KeyUp || msg.Type == tea.KeyShiftTab {
@@ -95,11 +95,17 @@ func (lkfc *lkFormCreds) updateInputs(msg tea.Msg) tea.Cmd {
 }
 
 func (lkfc *lkFormCreds) View() string {
-	return view.FormWithFields(lkfc.fields, "Введите логин/пароль для сохранения", "Отправить", lkfc.err, lkfc.focusIndex == len(lkfc.fields))
+	return view.FormWithFields(
+		lkfc.fields,
+		"Введите логин/пароль для сохранения",
+		"Отправить",
+		lkfc.err,
+		lkfc.focusIndex == len(lkfc.fields),
+	)
 }
 
-func (lkfc *lkFormCreds) getLoginData() *model.LoginData {
-	data := &model.LoginData{}
+func (lkfc *lkFormCreds) getData() *model.CredsData {
+	data := &model.CredsData{}
 	for _, f := range lkfc.fields {
 		code := f.Code()
 		switch code {
@@ -107,6 +113,8 @@ func (lkfc *lkFormCreds) getLoginData() *model.LoginData {
 			data.Login = f.Model().Value()
 		case "pwd":
 			data.Password = f.Model().Value()
+		case "name":
+			data.Name = f.Model().Value()
 		}
 	}
 

@@ -8,16 +8,18 @@ import (
 )
 
 type lkTypes struct {
-	choice  string
-	app     *app.App
-	choices []string
-	cursor  int
+	choice      string
+	app         *app.App
+	choices     []string
+	cursor      int
+	withSuccess bool
 }
 
 func NewLKTypes(a *app.App) *lkTypes {
 	return &lkTypes{
-		choices: []string{"Логин/пароль", "Банковская карта", "Файл"},
-		app:     a,
+		choices:     []string{"Логин/пароль", "Банковская карта", "Файл"},
+		app:         a,
+		withSuccess: false,
 	}
 }
 
@@ -28,6 +30,11 @@ func (lkt *lkTypes) Init() tea.Cmd {
 func (lkt *lkTypes) Exec() (tea.Model, tea.Cmd) {
 	cmd := lkt.Init()
 	return lkt, cmd
+}
+
+func (lkt *lkTypes) WithSuccess() *lkTypes {
+	lkt.withSuccess = true
+	return lkt
 }
 
 func (lkt *lkTypes) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -82,6 +89,10 @@ func (lkt *lkTypes) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (lkt *lkTypes) View() string {
 	str := view.Title("Какие данные вы хотите отправить?")
+
+	if lkt.withSuccess {
+		str += view.Success("Данные успешно сохранены")
+	}
 
 	for i := range lkt.choices {
 		if lkt.cursor == i {

@@ -23,12 +23,12 @@ func NewFileServer(app *application.App) *fileServer {
 	}
 }
 
-func (c *fileServer) Upload(stream proto.File_UploadServer) error {
+func (fs *fileServer) Upload(stream proto.File_UploadServer) error {
 	file := NewFile()
 	var fileSize uint32 = 0
 	defer func() {
 		if err := file.OutputFile.Close(); err != nil {
-			c.app.Log.Error("file upload close failed", zap.Error(err))
+			fs.app.Log.Error("file upload close failed", zap.Error(err))
 		}
 	}()
 	for {
@@ -44,13 +44,13 @@ func (c *fileServer) Upload(stream proto.File_UploadServer) error {
 		}
 		chunk := req.GetChunk()
 		fileSize += uint32(len(chunk))
-		c.app.Log.Debug("received a chunk with size", zap.Uint32("size", fileSize))
+		fs.app.Log.Debug("received a chunk with size", zap.Uint32("size", fileSize))
 		if err := file.Write(chunk); err != nil {
 			return fmt.Errorf("file upload write failed: %w", err)
 		}
 	}
 
-	c.app.Log.Debug("file uploaded", zap.Uint32("size", fileSize))
+	fs.app.Log.Debug("file uploaded", zap.Uint32("size", fileSize))
 	return stream.SendAndClose(&proto.FileUploadResponse{Size: &fileSize})
 }
 

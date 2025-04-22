@@ -10,3 +10,9 @@ type RegData struct {
 	Password        string
 	ConfirmPassword string
 }
+
+type CredsData struct {
+	Name     string
+	Login    string
+	Password string
+}
