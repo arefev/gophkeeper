@@ -20,7 +20,7 @@ func NewMeta(tr TxGetter, log *zap.Logger) *Meta {
 	}
 }
 
-func (m *Meta) Create(ctx context.Context, meta *model.Meta, file *model.File) error {
+func (m *Meta) Create(ctx context.Context, meta *model.Meta) error {
 	ctx, cancel := context.WithTimeout(ctx, timeCancel)
 	defer cancel()
 
@@ -35,8 +35,8 @@ func (m *Meta) Create(ctx context.Context, meta *model.Meta, file *model.File) e
 		"user_id":   meta.UserID,
 		"type":      meta.Type,
 		"name":      meta.Name,
-		"file_name": file.Name,
-		"file_data": file.Data,
+		"file_name": meta.File.Name,
+		"file_data": meta.File.Data,
 	}
 
 	err := m.execWithArgs(ctx, args, query)

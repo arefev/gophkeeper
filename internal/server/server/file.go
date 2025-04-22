@@ -40,5 +40,14 @@ func (fs *fileServer) Upload(stream proto.File_UploadServer) error {
 		return fmt.Errorf("file data save failed: %w", err)
 	}
 
+	err = storage.Remove()
+	if err != nil {
+		fs.app.Log.Debug(
+			"file remove failed",
+			zap.Error(err),
+		)
+		return fmt.Errorf("file remove failed: %w", err)
+	}
+
 	return nil
 }

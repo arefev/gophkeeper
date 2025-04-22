@@ -16,7 +16,7 @@ type UserRepo interface {
 }
 
 type MetaRepo interface {
-	Create(ctx context.Context, meta *model.Meta, file *model.File) error
+	Create(ctx context.Context, meta *model.Meta) error
 }
 
 type TrManager interface {

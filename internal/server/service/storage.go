@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"os"
+	"path/filepath"
 
 	"github.com/arefev/gophkeeper/internal/proto"
 	"github.com/arefev/gophkeeper/internal/server/application"
@@ -73,16 +75,15 @@ func (s *storageService) setMeta(mName, mtype, fName string) {
 func (s *storageService) Save() error {
 	ctx := context.Background()
 	var err error
-	b, err := s.file.ReadAll()
+	s.meta.File.Data, err = s.file.ReadAll()
 	if err != nil {
 		return fmt.Errorf("storage service: readall from file failed: %w", err)
 	}
+
+	s.meta.UserID = 2
+
 	err = s.app.TrManager.Do(ctx, func(ctx context.Context) error {
-		err = s.app.Rep.Meta.Create(ctx, &model.Meta{
-			UserID: 2,
-			Type:   s.meta.Type,
-			Name:   s.meta.Name,
-		}, &model.File{Name: s.meta.File.Name, Data: b})
+		err = s.app.Rep.Meta.Create(ctx, s.meta)
 		if err != nil {
 			return fmt.Errorf("storage service: meta create failed: %w", err)
 		}
@@ -91,6 +92,22 @@ func (s *storageService) Save() error {
 	})
 	if err != nil {
 		return fmt.Errorf("storage service: do transaction failed: %w", err)
+	}
+
+	return nil
+}
+
+func (s *storageService) Remove() error {
+	dir := filepath.Dir(s.file.Path)
+
+	err := os.Remove(s.file.Path)
+	if err != nil {
+		return fmt.Errorf("storage service: remove file failed: %w", err)
+	}
+
+	err = os.Remove(dir)
+	if err != nil {
+		return fmt.Errorf("storage service: remove dir failed: %w", err)
 	}
 
 	return nil
