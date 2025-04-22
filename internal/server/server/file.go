@@ -2,13 +2,10 @@ package server
 
 import (
 	"fmt"
-	"io"
-	"os"
-	"path/filepath"
 
 	"github.com/arefev/gophkeeper/internal/proto"
 	"github.com/arefev/gophkeeper/internal/server/application"
-	"github.com/google/uuid"
+	"github.com/arefev/gophkeeper/internal/server/service"
 	"go.uber.org/zap"
 )
 
@@ -24,67 +21,24 @@ func NewFileServer(app *application.App) *fileServer {
 }
 
 func (fs *fileServer) Upload(stream proto.File_UploadServer) error {
-	file := NewFile()
-	var fileSize uint32 = 0
-	defer func() {
-		if err := file.OutputFile.Close(); err != nil {
-			fs.app.Log.Error("file upload close failed", zap.Error(err))
-		}
-	}()
-	for {
-		req, err := stream.Recv()
-		if file.FilePath == "" {
-			file.SetFile(req.GetName(), "./storage/"+uuid.NewString())
-		}
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return fmt.Errorf("file upload stream recv failed: %w", err)
-		}
-		chunk := req.GetChunk()
-		fileSize += uint32(len(chunk))
-		fs.app.Log.Debug("received a chunk with size", zap.Uint32("size", fileSize))
-		if err := file.Write(chunk); err != nil {
-			return fmt.Errorf("file upload write failed: %w", err)
-		}
-	}
-
-	fs.app.Log.Debug("file uploaded", zap.Uint32("size", fileSize))
-	return stream.SendAndClose(&proto.FileUploadResponse{Size: &fileSize})
-}
-
-type File struct {
-	FilePath   string
-	OutputFile *os.File
-}
-
-func NewFile() *File {
-	return &File{}
-}
-
-func (f *File) SetFile(fileName, path string) error {
-	err := os.MkdirAll(path, os.ModePerm)
+	storage := service.NewStorageService(fs.app)
+	err := storage.Upload(stream)
 	if err != nil {
-		return fmt.Errorf("setFile mkdir failed: %w", err)
+		fs.app.Log.Debug(
+			"file upload failed",
+			zap.Error(err),
+		)
+		return fmt.Errorf("file upload failed: %w", err)
 	}
-	f.FilePath = filepath.Join(path, fileName)
-	file, err := os.Create(f.FilePath)
+
+	err = storage.Save()
 	if err != nil {
-		return fmt.Errorf("setFile create failed: %w", err)
+		fs.app.Log.Debug(
+			"file data save failed",
+			zap.Error(err),
+		)
+		return fmt.Errorf("file data save failed: %w", err)
 	}
-	f.OutputFile = file
+
 	return nil
-}
-
-func (f *File) Write(chunk []byte) error {
-	if f.OutputFile == nil {
-		return nil
-	}
-	_, err := f.OutputFile.Write(chunk)
-	return err
-}
-
-func (f *File) Close() error {
-	return f.OutputFile.Close()
 }
