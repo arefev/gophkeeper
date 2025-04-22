@@ -2,6 +2,7 @@ package step
 
 import (
 	"github.com/arefev/gophkeeper/internal/client/app"
+	"github.com/arefev/gophkeeper/internal/client/connection"
 	"github.com/arefev/gophkeeper/internal/client/tui/form"
 	"github.com/arefev/gophkeeper/internal/client/tui/model"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
@@ -36,7 +37,7 @@ func (lkfc *lkFormCreds) WithError(err error) *lkFormCreds {
 }
 
 func (lkfc *lkFormCreds) Init() tea.Cmd {
-	return textinput.Blink
+	return tea.Batch(textinput.Blink, lkfc.app.Conn.CheckTokenCmd)
 }
 
 func (lkfc *lkFormCreds) Exec() (tea.Model, tea.Cmd) {
@@ -45,7 +46,11 @@ func (lkfc *lkFormCreds) Exec() (tea.Model, tea.Cmd) {
 }
 
 func (lkfc *lkFormCreds) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if msg, ok := msg.(tea.KeyMsg); ok {
+	switch msg := msg.(type) {
+	case connection.CheckAuthFail:
+		return NewStart(lkfc.app).Exec()
+		
+	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEsc:
 			return NewLKTypes(lkfc.app).Exec()

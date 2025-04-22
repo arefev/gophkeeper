@@ -16,3 +16,10 @@ type CredsData struct {
 	Login    string
 	Password string
 }
+
+type BankData struct {
+	Name   string
+	Number string
+	Exp    string
+	CVV    string
+}

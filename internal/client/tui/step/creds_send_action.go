@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/arefev/gophkeeper/internal/client/app"
+	"github.com/arefev/gophkeeper/internal/client/connection"
 	"github.com/arefev/gophkeeper/internal/client/tui/model"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/spinner"
@@ -48,7 +49,7 @@ func (csa *credsSendAction) ActionCmd() tea.Msg {
 }
 
 func (csa *credsSendAction) Init() tea.Cmd {
-	return tea.Batch(csa.spinner.Tick, csa.ActionCmd)
+	return tea.Batch(csa.spinner.Tick, csa.ActionCmd, csa.app.Conn.CheckTokenCmd)
 }
 
 func (csa *credsSendAction) Exec() (tea.Model, tea.Cmd) {
@@ -58,6 +59,9 @@ func (csa *credsSendAction) Exec() (tea.Model, tea.Cmd) {
 
 func (csa *credsSendAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case connection.CheckAuthFail:
+		return NewStart(csa.app).Exec()
+		
 	case CredsSendActionSuccess:
 		return NewLKTypes(csa.app).WithSuccess().Exec()
 

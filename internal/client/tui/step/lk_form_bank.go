@@ -2,6 +2,7 @@ package step
 
 import (
 	"github.com/arefev/gophkeeper/internal/client/app"
+	"github.com/arefev/gophkeeper/internal/client/connection"
 	"github.com/arefev/gophkeeper/internal/client/tui/form"
 	"github.com/arefev/gophkeeper/internal/client/tui/model"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
@@ -37,7 +38,7 @@ func (lkfb *lkFormBank) WithError(err error) *lkFormBank {
 }
 
 func (lkfb *lkFormBank) Init() tea.Cmd {
-	return textinput.Blink
+	return tea.Batch(textinput.Blink, lkfb.app.Conn.CheckTokenCmd)
 }
 
 func (lkfb *lkFormBank) Exec() (tea.Model, tea.Cmd) {
@@ -46,7 +47,11 @@ func (lkfb *lkFormBank) Exec() (tea.Model, tea.Cmd) {
 }
 
 func (lkfb *lkFormBank) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	if msg, ok := msg.(tea.KeyMsg); ok {
+	switch msg := msg.(type) {
+	case connection.CheckAuthFail:
+		return NewStart(lkfb.app).Exec()
+		
+	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEsc:
 			return NewLKTypes(lkfb.app).Exec()
@@ -56,7 +61,7 @@ func (lkfb *lkFormBank) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		case tea.KeyTab, tea.KeyShiftTab, tea.KeyUp, tea.KeyDown, tea.KeyEnter:
 			if msg.Type == tea.KeyEnter && lkfb.focusIndex == len(lkfb.fields) {
-				// return NewLoginAction(lkc.getLoginData(), lkc.app).Exec()
+				return NewBankSendAction(lkfb.getData(), lkfb.app).Exec()
 			}
 
 			if msg.Type == tea.KeyUp || msg.Type == tea.KeyShiftTab {
@@ -105,15 +110,19 @@ func (lkfb *lkFormBank) View() string {
 	)
 }
 
-func (lkfb *lkFormBank) getLoginData() *model.LoginData {
-	data := &model.LoginData{}
+func (lkfb *lkFormBank) getData() *model.BankData {
+	data := &model.BankData{}
 	for _, f := range lkfb.fields {
 		code := f.Code()
 		switch code {
-		case "login":
-			data.Login = f.Model().Value()
-		case "pwd":
-			data.Password = f.Model().Value()
+		case "number":
+			data.Number = f.Model().Value()
+		case "exp":
+			data.Exp = f.Model().Value()
+		case "cvv":
+			data.CVV = f.Model().Value()
+		case "name":
+			data.Name = f.Model().Value()
 		}
 	}
 
