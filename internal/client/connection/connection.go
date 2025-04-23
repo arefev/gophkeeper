@@ -12,6 +12,8 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
 
 type CheckAuthFail bool
@@ -95,6 +97,9 @@ func (g *grpcClient) Login(ctx context.Context, login, pwd string) (string, erro
 }
 
 func (g *grpcClient) TextUpload(ctx context.Context, txt []byte, metaName, metaType string) error {
+	md := metadata.New(map[string]string{"token": g.token})
+	ctx = metadata.NewOutgoingContext(ctx, md)
+
 	client := proto.NewFileClient(g.conn)
 	stream, err := client.Upload(ctx)
 	if err != nil {
@@ -116,6 +121,7 @@ func (g *grpcClient) TextUpload(ctx context.Context, txt []byte, metaName, metaT
 
 	res, err := stream.CloseAndRecv()
 	if err != nil {
+		g.log.Sugar().Infof("stream err %+v", status.Code(err))
 		return fmt.Errorf("grpc text upload close failed: %w", err)
 	}
 	g.log.Debug("text sent", zap.Uint32("bytes", res.GetSize()))
@@ -124,6 +130,9 @@ func (g *grpcClient) TextUpload(ctx context.Context, txt []byte, metaName, metaT
 }
 
 func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType string) error {
+	md := metadata.New(map[string]string{"token": g.token})
+	ctx = metadata.NewOutgoingContext(ctx, md)
+
 	client := proto.NewFileClient(g.conn)
 	stream, err := client.Upload(ctx)
 	if err != nil {

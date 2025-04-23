@@ -16,6 +16,8 @@ import (
 	"github.com/arefev/gophkeeper/internal/server/application"
 	"github.com/arefev/gophkeeper/internal/server/config"
 	"github.com/arefev/gophkeeper/internal/server/db/postgresql"
+	"github.com/arefev/gophkeeper/internal/server/server/interceptor"
+
 	// "github.com/arefev/gophkeeper/internal/server/model"
 	"github.com/arefev/gophkeeper/internal/server/repository"
 	"github.com/arefev/gophkeeper/internal/server/server"
@@ -114,7 +116,8 @@ func runServer(ctx context.Context, app *application.App, c *config.Config, l *z
 		return fmt.Errorf("runGRPC Listen failed: %w", err)
 	}
 
-	s := grpc.NewServer()
+	middleware := interceptor.NewMiddleware(app)
+	s := grpc.NewServer(grpc.StreamInterceptor(middleware.StreamCheckToken))
 	proto.RegisterAuthServer(s, server.NewAuthServer(app))
 	proto.RegisterFileServer(s, server.NewFileServer(app))
 

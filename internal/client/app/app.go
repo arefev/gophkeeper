@@ -10,10 +10,10 @@ import (
 type Connection interface {
 	Register(ctx context.Context, login, pwd string) (string, error)
 	Login(ctx context.Context, login, pwd string) (string, error)
-	SetToken(t string)
-	CheckTokenCmd() tea.Msg
 	FileUpload(ctx context.Context, path, metaName, metaType string) error
 	TextUpload(ctx context.Context, txt []byte, metaName, metaType string) error
+	SetToken(t string)
+	CheckTokenCmd() tea.Msg
 }
 
 type App struct {

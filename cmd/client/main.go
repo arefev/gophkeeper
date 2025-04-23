@@ -11,7 +11,6 @@ import (
 	"github.com/arefev/gophkeeper/internal/client/connection"
 	"github.com/arefev/gophkeeper/internal/client/tui/step"
 	"github.com/arefev/gophkeeper/internal/logger"
-	tea "github.com/charmbracelet/bubbletea"
 	"go.uber.org/zap"
 )
 
@@ -27,9 +26,9 @@ func run() error {
 		return fmt.Errorf("run: init config failed: %w", err)
 	}
 
-	l, err := logger.Build(conf.LogLevel)
+	l, err := createLogger(conf)
 	if err != nil {
-		return fmt.Errorf("run: logger build failed: %w", err)
+		return fmt.Errorf("run: logger failed: %w", err)
 	}
 
 	conn := connection.NewGRPCClient(l)
@@ -37,40 +36,11 @@ func run() error {
 		return fmt.Errorf("run: connect to server failed: %w", err)
 	}
 
-	// path := "/home/arefev/dev/study/golang/gophkeeper/for-upload/joxi.exe"
-	// metaName := "office"
-	// metaType := "file"
-	// err = conn.FileUpload(context.Background(), path, metaName, metaType)
-	// if err != nil {
-	// 	l.Error("FileUpload failed", zap.Error(err))
-	// }
-
-	// creds := `
-	// 	login wolf
-	// 	password 123456
-	// `
-	// err = conn.TextUpload(context.Background(), []byte(creds), "creds from sber", "creds")
-	// if err != nil {
-	// 	l.Error("TextUpload failed", zap.Error(err))
-	// }
-
 	defer func() {
 		if err = conn.Close(); err != nil {
 			l.Error("connect close failed", zap.Error(err))
 		}
 	}()
-
-	if conf.LogFilePath != "" {
-		f, err := tea.LogToFile(conf.LogFilePath, conf.LogLevel)
-		if err != nil {
-			return fmt.Errorf("run: log to file failed: %w", err)
-		}
-		defer func() {
-			if err = f.Close(); err != nil {
-				l.Error("log file close failed: %w", zap.Error(err))
-			}
-		}()
-	}
 
 	_, err = step.NewStart(app.NewApp(conn, l)).NewProgram().Run()
 	if err != nil {
@@ -78,4 +48,22 @@ func run() error {
 	}
 
 	return nil
+}
+
+func createLogger(conf *config.Config) (*zap.Logger, error) {
+	var l *zap.Logger
+	var err error
+	if conf.LogFilePath != "" {
+		l, err = logger.InFile(conf.LogFilePath, conf.LogLevel)
+		if err != nil {
+			return nil, fmt.Errorf("create logger in file failed: %w", err)
+		}
+	} else {
+		l, err = logger.Build(conf.LogLevel)
+		if err != nil {
+			return nil, fmt.Errorf("create logger build failed: %w", err)
+		}
+	}
+
+	return l, nil
 }
