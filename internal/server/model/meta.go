@@ -7,22 +7,22 @@ import (
 )
 
 type Meta struct {
-	CreatedAt time.Time `json:"createdAt" db:"created_at"`
-	UpdatedAt time.Time `json:"updatedAt" db:"updated_at"`
-	Uuid      uuid.UUID `json:"uuid" db:"uuid"`
-	Type      MetaType  `json:"type" db:"type"`
-	Name      string    `json:"name" db:"name"`
-	UserID    int       `json:"-" db:"user_id"`
-	ID        int       `json:"id" db:"id"`
+	CreatedAt time.Time `db:"created_at"`
+	UpdatedAt time.Time `db:"updated_at"`
+	Uuid      uuid.UUID `db:"uuid"`
+	Type      MetaType  `db:"type"`
+	Name      string    `db:"name"`
+	UserID    int       `db:"user_id"`
+	ID        int       `db:"id"`
 	File      File
 }
 
 type File struct {
-	CreatedAt time.Time `json:"createdAt" db:"created_at"`
-	Name      string    `json:"name" db:"name"`
-	MetaID    int       `json:"-" db:"meta_id"`
-	ID        int       `json:"id" db:"id"`
-	Data      []byte    `json:"data" db:"data"`
+	CreatedAt time.Time `db:"created_at"`
+	Name      string    `db:"name"`
+	MetaID    int       `db:"meta_id"`
+	ID        int       `db:"id"`
+	Data      []byte    `db:"data"`
 }
 
 type MetaType int

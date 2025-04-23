@@ -17,6 +17,7 @@ import (
 	"github.com/arefev/gophkeeper/internal/server/config"
 	"github.com/arefev/gophkeeper/internal/server/db/postgresql"
 	"github.com/arefev/gophkeeper/internal/server/server/interceptor"
+	// "github.com/arefev/gophkeeper/internal/server/service"
 
 	// "github.com/arefev/gophkeeper/internal/server/model"
 	"github.com/arefev/gophkeeper/internal/server/repository"
@@ -78,23 +79,20 @@ func run(ctx context.Context) error {
 		Conf:      conf,
 	}
 
-	// path := "/home/arefev/dev/study/golang/gophkeeper/storage/405524d0-53a7-4a6d-8eee-4914b06b163e/office.iso"
-	// path := "/home/arefev/dev/study/golang/gophkeeper/storage/5372edba-7376-4cc1-88bc-153d2b93421c/test.txt"
-	// path := "/home/arefev/dev/study/golang/gophkeeper/storage/2dc22093-61b4-40fd-9dea-9dacd5cff4c1/joxi.exe"
-	// file, err := os.ReadFile(path)
-	// if err != nil {
-	// 	return fmt.Errorf("run: read file failed: %w", err)
-	// }
-
 	// err = app.TrManager.Do(ctx, func(ctx context.Context) error {
-	// 	err = app.Rep.Meta.Create(ctx, &model.Meta{
-	// 		UserID: 1,
-	// 		Type: model.MetaTypeFile,
-	// 		Name: "test",
-	// 	}, &model.File{Name: "test.txt", Data: file})
+	// 	meta, err := app.Rep.Meta.Find(ctx, 24)
 	// 	if err != nil {
-	// 		return fmt.Errorf("run: meta create failed: %w", err)
+	// 		return fmt.Errorf("run: meta get failed: %w", err)
 	// 	}
+	// 	l.Sugar().Infof("meta %+v", meta)
+
+	// 	es := service.NewEncryptionService(app)
+	// 	data, err := es.Decrypt(meta.File.Data)
+	// 	if err != nil {
+	// 		return fmt.Errorf("run: decrypt data failed: %w", err)
+	// 	}
+
+	// 	l.Sugar().Infof("data %+v", string(data))
 
 	// 	return nil
 	// })
