@@ -69,19 +69,16 @@ func (i *interceptor) checkToken(ctx context.Context) (context.Context, error) {
 		return nil, fmt.Errorf("parse token failed: %w", err)
 	}
 
-	user, err := i.userFromCtx(ctx, login)
+	user, err := i.findUserByLogin(ctx, login)
 	if err != nil {
 		return nil, fmt.Errorf("get user from context failed: %w", err)
 	}
 
-	i.app.Log.Debug("incoming context", zap.String("token", token), zap.String("login", login), zap.Any("user", user))
-
 	ctx = context.WithValue(ctx, model.User{}, user)
-
 	return ctx, nil
 }
 
-func (i *interceptor) userFromCtx(ctx context.Context, login string) (*model.User, error) {
+func (i *interceptor) findUserByLogin(ctx context.Context, login string) (*model.User, error) {
 	var user *model.User
 
 	user, err := service.NewUserService(i.app).GetUser(ctx, login)
