@@ -79,12 +79,14 @@ func run(ctx context.Context) error {
 		Conf:      conf,
 	}
 
+
+
 	// err = app.TrManager.Do(ctx, func(ctx context.Context) error {
-	// 	meta, err := app.Rep.Meta.Find(ctx, 24)
+	// 	meta, err := app.Rep.Meta.Find(ctx, 28)
 	// 	if err != nil {
 	// 		return fmt.Errorf("run: meta get failed: %w", err)
 	// 	}
-	// 	l.Sugar().Infof("meta %+v", meta)
+	// 	// l.Sugar().Infof("meta %+v", meta)
 
 	// 	es := service.NewEncryptionService(app)
 	// 	data, err := es.Decrypt(meta.File.Data)
@@ -92,7 +94,17 @@ func run(ctx context.Context) error {
 	// 		return fmt.Errorf("run: decrypt data failed: %w", err)
 	// 	}
 
-	// 	l.Sugar().Infof("data %+v", string(data))
+	// 	// l.Sugar().Infof("data %+v", string(data))
+	// 	file, err := os.Create("./" + meta.File.Name)
+	// 	if err != nil {
+	// 		return fmt.Errorf("run: create file failed: %w", err)
+	// 	}
+
+	// 	_, err = file.Write(data)
+	// 	if err != nil {
+	// 		return fmt.Errorf("run: write file failed: %w", err)
+	// 	}
+	// 	file.Close()
 
 	// 	return nil
 	// })

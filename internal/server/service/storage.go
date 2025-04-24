@@ -29,7 +29,7 @@ func NewStorageService(app *application.App) *storageService {
 
 func (s *storageService) Upload(stream proto.File_UploadServer) error {
 	var fileSize uint32 = 0
-	es := NewEncryptionService(s.app)
+	
 	defer func() {
 		if err := s.file.Output.Close(); err != nil {
 			s.app.Log.Error("file upload close failed", zap.Error(err))
@@ -47,11 +47,7 @@ func (s *storageService) Upload(stream proto.File_UploadServer) error {
 		if err != nil {
 			return fmt.Errorf("file upload stream recv failed: %w", err)
 		}
-		chunk, err := es.Encrypt(req.GetChunk())
-		if err != nil {
-			return fmt.Errorf("file upload encrypt chunk failed: %w", err)
-		}
-
+		chunk := req.GetChunk()
 		fileSize += uint32(len(chunk))
 		s.app.Log.Debug("received a chunk with size", zap.Uint32("size", fileSize))
 		if err := s.file.Write(chunk); err != nil {
@@ -80,7 +76,13 @@ func (s *storageService) setMeta(mName, mtype, fName string) {
 func (s *storageService) Save() error {
 	ctx := context.Background()
 	var err error
+	es := NewEncryptionService(s.app)
 	s.meta.File.Data, err = s.file.ReadAll()
+	if err != nil {
+		return fmt.Errorf("storage service: readall from file failed: %w", err)
+	}
+
+	s.meta.File.Data, err = es.Encrypt(s.meta.File.Data)
 	if err != nil {
 		return fmt.Errorf("storage service: readall from file failed: %w", err)
 	}
