@@ -45,7 +45,7 @@ func (lk *lk) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			switch lk.choices[lk.cursor] {
 			case "Получить данные":
-				return NewList(lk.app).Exec()
+				return NewLKList(lk.app).Exec()
 
 			case "Загрузить данные":
 				return NewLKTypes(lk.app).Exec()

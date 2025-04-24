@@ -179,3 +179,17 @@ func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType st
 	g.log.Debug("file uploaded", zap.Uint32("bytes", res.GetSize()))
 	return nil
 }
+
+func (g *grpcClient) GetList(ctx context.Context) error {
+	client := proto.NewListClient(g.conn)
+
+	resp, err := client.Get(ctx, &proto.MetaListRequest{})
+
+	if err != nil {
+		return fmt.Errorf("grpc get list failed: %w", err)
+	}
+
+	g.log.Sugar().Infof("get list resp: %+v", resp)
+
+	return nil
+}

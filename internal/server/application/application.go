@@ -18,6 +18,7 @@ type UserRepo interface {
 type MetaRepo interface {
 	Create(ctx context.Context, meta *model.Meta) error
 	Find(ctx context.Context, id int) (*model.Meta, error)
+	Get(ctx context.Context, userID int) ([]model.Meta, error)
 }
 
 type TrManager interface {

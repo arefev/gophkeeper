@@ -109,6 +109,7 @@ func (m *Meta) Get(ctx context.Context, userID int) ([]model.Meta, error) {
 		FROM meta as m
 		JOIN files as f ON m.id = f.meta_id
 		WHERE m.user_id = :user_id
+		ORDER BY m.created_at DESC
 	`
 
 	stmt, err := m.prepare(ctx, q)

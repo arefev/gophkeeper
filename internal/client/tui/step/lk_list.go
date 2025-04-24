@@ -1,6 +1,7 @@
 package step
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/arefev/gophkeeper/internal/client/app"
@@ -9,62 +10,75 @@ import (
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
+	"go.uber.org/zap"
 )
 
-type list struct {
+type lkList struct {
 	app   *app.App
 	table table.Model
 }
 
-func NewList(a *app.App) *list {
-	return &list{
+func NewLKList(a *app.App) *lkList {
+	return &lkList{
 		table: getTable(),
 		app:   a,
 	}
 }
 
-func (lt *list) Init() tea.Cmd {
-	return lt.app.Conn.CheckTokenCmd
+func (lkl *lkList) ActionCmd() tea.Msg {
+	ctx := context.Background()
+	// TODO: validation needed
+	err := lkl.app.Conn.GetList(ctx)
+	if err != nil {
+		lkl.app.Log.Error("GetList failed", zap.Error(err))
+		return nil
+	}
+
+	return nil
 }
 
-func (lt *list) Exec() (tea.Model, tea.Cmd) {
-	cmd := lt.Init()
-	return lt, cmd
+func (lkl *lkList) Init() tea.Cmd {
+	return tea.Batch(lkl.app.Conn.CheckTokenCmd, lkl.ActionCmd)
 }
 
-func (lt *list) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (lkl *lkList) Exec() (tea.Model, tea.Cmd) {
+	cmd := lkl.Init()
+	return lkl, cmd
+}
+
+func (lkl *lkList) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
 	case connection.CheckAuthFail:
-		return NewStart(lt.app).Exec()
+		return NewStart(lkl.app).Exec()
 
 	case tea.KeyMsg:
 		switch msg.Type {
 		case tea.KeyEsc:
-			return NewLK(lt.app).Exec()
+			return NewLK(lkl.app).Exec()
 
 		case tea.KeyCtrlC:
-			return lt, tea.Quit
+			return lkl, tea.Quit
 
 		case tea.KeyEnter:
-			return lt, tea.Batch(
-				tea.Printf("Let's go to %s!", lt.table.SelectedRow()[1]),
+			return lkl, tea.Batch(
+				tea.Printf("Let's go to %s!", lkl.table.SelectedRow()[1]),
 			)
 
 		default:
-			lt.table, cmd = lt.table.Update(msg)
-			return lt, cmd
+			lkl.table, cmd = lkl.table.Update(msg)
+			return lkl, cmd
 		}
 	}
 
-	lt.table, cmd = lt.table.Update(msg)
-	return lt, cmd
+	lkl.table, cmd = lkl.table.Update(msg)
+	return lkl, cmd
 }
 
-func (lt *list) View() string {
+func (lkl *lkList) View() string {
 	str := view.Title("Выберите данные 📃")
-	str += style.BorderStyle.Render(lt.table.View()) + view.BreakLine().One()
-	str += fmt.Sprintf("Всего строк: %d", len(lt.table.Rows()))
+	str += style.BorderStyle.Render(lkl.table.View()) + view.BreakLine().One()
+	str += fmt.Sprintf("Всего строк: %d", len(lkl.table.Rows()))
 	str += view.BreakLine().One()
 	str += view.Quit() + view.ToPrevScreen()
 	return str
