@@ -208,6 +208,8 @@ func (g *grpcClient) GetList(ctx context.Context) (*[]model.MetaListData, error)
 }
 
 func (g *grpcClient) Delete(ctx context.Context, uuid string) error {
+	md := metadata.New(map[string]string{"token": g.token})
+	ctx = metadata.NewOutgoingContext(ctx, md)
 	client := proto.NewListClient(g.conn)
 
 	_, err := client.Delete(ctx, &proto.MetaDeleteRequest{Uuid: &uuid})

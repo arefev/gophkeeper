@@ -27,7 +27,7 @@ func NewStorageService(app *application.App) *storageService {
 	}
 }
 
-func (s *storageService) Upload(stream proto.File_UploadServer) error {
+func (s *storageService) Upload(userID int, stream proto.File_UploadServer) error {
 	var fileSize uint32 = 0
 
 	defer func() {
@@ -39,7 +39,7 @@ func (s *storageService) Upload(stream proto.File_UploadServer) error {
 		req, err := stream.Recv()
 		if s.file.Path == "" {
 			s.file.SetFile(req.GetName(), "./storage/"+uuid.NewString())
-			s.setMeta(req.GetMeta().GetName(), req.GetMeta().GetType(), req.GetName())
+			s.setMeta(userID, req.GetMeta().GetName(), req.GetMeta().GetType(), req.GetName())
 		}
 		if err == io.EOF {
 			break
@@ -63,10 +63,11 @@ func (s *storageService) Upload(stream proto.File_UploadServer) error {
 	return nil
 }
 
-func (s *storageService) setMeta(mName, mtype, fName string) {
+func (s *storageService) setMeta(userID int, mName, mtype, fName string) {
 	s.meta = &model.Meta{
-		Name: mName,
-		Type: model.MetaTypeFromString(mtype),
+		UserID: userID,
+		Name:   mName,
+		Type:   model.MetaTypeFromString(mtype),
 		File: model.File{
 			Name: fName,
 		},
@@ -86,8 +87,6 @@ func (s *storageService) Save() error {
 	if err != nil {
 		return fmt.Errorf("storage service: readall from file failed: %w", err)
 	}
-
-	s.meta.UserID = 1
 
 	err = s.app.TrManager.Do(ctx, func(ctx context.Context) error {
 		err = s.app.Rep.Meta.Create(ctx, s.meta)

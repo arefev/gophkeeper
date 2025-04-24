@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/arefev/gophkeeper/internal/proto"
+	"github.com/arefev/gophkeeper/internal/server/handler/middleware"
 	"github.com/arefev/gophkeeper/internal/server/model"
 	"github.com/arefev/gophkeeper/internal/server/service"
 	"github.com/arefev/gophkeeper/internal/server/service/jwt"
@@ -18,13 +19,16 @@ import (
 
 func (i *interceptor) StreamCheckToken() grpc.StreamServerInterceptor {
 	return func(srv any, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
-		_, err := i.checkToken(ss.Context())
+		ctx, err := i.checkToken(ss.Context())
 		if err != nil {
 			i.app.Log.Debug("stream check token failed", zap.Error(err))
 			return status.Error(codes.Unauthenticated, "invalid token")
 		}
 
-		return handler(srv, ss)
+		wrapped := middleware.WrapServerStream(ss)
+		wrapped.WrappedContext = ctx
+
+		return handler(srv, wrapped)
 	}
 }
 

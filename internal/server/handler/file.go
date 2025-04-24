@@ -23,8 +23,13 @@ func NewFileHandler(app *application.App) *fileHandler {
 }
 
 func (fh *fileHandler) Upload(stream proto.File_UploadServer) error {
+	user, err := service.NewUserService(fh.app).Authorized(stream.Context())
+	if err != nil {
+		return fmt.Errorf("user not found: %w", err)
+	}
+
 	storage := service.NewStorageService(fh.app)
-	err := storage.Upload(stream)
+	err = storage.Upload(user.ID, stream)
 	if err != nil {
 		fh.app.Log.Debug(
 			"file upload failed",
@@ -58,34 +63,32 @@ func (fh *fileHandler) Download(
 	req *proto.FileDownloadRequest,
 	stream proto.File_DownloadServer,
 ) error {
-	const userID = 1 // TODO: получать userID из контекста
-
 	var data []byte
 	var meta *model.Meta
 	var err error
 
-	fh.app.Log.Debug(
-		"file download",
-	)
+	user, err := service.NewUserService(fh.app).Authorized(stream.Context())
+	if err != nil {
+		return fmt.Errorf("user not found: %w", err)
+	}
 
 	err = fh.app.TrManager.Do(stream.Context(), func(ctx context.Context) error {
-		meta, err = fh.app.Rep.Meta.FindByUuid(ctx, req.GetUuid(), userID)
+		meta, err = fh.app.Rep.Meta.FindByUuid(ctx, req.GetUuid(), user.ID)
 		if err != nil {
-			return fmt.Errorf("run: meta get failed: %w", err)
+			return fmt.Errorf("meta find by uuid failed: %w", err)
 		}
-		// l.Sugar().Infof("meta %+v", meta)
 
 		es := service.NewEncryptionService(fh.app)
 		data, err = es.Decrypt(meta.File.Data)
 		if err != nil {
-			return fmt.Errorf("run: decrypt data failed: %w", err)
+			return fmt.Errorf("decrypt data failed: %w", err)
 		}
 
 		return nil
 	})
 
 	if err != nil {
-		return fmt.Errorf("run: do transaction failed: %w", err)
+		return fmt.Errorf("do transaction failed: %w", err)
 	}
 
 	read := 0
