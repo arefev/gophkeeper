@@ -1,4 +1,4 @@
-package server
+package handler
 
 import (
 	"context"
@@ -11,22 +11,22 @@ import (
 	"go.uber.org/zap"
 )
 
-type fileServer struct {
+type fileHandler struct {
 	proto.UnimplementedFileServer
 	app *application.App
 }
 
-func NewFileServer(app *application.App) *fileServer {
-	return &fileServer{
+func NewFileHandler(app *application.App) *fileHandler {
+	return &fileHandler{
 		app: app,
 	}
 }
 
-func (fs *fileServer) Upload(stream proto.File_UploadServer) error {
-	storage := service.NewStorageService(fs.app)
+func (fh *fileHandler) Upload(stream proto.File_UploadServer) error {
+	storage := service.NewStorageService(fh.app)
 	err := storage.Upload(stream)
 	if err != nil {
-		fs.app.Log.Debug(
+		fh.app.Log.Debug(
 			"file upload failed",
 			zap.Error(err),
 		)
@@ -35,7 +35,7 @@ func (fs *fileServer) Upload(stream proto.File_UploadServer) error {
 
 	err = storage.Save()
 	if err != nil {
-		fs.app.Log.Debug(
+		fh.app.Log.Debug(
 			"file data save failed",
 			zap.Error(err),
 		)
@@ -44,7 +44,7 @@ func (fs *fileServer) Upload(stream proto.File_UploadServer) error {
 
 	err = storage.Remove()
 	if err != nil {
-		fs.app.Log.Debug(
+		fh.app.Log.Debug(
 			"file remove failed",
 			zap.Error(err),
 		)
@@ -54,7 +54,7 @@ func (fs *fileServer) Upload(stream proto.File_UploadServer) error {
 	return nil
 }
 
-func (fs *fileServer) Download(
+func (fh *fileHandler) Download(
 	req *proto.FileDownloadRequest,
 	stream proto.File_DownloadServer,
 ) error {
@@ -64,18 +64,18 @@ func (fs *fileServer) Download(
 	var meta *model.Meta
 	var err error
 
-	fs.app.Log.Debug(
+	fh.app.Log.Debug(
 		"file download",
 	)
 
-	err = fs.app.TrManager.Do(stream.Context(), func(ctx context.Context) error {
-		meta, err = fs.app.Rep.Meta.FindByUuid(ctx, req.GetUuid(), userID)
+	err = fh.app.TrManager.Do(stream.Context(), func(ctx context.Context) error {
+		meta, err = fh.app.Rep.Meta.FindByUuid(ctx, req.GetUuid(), userID)
 		if err != nil {
 			return fmt.Errorf("run: meta get failed: %w", err)
 		}
 		// l.Sugar().Infof("meta %+v", meta)
 
-		es := service.NewEncryptionService(fs.app)
+		es := service.NewEncryptionService(fh.app)
 		data, err = es.Decrypt(meta.File.Data)
 		if err != nil {
 			return fmt.Errorf("run: decrypt data failed: %w", err)

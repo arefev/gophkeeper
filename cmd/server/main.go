@@ -16,12 +16,13 @@ import (
 	"github.com/arefev/gophkeeper/internal/server/application"
 	"github.com/arefev/gophkeeper/internal/server/config"
 	"github.com/arefev/gophkeeper/internal/server/db/postgresql"
-	"github.com/arefev/gophkeeper/internal/server/server/interceptor"
+	"github.com/arefev/gophkeeper/internal/server/handler/interceptor"
+
 	// "github.com/arefev/gophkeeper/internal/server/service"
 
 	// "github.com/arefev/gophkeeper/internal/server/model"
+	"github.com/arefev/gophkeeper/internal/server/handler"
 	"github.com/arefev/gophkeeper/internal/server/repository"
-	"github.com/arefev/gophkeeper/internal/server/server"
 	"github.com/arefev/gophkeeper/internal/server/trm"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -126,9 +127,9 @@ func runServer(ctx context.Context, app *application.App, c *config.Config, l *z
 
 	middleware := interceptor.NewMiddleware(app)
 	s := grpc.NewServer(grpc.StreamInterceptor(middleware.StreamCheckToken))
-	proto.RegisterAuthServer(s, server.NewAuthServer(app))
-	proto.RegisterFileServer(s, server.NewFileServer(app))
-	proto.RegisterListServer(s, server.NewListServer(app))
+	proto.RegisterAuthServer(s, handler.NewAuthHandler(app))
+	proto.RegisterFileServer(s, handler.NewFileHandler(app))
+	proto.RegisterListServer(s, handler.NewListHandler(app))
 
 	go func() {
 		<-ctx.Done()

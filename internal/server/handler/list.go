@@ -1,4 +1,4 @@
-package server
+package handler
 
 import (
 	"context"
@@ -9,26 +9,26 @@ import (
 	"github.com/arefev/gophkeeper/internal/server/model"
 )
 
-type listServer struct {
+type listHandler struct {
 	proto.UnimplementedListServer
 	app *application.App
 }
 
-func NewListServer(app *application.App) *listServer {
-	return &listServer{
+func NewListHandler(app *application.App) *listHandler {
+	return &listHandler{
 		app: app,
 	}
 }
 
-func (ls *listServer) Get(
+func (lh *listHandler) Get(
 	ctx context.Context,
 	in *proto.MetaListRequest,
 ) (*proto.MetaListResponse, error) {
 	var list []model.Meta
 	var err error
-	err = ls.app.TrManager.Do(ctx, func(ctx context.Context) error {
+	err = lh.app.TrManager.Do(ctx, func(ctx context.Context) error {
 		// TODO: подставлять ID авторизованного пользователя
-		list, err = ls.app.Rep.Meta.Get(ctx, 1)
+		list, err = lh.app.Rep.Meta.Get(ctx, 1)
 		if err != nil {
 			return fmt.Errorf("run: meta get failed: %w", err)
 		}
@@ -60,14 +60,14 @@ func (ls *listServer) Get(
 	return resp, nil
 }
 
-func (ls *listServer) Delete(
+func (lh *listHandler) Delete(
 	ctx context.Context,
 	in *proto.MetaDeleteRequest,
 ) (*proto.MetaDeleteResponse, error) {
 	var err error
-	err = ls.app.TrManager.Do(ctx, func(ctx context.Context) error {
+	err = lh.app.TrManager.Do(ctx, func(ctx context.Context) error {
 		// TODO: подставлять ID авторизованного пользователя
-		err = ls.app.Rep.Meta.DeleteByUuid(ctx, in.GetUuid(), 1)
+		err = lh.app.Rep.Meta.DeleteByUuid(ctx, in.GetUuid(), 1)
 		if err != nil {
 			return fmt.Errorf("run: meta delete failed: %w", err)
 		}

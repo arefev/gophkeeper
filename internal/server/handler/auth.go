@@ -1,4 +1,4 @@
-package server
+package handler
 
 import (
 	"context"
@@ -10,25 +10,25 @@ import (
 	"go.uber.org/zap"
 )
 
-type authServer struct {
+type authHandler struct {
 	proto.UnimplementedAuthServer
 	app *application.App
 }
 
-func NewAuthServer(app *application.App) *authServer {
-	return &authServer{
+func NewAuthHandler(app *application.App) *authHandler {
+	return &authHandler{
 		app: app,
 	}
 }
 
-func (asrv *authServer) Register(
+func (ah *authHandler) Register(
 	ctx context.Context,
 	in *proto.RegistrationRequest,
 ) (*proto.RegistrationResponse, error) {
-	s := service.NewUserService(asrv.app)
+	s := service.NewUserService(ah.app)
 	err := s.Create(ctx, in.User.GetLogin(), in.User.GetPassword())
 	if err != nil {
-		asrv.app.Log.Debug(
+		ah.app.Log.Debug(
 			"register user failed",
 			zap.Error(err),
 			zap.String("login", in.User.GetLogin()),
@@ -38,7 +38,7 @@ func (asrv *authServer) Register(
 		return &proto.RegistrationResponse{}, fmt.Errorf("register create user failed: %w", err)
 	}
 
-	asrv.app.Log.Debug(
+	ah.app.Log.Debug(
 		"register user success",
 		zap.String("login", in.User.GetLogin()),
 	)
@@ -51,14 +51,14 @@ func (asrv *authServer) Register(
 	return &proto.RegistrationResponse{Token: &token.AccessToken}, nil
 }
 
-func (asrv *authServer) Login(
+func (ah *authHandler) Login(
 	ctx context.Context,
 	in *proto.AuthorizationRequest,
 ) (*proto.AuthorizationResponse, error) {
-	s := service.NewUserService(asrv.app)
+	s := service.NewUserService(ah.app)
 	token, err := s.Authorize(ctx, in.User.GetLogin(), in.User.GetPassword())
 	if err != nil {
-		asrv.app.Log.Debug(
+		ah.app.Log.Debug(
 			"login user failed",
 			zap.Error(err),
 			zap.String("login", in.User.GetLogin()),
@@ -68,7 +68,7 @@ func (asrv *authServer) Login(
 		return &proto.AuthorizationResponse{}, fmt.Errorf("login authorize user failed: %w", err)
 	}
 
-	asrv.app.Log.Debug(
+	ah.app.Log.Debug(
 		"login user success",
 		zap.String("login", in.User.GetLogin()),
 	)
