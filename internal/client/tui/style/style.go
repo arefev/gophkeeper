@@ -15,7 +15,7 @@ const (
 	SelectedBackgroundColor = "57"
 	ColumnWidthS            = 5
 	ColumnWidthM            = 10
-	ColumnWitdthL           = 20
+	ColumnWidthL            = 20
 	TableHeight             = 7
 )
 

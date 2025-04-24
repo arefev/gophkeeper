@@ -47,7 +47,7 @@ func (m *Meta) Create(ctx context.Context, meta *model.Meta) error {
 	return nil
 }
 
-func (m *Meta) Find(ctx context.Context, id int) (*model.Meta, error) {
+func (m *Meta) FindByUuid(ctx context.Context, uuid string, userID int) (*model.Meta, error) {
 	ctx, cancel := context.WithTimeout(ctx, timeCancel)
 	defer cancel()
 
@@ -58,7 +58,7 @@ func (m *Meta) Find(ctx context.Context, id int) (*model.Meta, error) {
 			f.data as f_data, f.created_at as f_created_at 
 		FROM meta as m
 		JOIN files as f ON m.id = f.meta_id
-		WHERE m.id = :id
+		WHERE m.uuid = :uuid AND m.user_id = :user_id
 	`
 
 	stmt, err := m.prepare(ctx, q)
@@ -73,7 +73,7 @@ func (m *Meta) Find(ctx context.Context, id int) (*model.Meta, error) {
 	}()
 
 	meta := &model.Meta{}
-	arg := map[string]interface{}{"id": id}
+	arg := map[string]interface{}{"uuid": uuid, "user_id": userID}
 	row := stmt.QueryRow(arg)
 	err = row.Scan(
 		&meta.ID,

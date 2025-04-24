@@ -45,8 +45,18 @@ message FileUploadResponse {
   uint32 size = 1;
 }
 
+message FileDownloadRequest {
+  string uuid = 1;
+}
+
+message FileDownloadResponse {
+  bytes chunk = 1;
+  string name = 2;
+}
+
 service File {
   rpc Upload(stream FileUploadRequest) returns (FileUploadResponse);
+  rpc Download(FileDownloadRequest) returns (stream FileDownloadResponse){};
 }
 
 message MetaList {

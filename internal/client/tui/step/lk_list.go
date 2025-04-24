@@ -75,9 +75,7 @@ func (lkl *lkList) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return lkl, tea.Quit
 
 		case tea.KeyEnter:
-			return lkl, tea.Batch(
-				tea.Printf("Let's go to %s!", lkl.table.SelectedRow()[1]),
-			)
+			return NewDownloadAction(lkl.table.SelectedRow()[0], lkl.app).Exec()
 
 		default:
 			lkl.table, cmd = lkl.table.Update(msg)
@@ -110,9 +108,9 @@ func (lkl *lkList) getTable() table.Model {
 	columns := []table.Column{
 		{Title: "Uuid", Width: style.ColumnWidthS},
 		{Title: "Тип", Width: style.ColumnWidthM},
-		{Title: "Имя", Width: style.ColumnWitdthL},
-		{Title: "Файл", Width: style.ColumnWitdthL},
-		{Title: "Дата создания", Width: style.ColumnWitdthL},
+		{Title: "Имя", Width: style.ColumnWidthL},
+		{Title: "Файл", Width: style.ColumnWidthL},
+		{Title: "Дата создания", Width: style.ColumnWidthL},
 	}
 
 	rows := make([]table.Row, 0, len(*lkl.list))

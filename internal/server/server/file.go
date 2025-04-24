@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/arefev/gophkeeper/internal/proto"
@@ -47,6 +48,35 @@ func (fs *fileServer) Upload(stream proto.File_UploadServer) error {
 			zap.Error(err),
 		)
 		return fmt.Errorf("file remove failed: %w", err)
+	}
+
+	return nil
+}
+
+func (fs *fileServer) Download(
+	req *proto.FileDownloadRequest,
+	stream proto.File_DownloadServer,
+) error {
+	// TODO: получать userID из контекста
+	const userID = 2
+
+	err := fs.app.TrManager.Do(stream.Context(), func(ctx context.Context) error {
+		meta, err := fs.app.Rep.Meta.FindByUuid(ctx, req.GetUuid(), userID)
+		if err != nil {
+			return fmt.Errorf("run: meta get failed: %w", err)
+		}
+		// l.Sugar().Infof("meta %+v", meta)
+
+		es := service.NewEncryptionService(fs.app)
+		_, err = es.Decrypt(meta.File.Data)
+		if err != nil {
+			return fmt.Errorf("run: decrypt data failed: %w", err)
+		}
+
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("run: do transaction failed: %w", err)
 	}
 
 	return nil
