@@ -68,13 +68,20 @@ message MetaList {
 }
 
 message MetaListRequest {
-  
 }
 
 message MetaListResponse {
   repeated MetaList metaList = 1;
 }
 
+message MetaDeleteRequest {
+  string uuid = 1;
+}
+
+message MetaDeleteResponse {
+}
+
 service List {
   rpc Get(MetaListRequest) returns (MetaListResponse);
+  rpc Delete(MetaDeleteRequest) returns (MetaDeleteResponse);
 }

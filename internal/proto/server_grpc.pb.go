@@ -295,7 +295,8 @@ var File_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	List_Get_FullMethodName = "/gophkeeper.List/Get"
+	List_Get_FullMethodName    = "/gophkeeper.List/Get"
+	List_Delete_FullMethodName = "/gophkeeper.List/Delete"
 )
 
 // ListClient is the client API for List service.
@@ -303,6 +304,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ListClient interface {
 	Get(ctx context.Context, in *MetaListRequest, opts ...grpc.CallOption) (*MetaListResponse, error)
+	Delete(ctx context.Context, in *MetaDeleteRequest, opts ...grpc.CallOption) (*MetaDeleteResponse, error)
 }
 
 type listClient struct {
@@ -323,11 +325,22 @@ func (c *listClient) Get(ctx context.Context, in *MetaListRequest, opts ...grpc.
 	return out, nil
 }
 
+func (c *listClient) Delete(ctx context.Context, in *MetaDeleteRequest, opts ...grpc.CallOption) (*MetaDeleteResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MetaDeleteResponse)
+	err := c.cc.Invoke(ctx, List_Delete_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ListServer is the server API for List service.
 // All implementations must embed UnimplementedListServer
 // for forward compatibility.
 type ListServer interface {
 	Get(context.Context, *MetaListRequest) (*MetaListResponse, error)
+	Delete(context.Context, *MetaDeleteRequest) (*MetaDeleteResponse, error)
 	mustEmbedUnimplementedListServer()
 }
 
@@ -340,6 +353,9 @@ type UnimplementedListServer struct{}
 
 func (UnimplementedListServer) Get(context.Context, *MetaListRequest) (*MetaListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedListServer) Delete(context.Context, *MetaDeleteRequest) (*MetaDeleteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedListServer) mustEmbedUnimplementedListServer() {}
 func (UnimplementedListServer) testEmbeddedByValue()              {}
@@ -380,6 +396,24 @@ func _List_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{
 	return interceptor(ctx, in, info, handler)
 }
 
+func _List_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MetaDeleteRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ListServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: List_Delete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ListServer).Delete(ctx, req.(*MetaDeleteRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // List_ServiceDesc is the grpc.ServiceDesc for List service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -390,6 +424,10 @@ var List_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Get",
 			Handler:    _List_Get_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _List_Delete_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

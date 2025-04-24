@@ -58,7 +58,7 @@ func (fs *fileServer) Download(
 	req *proto.FileDownloadRequest,
 	stream proto.File_DownloadServer,
 ) error {
-	const userID = 2 // TODO: получать userID из контекста
+	const userID = 1 // TODO: получать userID из контекста
 
 	var data []byte
 	var meta *model.Meta

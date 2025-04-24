@@ -657,6 +657,86 @@ func (x *MetaListResponse) GetMetaList() []*MetaList {
 	return nil
 }
 
+type MetaDeleteRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Uuid          *string                `protobuf:"bytes,1,opt,name=uuid" json:"uuid,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MetaDeleteRequest) Reset() {
+	*x = MetaDeleteRequest{}
+	mi := &file_internal_proto_server_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MetaDeleteRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MetaDeleteRequest) ProtoMessage() {}
+
+func (x *MetaDeleteRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_proto_server_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MetaDeleteRequest.ProtoReflect.Descriptor instead.
+func (*MetaDeleteRequest) Descriptor() ([]byte, []int) {
+	return file_internal_proto_server_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *MetaDeleteRequest) GetUuid() string {
+	if x != nil && x.Uuid != nil {
+		return *x.Uuid
+	}
+	return ""
+}
+
+type MetaDeleteResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MetaDeleteResponse) Reset() {
+	*x = MetaDeleteResponse{}
+	mi := &file_internal_proto_server_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MetaDeleteResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MetaDeleteResponse) ProtoMessage() {}
+
+func (x *MetaDeleteResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_proto_server_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MetaDeleteResponse.ProtoReflect.Descriptor instead.
+func (*MetaDeleteResponse) Descriptor() ([]byte, []int) {
+	return file_internal_proto_server_proto_rawDescGZIP(), []int{14}
+}
+
 var File_internal_proto_server_proto protoreflect.FileDescriptor
 
 const file_internal_proto_server_proto_rawDesc = "" +
@@ -696,15 +776,19 @@ const file_internal_proto_server_proto_rawDesc = "" +
 	"\tcreatedAt\x18\x05 \x01(\tR\tcreatedAt\"\x11\n" +
 	"\x0fMetaListRequest\"D\n" +
 	"\x10MetaListResponse\x120\n" +
-	"\bmetaList\x18\x01 \x03(\v2\x14.gophkeeper.MetaListR\bmetaList2\xa3\x01\n" +
+	"\bmetaList\x18\x01 \x03(\v2\x14.gophkeeper.MetaListR\bmetaList\"'\n" +
+	"\x11MetaDeleteRequest\x12\x12\n" +
+	"\x04uuid\x18\x01 \x01(\tR\x04uuid\"\x14\n" +
+	"\x12MetaDeleteResponse2\xa3\x01\n" +
 	"\x04Auth\x12M\n" +
 	"\bRegister\x12\x1f.gophkeeper.RegistrationRequest\x1a .gophkeeper.RegistrationResponse\x12L\n" +
 	"\x05Login\x12 .gophkeeper.AuthorizationRequest\x1a!.gophkeeper.AuthorizationResponse2\xa4\x01\n" +
 	"\x04File\x12I\n" +
 	"\x06Upload\x12\x1d.gophkeeper.FileUploadRequest\x1a\x1e.gophkeeper.FileUploadResponse(\x01\x12Q\n" +
-	"\bDownload\x12\x1f.gophkeeper.FileDownloadRequest\x1a .gophkeeper.FileDownloadResponse\"\x000\x012H\n" +
+	"\bDownload\x12\x1f.gophkeeper.FileDownloadRequest\x1a .gophkeeper.FileDownloadResponse\"\x000\x012\x91\x01\n" +
 	"\x04List\x12@\n" +
-	"\x03Get\x12\x1b.gophkeeper.MetaListRequest\x1a\x1c.gophkeeper.MetaListResponseB\x12Z\x10gophkeeper/protob\beditionsp\xe8\a"
+	"\x03Get\x12\x1b.gophkeeper.MetaListRequest\x1a\x1c.gophkeeper.MetaListResponse\x12G\n" +
+	"\x06Delete\x12\x1d.gophkeeper.MetaDeleteRequest\x1a\x1e.gophkeeper.MetaDeleteResponseB\x12Z\x10gophkeeper/protob\beditionsp\xe8\a"
 
 var (
 	file_internal_proto_server_proto_rawDescOnce sync.Once
@@ -718,7 +802,7 @@ func file_internal_proto_server_proto_rawDescGZIP() []byte {
 	return file_internal_proto_server_proto_rawDescData
 }
 
-var file_internal_proto_server_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_internal_proto_server_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_internal_proto_server_proto_goTypes = []any{
 	(*User)(nil),                  // 0: gophkeeper.User
 	(*RegistrationRequest)(nil),   // 1: gophkeeper.RegistrationRequest
@@ -733,6 +817,8 @@ var file_internal_proto_server_proto_goTypes = []any{
 	(*MetaList)(nil),              // 10: gophkeeper.MetaList
 	(*MetaListRequest)(nil),       // 11: gophkeeper.MetaListRequest
 	(*MetaListResponse)(nil),      // 12: gophkeeper.MetaListResponse
+	(*MetaDeleteRequest)(nil),     // 13: gophkeeper.MetaDeleteRequest
+	(*MetaDeleteResponse)(nil),    // 14: gophkeeper.MetaDeleteResponse
 }
 var file_internal_proto_server_proto_depIdxs = []int32{
 	0,  // 0: gophkeeper.RegistrationRequest.User:type_name -> gophkeeper.User
@@ -744,13 +830,15 @@ var file_internal_proto_server_proto_depIdxs = []int32{
 	6,  // 6: gophkeeper.File.Upload:input_type -> gophkeeper.FileUploadRequest
 	8,  // 7: gophkeeper.File.Download:input_type -> gophkeeper.FileDownloadRequest
 	11, // 8: gophkeeper.List.Get:input_type -> gophkeeper.MetaListRequest
-	2,  // 9: gophkeeper.Auth.Register:output_type -> gophkeeper.RegistrationResponse
-	4,  // 10: gophkeeper.Auth.Login:output_type -> gophkeeper.AuthorizationResponse
-	7,  // 11: gophkeeper.File.Upload:output_type -> gophkeeper.FileUploadResponse
-	9,  // 12: gophkeeper.File.Download:output_type -> gophkeeper.FileDownloadResponse
-	12, // 13: gophkeeper.List.Get:output_type -> gophkeeper.MetaListResponse
-	9,  // [9:14] is the sub-list for method output_type
-	4,  // [4:9] is the sub-list for method input_type
+	13, // 9: gophkeeper.List.Delete:input_type -> gophkeeper.MetaDeleteRequest
+	2,  // 10: gophkeeper.Auth.Register:output_type -> gophkeeper.RegistrationResponse
+	4,  // 11: gophkeeper.Auth.Login:output_type -> gophkeeper.AuthorizationResponse
+	7,  // 12: gophkeeper.File.Upload:output_type -> gophkeeper.FileUploadResponse
+	9,  // 13: gophkeeper.File.Download:output_type -> gophkeeper.FileDownloadResponse
+	12, // 14: gophkeeper.List.Get:output_type -> gophkeeper.MetaListResponse
+	14, // 15: gophkeeper.List.Delete:output_type -> gophkeeper.MetaDeleteResponse
+	10, // [10:16] is the sub-list for method output_type
+	4,  // [4:10] is the sub-list for method input_type
 	4,  // [4:4] is the sub-list for extension type_name
 	4,  // [4:4] is the sub-list for extension extendee
 	0,  // [0:4] is the sub-list for field type_name
@@ -767,7 +855,7 @@ func file_internal_proto_server_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_proto_server_proto_rawDesc), len(file_internal_proto_server_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   3,
 		},

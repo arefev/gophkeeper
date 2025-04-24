@@ -27,7 +27,8 @@ func (ls *listServer) Get(
 	var list []model.Meta
 	var err error
 	err = ls.app.TrManager.Do(ctx, func(ctx context.Context) error {
-		list, err = ls.app.Rep.Meta.Get(ctx, 2)
+		// TODO: подставлять ID авторизованного пользователя
+		list, err = ls.app.Rep.Meta.Get(ctx, 1)
 		if err != nil {
 			return fmt.Errorf("run: meta get failed: %w", err)
 		}

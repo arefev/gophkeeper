@@ -87,7 +87,7 @@ func (s *storageService) Save() error {
 		return fmt.Errorf("storage service: readall from file failed: %w", err)
 	}
 
-	s.meta.UserID = 2
+	s.meta.UserID = 1
 
 	err = s.app.TrManager.Do(ctx, func(ctx context.Context) error {
 		err = s.app.Rep.Meta.Create(ctx, s.meta)
