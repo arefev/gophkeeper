@@ -207,6 +207,17 @@ func (g *grpcClient) GetList(ctx context.Context) (*[]model.MetaListData, error)
 	return &list, nil
 }
 
+func (g *grpcClient) Delete(ctx context.Context, uuid string) error {
+	client := proto.NewListClient(g.conn)
+
+	_, err := client.Delete(ctx, &proto.MetaDeleteRequest{Uuid: &uuid})
+	if err != nil {
+		return fmt.Errorf("grpc FileDelete failed: %w", err)
+	}
+
+	return nil
+}
+
 func (g *grpcClient) FileDownload(ctx context.Context, uuid string) (string, error) {
 	md := metadata.New(map[string]string{"token": g.token})
 	ctx = metadata.NewOutgoingContext(ctx, md)

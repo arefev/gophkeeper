@@ -97,54 +97,21 @@ func (m *Meta) FindByUuid(ctx context.Context, uuid string, userID int) (*model.
 	return meta, nil
 }
 
-func (m *Meta) DeleteByUuid(ctx context.Context, uuid string, userID int) (*model.Meta, error) {
+func (m *Meta) DeleteByUuid(ctx context.Context, uuid string, userID int) error {
 	ctx, cancel := context.WithTimeout(ctx, timeCancel)
 	defer cancel()
 
-	q := `DELETE FROM 
-		SELECT 
-			m.id, m.uuid, m.type, m.name, m.user_id, m.created_at, m.updated_at,
-			f.id as f_id, f.meta_id as f_meta_id, f.name as f_name,
-			f.data as f_data, f.created_at as f_created_at 
-		FROM meta as m
-		JOIN files as f ON m.id = f.meta_id
-		WHERE m.uuid = :uuid AND m.user_id = :user_id
-	`
-
-	stmt, err := m.prepare(ctx, q)
-	if err != nil {
-		return nil, fmt.Errorf("exec with args: prepare fail: %w", err)
+	q := "DELETE FROM meta WHERE user_id = :user_id AND uuid = :uuid"
+	args := map[string]interface{}{
+		"uuid":    uuid,
+		"user_id": userID,
 	}
 
-	defer func() {
-		if err := stmt.Close(); err != nil {
-			m.log.Warn("create with args: stmt close fail", zap.Error(err))
-		}
-	}()
-
-	meta := &model.Meta{}
-	arg := map[string]interface{}{"uuid": uuid, "user_id": userID}
-	row := stmt.QueryRow(arg)
-	err = row.Scan(
-		&meta.ID,
-		&meta.Uuid,
-		&meta.Type,
-		&meta.Name,
-		&meta.UserID,
-		&meta.CreatedAt,
-		&meta.UpdatedAt,
-		&meta.File.ID,
-		&meta.File.MetaID,
-		&meta.File.Name,
-		&meta.File.Data,
-		&meta.File.CreatedAt,
-	)
-
-	if err != nil {
-		return nil, fmt.Errorf("scan failed: %w", err)
+	if err := m.execWithArgs(ctx, args, q); err != nil {
+		return fmt.Errorf("meta delete fail: %w", err)
 	}
 
-	return meta, nil
+	return nil
 }
 
 func (m *Meta) Get(ctx context.Context, userID int) ([]model.Meta, error) {

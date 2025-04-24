@@ -19,6 +19,7 @@ type MetaRepo interface {
 	Create(ctx context.Context, meta *model.Meta) error
 	FindByUuid(ctx context.Context, uuid string, userID int) (*model.Meta, error)
 	Get(ctx context.Context, userID int) ([]model.Meta, error)
+	DeleteByUuid(ctx context.Context, uuid string, userID int) error
 }
 
 type TrManager interface {

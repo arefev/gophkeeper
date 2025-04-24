@@ -1,6 +1,7 @@
 package step
 
 import (
+	"context"
 	"errors"
 
 	"github.com/arefev/gophkeeper/internal/client/app"
@@ -32,7 +33,12 @@ func NewDeleteAction(uuid string, a *app.App) *deleteAction {
 }
 
 func (del *deleteAction) ActionCmd() tea.Msg {
-	return DeleteActionFail{Err: errors.New("не получилось удалить файл")}
+	err := del.app.Conn.Delete(context.Background(), del.uuid)
+	if err != nil {
+		return DeleteActionFail{Err: errors.New("не получилось удалить файл")}
+	}
+
+	return DeleteActionSuccess{}
 }
 
 func (del *deleteAction) Init() tea.Cmd {
@@ -50,7 +56,7 @@ func (del *deleteAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return NewStart(del.app).Exec()
 
 	case DeleteActionSuccess:
-		return NewLKTypes(del.app).WithSuccess().Exec()
+		return NewLKList(del.app).WithMsg("Файл успешно удален").Exec()
 
 	case DeleteActionFail:
 		return NewLKList(del.app).WithError(msg.Err).Exec()

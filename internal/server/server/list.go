@@ -59,3 +59,25 @@ func (ls *listServer) Get(
 
 	return resp, nil
 }
+
+func (ls *listServer) Delete(
+	ctx context.Context,
+	in *proto.MetaDeleteRequest,
+) (*proto.MetaDeleteResponse, error) {
+	var err error
+	err = ls.app.TrManager.Do(ctx, func(ctx context.Context) error {
+		// TODO: подставлять ID авторизованного пользователя
+		err = ls.app.Rep.Meta.DeleteByUuid(ctx, in.GetUuid(), 1)
+		if err != nil {
+			return fmt.Errorf("run: meta delete failed: %w", err)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("run: do transaction failed: %w", err)
+	}
+
+	return &proto.MetaDeleteResponse{}, nil
+}
