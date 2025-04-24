@@ -92,7 +92,7 @@ func (fh *fileHandler) Download(
 	}
 
 	read := 0
-	max := 1024
+	max := fh.app.Conf.ChunkSize
 	size := len(data)
 
 	for read < size {

@@ -38,7 +38,7 @@ func run() error {
 		return fmt.Errorf("run: logger failed: %w", err)
 	}
 
-	conn := connection.NewGRPCClient(l)
+	conn := connection.NewGRPCClient(conf.ChunkSize, l)
 	if err = conn.Connect(conf.Address); err != nil {
 		return fmt.Errorf("run: connect to server failed: %w", err)
 	}

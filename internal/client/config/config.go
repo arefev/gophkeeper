@@ -13,6 +13,7 @@ const (
 	logLevel    string = "info"
 	logFilePath string = ""
 	tokenSecret string = ""
+	chunkSize   int    = 1024
 )
 
 type Config struct {
@@ -20,6 +21,7 @@ type Config struct {
 	LogLevel    string `env:"LOG_LEVEL"`
 	LogFilePath string `env:"LOG_FILE_PATH"`
 	TokenSecret string `env:"TOKEN_SECRET"`
+	ChunkSize   int    `env:"CHUNK_SIZE"`
 }
 
 func NewConfig(params []string) (*Config, error) {
@@ -42,6 +44,7 @@ func (cnf *Config) initFlags(params []string) error {
 	f.StringVar(&cnf.LogLevel, "l", logLevel, "log level")
 	f.StringVar(&cnf.LogFilePath, "f", logLevel, "log file path")
 	f.StringVar(&cnf.TokenSecret, "t-secret", tokenSecret, "token secret")
+	f.IntVar(&cnf.ChunkSize, "chunk", chunkSize, "file chunk size in bytes")
 	if err := f.Parse(params); err != nil {
 		return fmt.Errorf("InitFlags: parse flags fail: %w", err)
 	}

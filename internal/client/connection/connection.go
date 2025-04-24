@@ -21,14 +21,16 @@ import (
 type CheckAuthFail bool
 
 type grpcClient struct {
-	conn  *grpc.ClientConn
-	log   *zap.Logger
-	token string
+	conn      *grpc.ClientConn
+	log       *zap.Logger
+	token     string
+	chunkSize int
 }
 
-func NewGRPCClient(l *zap.Logger) *grpcClient {
+func NewGRPCClient(chunkSize int, l *zap.Logger) *grpcClient {
 	return &grpcClient{
-		log: l,
+		chunkSize: chunkSize,
+		log:       l,
 	}
 }
 
@@ -147,7 +149,7 @@ func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType st
 	if err != nil {
 		return err
 	}
-	buf := make([]byte, 1024*1024) // 1МБ
+	buf := make([]byte, g.chunkSize) // 1МБ
 	batchNumber := 1
 	for {
 		num, err := file.Read(buf)

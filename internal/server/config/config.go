@@ -19,6 +19,7 @@ const (
 	dbHost           string = ""
 	dbPort           string = ""
 	tokenDuration    int    = 60
+	chunkSize        int    = 1024
 )
 
 type Config struct {
@@ -32,6 +33,7 @@ type Config struct {
 	DBHost           string `env:"DB_HOST"`
 	DBPort           string `env:"DB_PORT"`
 	TokenDuration    int    `env:"TOKEN_DURATION"`
+	ChunkSize        int    `env:"CHUNK_SIZE"`
 }
 
 func NewConfig(params []string) (*Config, error) {
@@ -60,6 +62,7 @@ func (cnf *Config) initFlags(params []string) error {
 	f.StringVar(&cnf.EncryptionSecret, "e-secret", encryptionSecret, "encryption secret")
 	f.StringVar(&cnf.TokenSecret, "t-secret", tokenSecret, "token secret")
 	f.IntVar(&cnf.TokenDuration, "t-duration", tokenDuration, "token duration")
+	f.IntVar(&cnf.ChunkSize, "chunk", chunkSize, "file chunk size in bytes")
 	if err := f.Parse(params); err != nil {
 		return fmt.Errorf("InitFlags: parse flags fail: %w", err)
 	}
