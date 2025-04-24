@@ -26,7 +26,9 @@ client-run: client-build
 
 
 client-build:
-	go build -o ./cmd/client/client ./cmd/client/
+	go build \
+	-ldflags "-X main.buildVersion=v1.0.1 -X main.buildCommit='test' -X 'main.buildDate=$(shell date +'%Y/%m/%d %H:%M:%S')'" \
+	-o ./cmd/client/client ./cmd/client/
 .PHONY: client-build
 
 
@@ -52,7 +54,9 @@ server-run: server-build
 
 
 server-build:
-	go build -o ./cmd/server/server ./cmd/server/
+	go build \
+	-ldflags "-X main.buildVersion=v1.0.1 -X main.buildCommit='test' -X 'main.buildDate=$(shell date +'%Y/%m/%d %H:%M:%S')'" \
+	-o ./cmd/server/server ./cmd/server/
 .PHONY: server-build
 
 

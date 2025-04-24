@@ -16,12 +16,8 @@ import (
 	"github.com/arefev/gophkeeper/internal/server/application"
 	"github.com/arefev/gophkeeper/internal/server/config"
 	"github.com/arefev/gophkeeper/internal/server/db/postgresql"
-	"github.com/arefev/gophkeeper/internal/server/handler/interceptor"
-
-	// "github.com/arefev/gophkeeper/internal/server/service"
-
-	// "github.com/arefev/gophkeeper/internal/server/model"
 	"github.com/arefev/gophkeeper/internal/server/handler"
+	"github.com/arefev/gophkeeper/internal/server/handler/interceptor"
 	"github.com/arefev/gophkeeper/internal/server/repository"
 	"github.com/arefev/gophkeeper/internal/server/trm"
 	"github.com/golang-migrate/migrate/v4"
@@ -29,6 +25,12 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+)
+
+var (
+	buildVersion string = "N/A"
+	buildDate    string = "N/A"
+	buildCommit  string = "N/A"
 )
 
 func main() {
@@ -39,6 +41,7 @@ func main() {
 }
 
 func run(ctx context.Context) error {
+	fmt.Printf("Build version: %s\nBuild date: %s\nBuild commit: %s\n", buildVersion, buildDate, buildCommit)
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM, syscall.SIGINT, syscall.SIGQUIT)
 	defer stop()
 
@@ -79,37 +82,6 @@ func run(ctx context.Context) error {
 		Log:       l,
 		Conf:      conf,
 	}
-
-	// err = app.TrManager.Do(ctx, func(ctx context.Context) error {
-	// 	meta, err := app.Rep.Meta.Find(ctx, 28)
-	// 	if err != nil {
-	// 		return fmt.Errorf("run: meta get failed: %w", err)
-	// 	}
-	// 	// l.Sugar().Infof("meta %+v", meta)
-
-	// 	es := service.NewEncryptionService(app)
-	// 	data, err := es.Decrypt(meta.File.Data)
-	// 	if err != nil {
-	// 		return fmt.Errorf("run: decrypt data failed: %w", err)
-	// 	}
-
-	// 	// l.Sugar().Infof("data %+v", string(data))
-	// 	file, err := os.Create("./" + meta.File.Name)
-	// 	if err != nil {
-	// 		return fmt.Errorf("run: create file failed: %w", err)
-	// 	}
-
-	// 	_, err = file.Write(data)
-	// 	if err != nil {
-	// 		return fmt.Errorf("run: write file failed: %w", err)
-	// 	}
-	// 	file.Close()
-
-	// 	return nil
-	// })
-	// if err != nil {
-	// 	return fmt.Errorf("run: do transaction failed: %w", err)
-	// }
 
 	err = runServer(ctx, app, conf, l)
 	if err != nil {
