@@ -48,3 +48,23 @@ message FileUploadResponse {
 service File {
   rpc Upload(stream FileUploadRequest) returns (FileUploadResponse);
 }
+
+message MetaList {
+  string uuid = 1;
+  string type = 2;
+  string name = 3;
+  string fileName = 4;
+  string createdAt = 5;
+}
+
+message MetaListRequest {
+  
+}
+
+message MetaListResponse {
+  repeated MetaList metaList = 1;
+}
+
+service List {
+  rpc Get(MetaListRequest) returns (MetaListResponse);
+}

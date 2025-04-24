@@ -29,7 +29,7 @@ func NewStorageService(app *application.App) *storageService {
 
 func (s *storageService) Upload(stream proto.File_UploadServer) error {
 	var fileSize uint32 = 0
-	
+
 	defer func() {
 		if err := s.file.Output.Close(); err != nil {
 			s.app.Log.Error("file upload close failed", zap.Error(err))

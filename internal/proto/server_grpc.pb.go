@@ -252,3 +252,105 @@ var File_ServiceDesc = grpc.ServiceDesc{
 	},
 	Metadata: "internal/proto/server.proto",
 }
+
+const (
+	List_Get_FullMethodName = "/gophkeeper.List/Get"
+)
+
+// ListClient is the client API for List service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ListClient interface {
+	Get(ctx context.Context, in *MetaListRequest, opts ...grpc.CallOption) (*MetaListResponse, error)
+}
+
+type listClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewListClient(cc grpc.ClientConnInterface) ListClient {
+	return &listClient{cc}
+}
+
+func (c *listClient) Get(ctx context.Context, in *MetaListRequest, opts ...grpc.CallOption) (*MetaListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MetaListResponse)
+	err := c.cc.Invoke(ctx, List_Get_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ListServer is the server API for List service.
+// All implementations must embed UnimplementedListServer
+// for forward compatibility.
+type ListServer interface {
+	Get(context.Context, *MetaListRequest) (*MetaListResponse, error)
+	mustEmbedUnimplementedListServer()
+}
+
+// UnimplementedListServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedListServer struct{}
+
+func (UnimplementedListServer) Get(context.Context, *MetaListRequest) (*MetaListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedListServer) mustEmbedUnimplementedListServer() {}
+func (UnimplementedListServer) testEmbeddedByValue()              {}
+
+// UnsafeListServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ListServer will
+// result in compilation errors.
+type UnsafeListServer interface {
+	mustEmbedUnimplementedListServer()
+}
+
+func RegisterListServer(s grpc.ServiceRegistrar, srv ListServer) {
+	// If the following call pancis, it indicates UnimplementedListServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&List_ServiceDesc, srv)
+}
+
+func _List_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MetaListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ListServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: List_Get_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ListServer).Get(ctx, req.(*MetaListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// List_ServiceDesc is the grpc.ServiceDesc for List service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var List_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "gophkeeper.List",
+	HandlerType: (*ListServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Get",
+			Handler:    _List_Get_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "internal/proto/server.proto",
+}

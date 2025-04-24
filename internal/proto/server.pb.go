@@ -405,6 +405,162 @@ func (x *FileUploadResponse) GetSize() uint32 {
 	return 0
 }
 
+type MetaList struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Uuid          *string                `protobuf:"bytes,1,opt,name=uuid" json:"uuid,omitempty"`
+	Type          *string                `protobuf:"bytes,2,opt,name=type" json:"type,omitempty"`
+	Name          *string                `protobuf:"bytes,3,opt,name=name" json:"name,omitempty"`
+	FileName      *string                `protobuf:"bytes,4,opt,name=fileName" json:"fileName,omitempty"`
+	CreatedAt     *string                `protobuf:"bytes,5,opt,name=createdAt" json:"createdAt,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MetaList) Reset() {
+	*x = MetaList{}
+	mi := &file_internal_proto_server_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MetaList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MetaList) ProtoMessage() {}
+
+func (x *MetaList) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_proto_server_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MetaList.ProtoReflect.Descriptor instead.
+func (*MetaList) Descriptor() ([]byte, []int) {
+	return file_internal_proto_server_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *MetaList) GetUuid() string {
+	if x != nil && x.Uuid != nil {
+		return *x.Uuid
+	}
+	return ""
+}
+
+func (x *MetaList) GetType() string {
+	if x != nil && x.Type != nil {
+		return *x.Type
+	}
+	return ""
+}
+
+func (x *MetaList) GetName() string {
+	if x != nil && x.Name != nil {
+		return *x.Name
+	}
+	return ""
+}
+
+func (x *MetaList) GetFileName() string {
+	if x != nil && x.FileName != nil {
+		return *x.FileName
+	}
+	return ""
+}
+
+func (x *MetaList) GetCreatedAt() string {
+	if x != nil && x.CreatedAt != nil {
+		return *x.CreatedAt
+	}
+	return ""
+}
+
+type MetaListRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MetaListRequest) Reset() {
+	*x = MetaListRequest{}
+	mi := &file_internal_proto_server_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MetaListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MetaListRequest) ProtoMessage() {}
+
+func (x *MetaListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_proto_server_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MetaListRequest.ProtoReflect.Descriptor instead.
+func (*MetaListRequest) Descriptor() ([]byte, []int) {
+	return file_internal_proto_server_proto_rawDescGZIP(), []int{9}
+}
+
+type MetaListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MetaList      []*MetaList            `protobuf:"bytes,1,rep,name=metaList" json:"metaList,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MetaListResponse) Reset() {
+	*x = MetaListResponse{}
+	mi := &file_internal_proto_server_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MetaListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MetaListResponse) ProtoMessage() {}
+
+func (x *MetaListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_proto_server_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MetaListResponse.ProtoReflect.Descriptor instead.
+func (*MetaListResponse) Descriptor() ([]byte, []int) {
+	return file_internal_proto_server_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *MetaListResponse) GetMetaList() []*MetaList {
+	if x != nil {
+		return x.MetaList
+	}
+	return nil
+}
+
 var File_internal_proto_server_proto protoreflect.FileDescriptor
 
 const file_internal_proto_server_proto_rawDesc = "" +
@@ -430,12 +586,23 @@ const file_internal_proto_server_proto_rawDesc = "" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12$\n" +
 	"\x04meta\x18\x03 \x01(\v2\x10.gophkeeper.MetaR\x04meta\"(\n" +
 	"\x12FileUploadResponse\x12\x12\n" +
-	"\x04size\x18\x01 \x01(\rR\x04size2\xa3\x01\n" +
+	"\x04size\x18\x01 \x01(\rR\x04size\"\x80\x01\n" +
+	"\bMetaList\x12\x12\n" +
+	"\x04uuid\x18\x01 \x01(\tR\x04uuid\x12\x12\n" +
+	"\x04type\x18\x02 \x01(\tR\x04type\x12\x12\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1a\n" +
+	"\bfileName\x18\x04 \x01(\tR\bfileName\x12\x1c\n" +
+	"\tcreatedAt\x18\x05 \x01(\tR\tcreatedAt\"\x11\n" +
+	"\x0fMetaListRequest\"D\n" +
+	"\x10MetaListResponse\x120\n" +
+	"\bmetaList\x18\x01 \x03(\v2\x14.gophkeeper.MetaListR\bmetaList2\xa3\x01\n" +
 	"\x04Auth\x12M\n" +
 	"\bRegister\x12\x1f.gophkeeper.RegistrationRequest\x1a .gophkeeper.RegistrationResponse\x12L\n" +
 	"\x05Login\x12 .gophkeeper.AuthorizationRequest\x1a!.gophkeeper.AuthorizationResponse2Q\n" +
 	"\x04File\x12I\n" +
-	"\x06Upload\x12\x1d.gophkeeper.FileUploadRequest\x1a\x1e.gophkeeper.FileUploadResponse(\x01B\x12Z\x10gophkeeper/protob\beditionsp\xe8\a"
+	"\x06Upload\x12\x1d.gophkeeper.FileUploadRequest\x1a\x1e.gophkeeper.FileUploadResponse(\x012H\n" +
+	"\x04List\x12@\n" +
+	"\x03Get\x12\x1b.gophkeeper.MetaListRequest\x1a\x1c.gophkeeper.MetaListResponseB\x12Z\x10gophkeeper/protob\beditionsp\xe8\a"
 
 var (
 	file_internal_proto_server_proto_rawDescOnce sync.Once
@@ -449,7 +616,7 @@ func file_internal_proto_server_proto_rawDescGZIP() []byte {
 	return file_internal_proto_server_proto_rawDescData
 }
 
-var file_internal_proto_server_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_internal_proto_server_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_internal_proto_server_proto_goTypes = []any{
 	(*User)(nil),                  // 0: gophkeeper.User
 	(*RegistrationRequest)(nil),   // 1: gophkeeper.RegistrationRequest
@@ -459,22 +626,28 @@ var file_internal_proto_server_proto_goTypes = []any{
 	(*Meta)(nil),                  // 5: gophkeeper.Meta
 	(*FileUploadRequest)(nil),     // 6: gophkeeper.FileUploadRequest
 	(*FileUploadResponse)(nil),    // 7: gophkeeper.FileUploadResponse
+	(*MetaList)(nil),              // 8: gophkeeper.MetaList
+	(*MetaListRequest)(nil),       // 9: gophkeeper.MetaListRequest
+	(*MetaListResponse)(nil),      // 10: gophkeeper.MetaListResponse
 }
 var file_internal_proto_server_proto_depIdxs = []int32{
-	0, // 0: gophkeeper.RegistrationRequest.User:type_name -> gophkeeper.User
-	0, // 1: gophkeeper.AuthorizationRequest.User:type_name -> gophkeeper.User
-	5, // 2: gophkeeper.FileUploadRequest.meta:type_name -> gophkeeper.Meta
-	1, // 3: gophkeeper.Auth.Register:input_type -> gophkeeper.RegistrationRequest
-	3, // 4: gophkeeper.Auth.Login:input_type -> gophkeeper.AuthorizationRequest
-	6, // 5: gophkeeper.File.Upload:input_type -> gophkeeper.FileUploadRequest
-	2, // 6: gophkeeper.Auth.Register:output_type -> gophkeeper.RegistrationResponse
-	4, // 7: gophkeeper.Auth.Login:output_type -> gophkeeper.AuthorizationResponse
-	7, // 8: gophkeeper.File.Upload:output_type -> gophkeeper.FileUploadResponse
-	6, // [6:9] is the sub-list for method output_type
-	3, // [3:6] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	0,  // 0: gophkeeper.RegistrationRequest.User:type_name -> gophkeeper.User
+	0,  // 1: gophkeeper.AuthorizationRequest.User:type_name -> gophkeeper.User
+	5,  // 2: gophkeeper.FileUploadRequest.meta:type_name -> gophkeeper.Meta
+	8,  // 3: gophkeeper.MetaListResponse.metaList:type_name -> gophkeeper.MetaList
+	1,  // 4: gophkeeper.Auth.Register:input_type -> gophkeeper.RegistrationRequest
+	3,  // 5: gophkeeper.Auth.Login:input_type -> gophkeeper.AuthorizationRequest
+	6,  // 6: gophkeeper.File.Upload:input_type -> gophkeeper.FileUploadRequest
+	9,  // 7: gophkeeper.List.Get:input_type -> gophkeeper.MetaListRequest
+	2,  // 8: gophkeeper.Auth.Register:output_type -> gophkeeper.RegistrationResponse
+	4,  // 9: gophkeeper.Auth.Login:output_type -> gophkeeper.AuthorizationResponse
+	7,  // 10: gophkeeper.File.Upload:output_type -> gophkeeper.FileUploadResponse
+	10, // 11: gophkeeper.List.Get:output_type -> gophkeeper.MetaListResponse
+	8,  // [8:12] is the sub-list for method output_type
+	4,  // [4:8] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_internal_proto_server_proto_init() }
@@ -488,9 +661,9 @@ func file_internal_proto_server_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_proto_server_proto_rawDesc), len(file_internal_proto_server_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   11,
 			NumExtensions: 0,
-			NumServices:   2,
+			NumServices:   3,
 		},
 		GoTypes:           file_internal_proto_server_proto_goTypes,
 		DependencyIndexes: file_internal_proto_server_proto_depIdxs,

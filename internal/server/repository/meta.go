@@ -96,3 +96,59 @@ func (m *Meta) Find(ctx context.Context, id int) (*model.Meta, error) {
 
 	return meta, nil
 }
+
+func (m *Meta) Get(ctx context.Context, userID int) ([]model.Meta, error) {
+	ctx, cancel := context.WithTimeout(ctx, timeCancel)
+	defer cancel()
+
+	q := `
+		SELECT 
+			m.id, m.uuid, m.type, m.name, m.user_id, m.created_at, m.updated_at,
+			f.id as f_id, f.meta_id as f_meta_id, f.name as f_name,
+			f.created_at as f_created_at 
+		FROM meta as m
+		JOIN files as f ON m.id = f.meta_id
+		WHERE m.user_id = :user_id
+	`
+
+	stmt, err := m.prepare(ctx, q)
+	if err != nil {
+		return nil, fmt.Errorf("meta get: prepare failed: %w", err)
+	}
+
+	defer func() {
+		if err := stmt.Close(); err != nil {
+			m.log.Warn("meta get: stmt close failed", zap.Error(err))
+		}
+	}()
+
+	list := []model.Meta{}
+	arg := map[string]interface{}{"user_id": userID}
+	rows, err := stmt.Queryx(arg)
+	if err != nil {
+		return nil, fmt.Errorf("meta get: query failed: %w", err)
+	}
+
+	for rows.Next() {
+		meta := model.Meta{}
+		err = rows.Scan(
+			&meta.ID,
+			&meta.Uuid,
+			&meta.Type,
+			&meta.Name,
+			&meta.UserID,
+			&meta.CreatedAt,
+			&meta.UpdatedAt,
+			&meta.File.ID,
+			&meta.File.MetaID,
+			&meta.File.Name,
+			&meta.File.CreatedAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("meta get: scan failed: %w", err)
+		}
+		list = append(list, meta)
+	}
+
+	return list, nil
+}

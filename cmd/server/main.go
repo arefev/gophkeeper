@@ -79,8 +79,6 @@ func run(ctx context.Context) error {
 		Conf:      conf,
 	}
 
-
-
 	// err = app.TrManager.Do(ctx, func(ctx context.Context) error {
 	// 	meta, err := app.Rep.Meta.Find(ctx, 28)
 	// 	if err != nil {
@@ -130,6 +128,7 @@ func runServer(ctx context.Context, app *application.App, c *config.Config, l *z
 	s := grpc.NewServer(grpc.StreamInterceptor(middleware.StreamCheckToken))
 	proto.RegisterAuthServer(s, server.NewAuthServer(app))
 	proto.RegisterFileServer(s, server.NewFileServer(app))
+	proto.RegisterListServer(s, server.NewListServer(app))
 
 	go func() {
 		<-ctx.Done()
