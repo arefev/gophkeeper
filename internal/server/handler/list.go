@@ -7,6 +7,7 @@ import (
 	"github.com/arefev/gophkeeper/internal/proto"
 	"github.com/arefev/gophkeeper/internal/server/application"
 	"github.com/arefev/gophkeeper/internal/server/model"
+	"github.com/arefev/gophkeeper/internal/server/service"
 )
 
 type listHandler struct {
@@ -26,17 +27,22 @@ func (lh *listHandler) Get(
 ) (*proto.MetaListResponse, error) {
 	var list []model.Meta
 	var err error
+
+	user, err := service.NewUserService(lh.app).Authorized(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("user not found: %w", err)
+	}
+
 	err = lh.app.TrManager.Do(ctx, func(ctx context.Context) error {
-		// TODO: подставлять ID авторизованного пользователя
-		list, err = lh.app.Rep.Meta.Get(ctx, 1)
+		list, err = lh.app.Rep.Meta.Get(ctx, user.ID)
 		if err != nil {
-			return fmt.Errorf("run: meta get failed: %w", err)
+			return fmt.Errorf("meta get failed: %w", err)
 		}
 
 		return nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("run: do transaction failed: %w", err)
+		return nil, fmt.Errorf("do transaction failed: %w", err)
 	}
 
 	respList := []*proto.MetaList{}
@@ -65,18 +71,22 @@ func (lh *listHandler) Delete(
 	in *proto.MetaDeleteRequest,
 ) (*proto.MetaDeleteResponse, error) {
 	var err error
+	user, err := service.NewUserService(lh.app).Authorized(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("user not found: %w", err)
+	}
+
 	err = lh.app.TrManager.Do(ctx, func(ctx context.Context) error {
-		// TODO: подставлять ID авторизованного пользователя
-		err = lh.app.Rep.Meta.DeleteByUuid(ctx, in.GetUuid(), 1)
+		err = lh.app.Rep.Meta.DeleteByUuid(ctx, in.GetUuid(), user.ID)
 		if err != nil {
-			return fmt.Errorf("run: meta delete failed: %w", err)
+			return fmt.Errorf("meta delete failed: %w", err)
 		}
 
 		return nil
 	})
 
 	if err != nil {
-		return nil, fmt.Errorf("run: do transaction failed: %w", err)
+		return nil, fmt.Errorf("do transaction failed: %w", err)
 	}
 
 	return &proto.MetaDeleteResponse{}, nil
