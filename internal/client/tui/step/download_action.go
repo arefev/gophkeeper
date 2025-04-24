@@ -58,7 +58,7 @@ func (da *downloadAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return NewLKList(da.app).WithMsg("Файл успешно скачан - " + msg.FilePath).Exec()
 
 	case DownloadActionFail:
-		return NewLK(da.app).WithError(msg.Err).Exec()
+		return NewLKList(da.app).WithError(msg.Err).Exec()
 
 	case tea.KeyMsg:
 		switch msg.Type {

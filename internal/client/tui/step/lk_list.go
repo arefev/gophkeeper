@@ -18,6 +18,7 @@ import (
 
 type lkList struct {
 	withMsg string
+	err     string
 	app     *app.App
 	table   table.Model
 	list    *[]model.MetaListData
@@ -58,6 +59,11 @@ func (lkl *lkList) Exec() (tea.Model, tea.Cmd) {
 	return lkl, cmd
 }
 
+func (lkl *lkList) WithError(err error) *lkList {
+	lkl.err = "Ошибка: " + err.Error()
+	return lkl
+}
+
 func (lkl *lkList) WithMsg(msg string) *lkList {
 	lkl.withMsg = msg
 	return lkl
@@ -83,6 +89,9 @@ func (lkl *lkList) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case tea.KeyEnter:
 			return NewDownloadAction(lkl.table.SelectedRow()[0], lkl.app).Exec()
 
+		case tea.KeyDelete:
+			return NewDeleteAction(lkl.table.SelectedRow()[0], lkl.app).Exec()
+
 		default:
 			lkl.table, cmd = lkl.table.Update(msg)
 			return lkl, cmd
@@ -106,6 +115,10 @@ func (lkl *lkList) View() string {
 
 	if lkl.withMsg != "" {
 		str += view.Success(lkl.withMsg)
+	}
+
+	if lkl.err != "" {
+		str += view.Error(lkl.err)
 	}
 
 	str += style.BorderStyle.Render(lkl.table.View()) + view.BreakLine().One()
