@@ -125,8 +125,15 @@ func runServer(ctx context.Context, app *application.App, c *config.Config, l *z
 		return fmt.Errorf("runGRPC Listen failed: %w", err)
 	}
 
-	middleware := interceptor.NewMiddleware(app)
-	s := grpc.NewServer(grpc.StreamInterceptor(middleware.StreamCheckToken))
+	intr := interceptor.New(app)
+	s := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			grpc.UnaryServerInterceptor(intr.UnaryCheckToken()),
+		),
+		grpc.ChainStreamInterceptor(
+			grpc.StreamServerInterceptor(intr.StreamCheckToken()),
+		),
+	)
 	proto.RegisterAuthServer(s, handler.NewAuthHandler(app))
 	proto.RegisterFileServer(s, handler.NewFileHandler(app))
 	proto.RegisterListServer(s, handler.NewListHandler(app))
