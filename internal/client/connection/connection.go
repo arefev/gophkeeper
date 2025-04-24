@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/arefev/gophkeeper/internal/client/tui/model"
 	"github.com/arefev/gophkeeper/internal/proto"
 	tea "github.com/charmbracelet/bubbletea"
 	"go.uber.org/zap"
@@ -180,16 +181,24 @@ func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType st
 	return nil
 }
 
-func (g *grpcClient) GetList(ctx context.Context) error {
+func (g *grpcClient) GetList(ctx context.Context) (*[]model.MetaListData, error) {
 	client := proto.NewListClient(g.conn)
-
 	resp, err := client.Get(ctx, &proto.MetaListRequest{})
 
 	if err != nil {
-		return fmt.Errorf("grpc get list failed: %w", err)
+		return nil, fmt.Errorf("grpc get list failed: %w", err)
 	}
 
-	g.log.Sugar().Infof("get list resp: %+v", resp)
+	list := []model.MetaListData{}
+	for _, item := range resp.MetaList {
+		list = append(list, model.MetaListData{
+			UUID: item.GetUuid(),
+			Type: item.GetType(),
+			Name: item.GetName(),
+			File: item.GetFileName(),
+			Date: item.GetCreatedAt(),
+		})
+	}
 
-	return nil
+	return &list, nil
 }

@@ -9,6 +9,7 @@ import (
 
 type lk struct {
 	choice  string
+	err     string
 	app     *app.App
 	choices []string
 	cursor  int
@@ -19,6 +20,11 @@ func NewLK(a *app.App) *lk {
 		choices: []string{"Получить данные", "Загрузить данные"},
 		app:     a,
 	}
+}
+
+func (lk *lk) WithError(err error) *lk {
+	lk.err = "Ошибка: " + err.Error()
+	return lk
 }
 
 func (lk *lk) Init() tea.Cmd {
@@ -76,6 +82,10 @@ func (lk *lk) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (lk *lk) View() string {
 	str := view.Title("Личный кабинет 🔑")
+
+	if lk.err != "" {
+		str += view.Error(lk.err)
+	}
 
 	for i := range lk.choices {
 		if lk.cursor == i {

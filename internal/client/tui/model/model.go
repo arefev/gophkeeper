@@ -28,3 +28,11 @@ type FileData struct {
 	Name string
 	Path string
 }
+
+type MetaListData struct {
+	UUID string
+	Type string
+	Name string
+	File string
+	Date string
+}

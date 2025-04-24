@@ -2,39 +2,50 @@ package step
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/arefev/gophkeeper/internal/client/app"
 	"github.com/arefev/gophkeeper/internal/client/connection"
+	"github.com/arefev/gophkeeper/internal/client/tui/model"
 	"github.com/arefev/gophkeeper/internal/client/tui/style"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
+	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/table"
 	tea "github.com/charmbracelet/bubbletea"
 	"go.uber.org/zap"
 )
 
 type lkList struct {
-	app   *app.App
-	table table.Model
+	app     *app.App
+	table   table.Model
+	list    *[]model.MetaListData
+	spinner spinner.Model
+}
+
+type IsListLoaded bool
+type ListActionFail struct {
+	Err error
 }
 
 func NewLKList(a *app.App) *lkList {
 	return &lkList{
-		table: getTable(),
-		app:   a,
+		app:     a,
+		spinner: view.Spinner(),
 	}
 }
 
 func (lkl *lkList) ActionCmd() tea.Msg {
 	ctx := context.Background()
-	// TODO: validation needed
-	err := lkl.app.Conn.GetList(ctx)
+	list, err := lkl.app.Conn.GetList(ctx)
 	if err != nil {
 		lkl.app.Log.Error("GetList failed", zap.Error(err))
-		return nil
+		return ListActionFail{Err: errors.New("не удалось загрузить данные")}
 	}
 
-	return nil
+	lkl.list = list
+	lkl.table = lkl.getTable()
+	return IsListLoaded(true)
 }
 
 func (lkl *lkList) Init() tea.Cmd {
@@ -51,6 +62,9 @@ func (lkl *lkList) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case connection.CheckAuthFail:
 		return NewStart(lkl.app).Exec()
+
+	case ListActionFail:
+		return NewLK(lkl.app).WithError(msg.Err).Exec()
 
 	case tea.KeyMsg:
 		switch msg.Type {
@@ -76,6 +90,14 @@ func (lkl *lkList) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (lkl *lkList) View() string {
+	if lkl.list == nil {
+		str := view.BreakLine().Two()
+		str += lkl.spinner.View()
+		str += " Минутку..." + view.BreakLine().One()
+		str += view.Quit()
+		return str
+	}
+
 	str := view.Title("Выберите данные 📃")
 	str += style.BorderStyle.Render(lkl.table.View()) + view.BreakLine().One()
 	str += fmt.Sprintf("Всего строк: %d", len(lkl.table.Rows()))
@@ -84,57 +106,26 @@ func (lkl *lkList) View() string {
 	return str
 }
 
-func getTable() table.Model {
+func (lkl *lkList) getTable() table.Model {
 	columns := []table.Column{
 		{Title: "Uuid", Width: style.ColumnWidthS},
 		{Title: "Тип", Width: style.ColumnWidthM},
 		{Title: "Имя", Width: style.ColumnWitdthL},
-		{Title: "Дата создания", Width: style.ColumnWidthM},
+		{Title: "Файл", Width: style.ColumnWitdthL},
+		{Title: "Дата создания", Width: style.ColumnWitdthL},
 	}
 
-	rows := []table.Row{
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72977", "Карта", "Сбер", "01.03.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72988", "Файл", "load.exe", "02.02.2025"},
-		{"1e5b491b-39a3-40d2-92ed-adabfbb72999", "Логин/пароль", "https://habr.com", "03.03.2025"},
+	rows := make([]table.Row, 0, len(*lkl.list))
+	for _, item := range *lkl.list {
+		row := table.Row{
+			item.UUID,
+			item.Type,
+			item.Name,
+			item.File,
+			item.Date,
+		}
+
+		rows = append(rows, row)
 	}
 
 	return view.Table(columns, rows)
