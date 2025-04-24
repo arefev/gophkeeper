@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/arefev/gophkeeper/internal/client/service"
 	"github.com/arefev/gophkeeper/internal/client/tui/model"
 	"github.com/arefev/gophkeeper/internal/proto"
 	tea "github.com/charmbracelet/bubbletea"
@@ -182,6 +183,9 @@ func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType st
 }
 
 func (g *grpcClient) GetList(ctx context.Context) (*[]model.MetaListData, error) {
+	md := metadata.New(map[string]string{"token": g.token})
+	ctx = metadata.NewOutgoingContext(ctx, md)
+
 	client := proto.NewListClient(g.conn)
 	resp, err := client.Get(ctx, &proto.MetaListRequest{})
 
@@ -201,4 +205,56 @@ func (g *grpcClient) GetList(ctx context.Context) (*[]model.MetaListData, error)
 	}
 
 	return &list, nil
+}
+
+func (g *grpcClient) FileDownload(ctx context.Context, uuid string) (string, error) {
+	md := metadata.New(map[string]string{"token": g.token})
+	ctx = metadata.NewOutgoingContext(ctx, md)
+
+	client := proto.NewFileClient(g.conn)
+
+	req := &proto.FileDownloadRequest{Uuid: &uuid}
+	stream, err := client.Download(ctx, req)
+
+	if err != nil {
+		return "", fmt.Errorf("grpc file download stream failed: %w", err)
+	}
+
+	file := service.NewFile()
+	var fileSize uint32 = 0
+
+	defer func() {
+		if err := file.Output.Close(); err != nil {
+			g.log.Error("file download close failed", zap.Error(err))
+		}
+	}()
+	for {
+		req, err := stream.Recv()
+		if file.Path == "" {
+			dir, err := os.Getwd()
+			if err != nil {
+				return "", fmt.Errorf("file download get dir failed: %w", err)
+			}
+
+			file.SetFile(req.GetName(), dir)
+		}
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			g.log.Debug("file download stream recv failed", zap.Error(err))
+			return "", fmt.Errorf("file download stream recv failed: %w", err)
+		}
+		chunk := req.GetChunk()
+		fileSize += uint32(len(chunk))
+		g.log.Debug("received a chunk with size", zap.Uint32("size", fileSize))
+		if err := file.Write(chunk); err != nil {
+			g.log.Debug("file download write failed", zap.Error(err))
+			return "", fmt.Errorf("file download write failed: %w", err)
+		}
+	}
+
+	g.log.Debug("file downloaded", zap.Uint32("size", fileSize))
+
+	return file.Path, nil
 }

@@ -17,6 +17,7 @@ import (
 )
 
 type lkList struct {
+	withMsg string
 	app     *app.App
 	table   table.Model
 	list    *[]model.MetaListData
@@ -55,6 +56,11 @@ func (lkl *lkList) Init() tea.Cmd {
 func (lkl *lkList) Exec() (tea.Model, tea.Cmd) {
 	cmd := lkl.Init()
 	return lkl, cmd
+}
+
+func (lkl *lkList) WithMsg(msg string) *lkList {
+	lkl.withMsg = msg
+	return lkl
 }
 
 func (lkl *lkList) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -97,6 +103,11 @@ func (lkl *lkList) View() string {
 	}
 
 	str := view.Title("Выберите данные 📃")
+
+	if lkl.withMsg != "" {
+		str += view.Success(lkl.withMsg)
+	}
+
 	str += style.BorderStyle.Render(lkl.table.View()) + view.BreakLine().One()
 	str += fmt.Sprintf("Всего строк: %d", len(lkl.table.Rows()))
 	str += view.BreakLine().One()

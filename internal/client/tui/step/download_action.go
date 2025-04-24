@@ -1,6 +1,8 @@
 package step
 
 import (
+	"context"
+
 	"github.com/arefev/gophkeeper/internal/client/app"
 	"github.com/arefev/gophkeeper/internal/client/connection"
 	"github.com/arefev/gophkeeper/internal/client/tui/view"
@@ -9,6 +11,7 @@ import (
 )
 
 type DownloadActionSuccess struct {
+	FilePath string
 }
 
 type DownloadActionFail struct {
@@ -30,11 +33,15 @@ func NewDownloadAction(uuid string, a *app.App) *downloadAction {
 }
 
 func (da *downloadAction) ActionCmd() tea.Msg {
-	return nil
+	path, err := da.app.Conn.FileDownload(context.Background(), da.uuid)
+	if err != nil {
+		return DownloadActionFail{Err: err}
+	}
+	return DownloadActionSuccess{FilePath: path}
 }
 
 func (da *downloadAction) Init() tea.Cmd {
-	return tea.Batch(da.spinner.Tick, da.ActionCmd, da.app.Conn.CheckTokenCmd)
+	return tea.Batch(da.spinner.Tick, da.app.Conn.CheckTokenCmd, da.ActionCmd)
 }
 
 func (da *downloadAction) Exec() (tea.Model, tea.Cmd) {
@@ -48,7 +55,7 @@ func (da *downloadAction) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return NewStart(da.app).Exec()
 
 	case DownloadActionSuccess:
-		return NewLKList(da.app).Exec()
+		return NewLKList(da.app).WithMsg("Файл успешно скачан - " + msg.FilePath).Exec()
 
 	case DownloadActionFail:
 		return NewLK(da.app).WithError(msg.Err).Exec()

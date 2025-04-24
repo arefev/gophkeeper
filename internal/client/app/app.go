@@ -14,6 +14,7 @@ type Connection interface {
 	FileUpload(ctx context.Context, path, metaName, metaType string) error
 	TextUpload(ctx context.Context, txt []byte, metaName, metaType string) error
 	GetList(ctx context.Context) (*[]model.MetaListData, error)
+	FileDownload(ctx context.Context, uuid string) (string, error)
 	SetToken(t string)
 	CheckTokenCmd() tea.Msg
 }

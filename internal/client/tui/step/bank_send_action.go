@@ -39,7 +39,7 @@ func (bsa *bankSendAction) ActionCmd() tea.Msg {
 	ctx := context.Background()
 	// TODO: validation needed
 	data := fmt.Sprintf("Number: %s\nExpired: %s\nCVV: %s", bsa.data.Number, bsa.data.Exp, bsa.data.CVV)
-	err := bsa.app.Conn.TextUpload(ctx, []byte(data), bsa.data.Name, "bank")
+	err := bsa.app.Conn.TextUpload(ctx, []byte(data), bsa.data.Name, "card")
 	if err != nil {
 		bsa.app.Log.Error("TextUpload failed", zap.Error(err))
 		return BankSendActionFail{Err: errors.New("не удалось сохранить данные")}

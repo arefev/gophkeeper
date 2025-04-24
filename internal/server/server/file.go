@@ -6,6 +6,7 @@ import (
 
 	"github.com/arefev/gophkeeper/internal/proto"
 	"github.com/arefev/gophkeeper/internal/server/application"
+	"github.com/arefev/gophkeeper/internal/server/model"
 	"github.com/arefev/gophkeeper/internal/server/service"
 	"go.uber.org/zap"
 )
@@ -57,26 +58,50 @@ func (fs *fileServer) Download(
 	req *proto.FileDownloadRequest,
 	stream proto.File_DownloadServer,
 ) error {
-	// TODO: получать userID из контекста
-	const userID = 2
+	const userID = 2 // TODO: получать userID из контекста
 
-	err := fs.app.TrManager.Do(stream.Context(), func(ctx context.Context) error {
-		meta, err := fs.app.Rep.Meta.FindByUuid(ctx, req.GetUuid(), userID)
+	var data []byte
+	var meta *model.Meta
+	var err error
+
+	fs.app.Log.Debug(
+		"file download",
+	)
+
+	err = fs.app.TrManager.Do(stream.Context(), func(ctx context.Context) error {
+		meta, err = fs.app.Rep.Meta.FindByUuid(ctx, req.GetUuid(), userID)
 		if err != nil {
 			return fmt.Errorf("run: meta get failed: %w", err)
 		}
 		// l.Sugar().Infof("meta %+v", meta)
 
 		es := service.NewEncryptionService(fs.app)
-		_, err = es.Decrypt(meta.File.Data)
+		data, err = es.Decrypt(meta.File.Data)
 		if err != nil {
 			return fmt.Errorf("run: decrypt data failed: %w", err)
 		}
 
 		return nil
 	})
+
 	if err != nil {
 		return fmt.Errorf("run: do transaction failed: %w", err)
+	}
+
+	read := 0
+	max := 1024
+	size := len(data)
+
+	for read < size {
+		next := min(read+max, size)
+		chunk := data[read:next]
+
+		err := stream.Send(&proto.FileDownloadResponse{Chunk: chunk, Name: &meta.File.Name})
+		if err != nil {
+			return fmt.Errorf("download stream failed: %w", err)
+		}
+
+		read = next
 	}
 
 	return nil
