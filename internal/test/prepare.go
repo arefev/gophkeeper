@@ -135,7 +135,6 @@ func (p *prepare) server(app *application.App) error {
 }
 
 func (p *prepare) Close(ctx context.Context) error {
-
 	if p.srv != nil {
 		p.srv.Stop()
 	}
