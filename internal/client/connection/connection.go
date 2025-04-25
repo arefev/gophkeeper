@@ -140,16 +140,16 @@ func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType st
 	client := proto.NewFileClient(g.conn)
 	stream, err := client.Upload(ctx)
 	if err != nil {
-		return fmt.Errorf("grpc creds upload stream failed: %w", err)
+		return fmt.Errorf("grpc file upload stream failed: %w", err)
 	}
 
 	fileName := filepath.Base(path)
 
 	file, err := os.Open(path)
 	if err != nil {
-		return err
+		return fmt.Errorf("grpc file upload open failed: %w", err)
 	}
-	buf := make([]byte, g.chunkSize) // 1МБ
+	buf := make([]byte, g.chunkSize)
 	batchNumber := 1
 	for {
 		num, err := file.Read(buf)
@@ -157,7 +157,7 @@ func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType st
 			break
 		}
 		if err != nil {
-			return err
+			return fmt.Errorf("grpc file upload read failed: %w", err)
 		}
 		chunk := buf[:num]
 
@@ -170,16 +170,17 @@ func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType st
 			},
 		}
 		if err := stream.Send(r); err != nil {
-			return err
+			return fmt.Errorf("grpc file upload stream send failed: %w", err)
 		}
 		g.log.Debug("Sent - batch", zap.Int("number", batchNumber), zap.Int("size", len(chunk)))
-		batchNumber += 1
-
+		batchNumber++
 	}
+
 	res, err := stream.CloseAndRecv()
 	if err != nil {
-		return err
+		return fmt.Errorf("grpc file upload stream close failed: %w", err)
 	}
+
 	g.log.Debug("file uploaded", zap.Uint32("bytes", res.GetSize()))
 	return nil
 }
@@ -196,7 +197,7 @@ func (g *grpcClient) GetList(ctx context.Context) (*[]model.MetaListData, error)
 	}
 
 	list := []model.MetaListData{}
-	for _, item := range resp.MetaList {
+	for _, item := range resp.GetMetaList() {
 		list = append(list, model.MetaListData{
 			UUID: item.GetUuid(),
 			Type: item.GetType(),
@@ -251,7 +252,9 @@ func (g *grpcClient) FileDownload(ctx context.Context, uuid string) (string, err
 				return "", fmt.Errorf("file download get dir failed: %w", err)
 			}
 
-			file.SetFile(req.GetName(), dir)
+			if err = file.SetFile(req.GetName(), dir); err != nil {
+				return "", fmt.Errorf("file download create file failed: %w", err)
+			}
 		}
 		if err == io.EOF {
 			break

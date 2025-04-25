@@ -100,10 +100,10 @@ func runServer(ctx context.Context, app *application.App, c *config.Config, l *z
 	intr := interceptor.New(app)
 	s := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
-			grpc.UnaryServerInterceptor(intr.UnaryCheckToken()),
+			intr.UnaryCheckToken(),
 		),
 		grpc.ChainStreamInterceptor(
-			grpc.StreamServerInterceptor(intr.StreamCheckToken()),
+			intr.StreamCheckToken(),
 		),
 	)
 	proto.RegisterAuthServer(s, handler.NewAuthHandler(app))
@@ -146,12 +146,12 @@ func migrationsUp(dsn string) error {
 }
 
 func databaseDSN(cnf *config.Config) string {
+	host := net.JoinHostPort(cnf.DBHost, cnf.DBPort)
 	return fmt.Sprintf(
-		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		"postgres://%s:%s@%s/%s?sslmode=disable",
 		cnf.DBName,
 		cnf.DBPassword,
-		cnf.DBHost,
-		cnf.DBPort,
+		host,
 		cnf.DBName,
 	)
 }
