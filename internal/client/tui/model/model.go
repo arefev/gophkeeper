@@ -6,9 +6,8 @@ type LoginData struct {
 }
 
 type RegData struct {
-	Login           string
-	Password        string
-	ConfirmPassword string
+	Login    string
+	Password string
 }
 
 type CredsData struct {

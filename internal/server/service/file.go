@@ -35,8 +35,11 @@ func (fs *FileService) Write(chunk []byte) error {
 	if fs.Output == nil {
 		return nil
 	}
-	_, err := fs.Output.Write(chunk)
-	return err
+
+	if _, err := fs.Output.Write(chunk); err != nil {
+		return fmt.Errorf("file close failed: %w", err)
+	}
+	return nil
 }
 
 func (fs *FileService) Close() error {

@@ -25,8 +25,8 @@ func NewLogin(a *app.App) *login {
 func (l *login) createFields() {
 	const fieldCount = 2
 	l.fields = make([]*form.Input, fieldCount)
-	l.fields[0] = form.NewInput("login", "Логин", true, false)
-	l.fields[1] = form.NewInput("pwd", "Пароль", false, true)
+	l.fields[0] = form.NewInput(form.CodeLogin, "Логин", true, false)
+	l.fields[1] = form.NewInput(form.CodePwd, "Пароль", false, true)
 }
 
 func (l *login) WithError(err error) *login {
@@ -102,9 +102,9 @@ func (l *login) getLoginData() *model.LoginData {
 	for _, f := range l.fields {
 		code := f.Code()
 		switch code {
-		case "login":
+		case form.CodeLogin:
 			data.Login = f.Model().Value()
-		case "pwd":
+		case form.CodePwd:
 			data.Password = f.Model().Value()
 		}
 	}

@@ -6,7 +6,13 @@ import (
 )
 
 const (
-	CharLimit int = 32
+	CharLimit  int    = 32
+	CodeName   string = "name"
+	CodeNumber string = "number"
+	CodeExp    string = "exp"
+	CodeCVV    string = "cvv"
+	CodeLogin  string = "login"
+	CodePwd    string = "pwd"
 )
 
 type Input struct {

@@ -26,10 +26,10 @@ func NewLKFormBank(a *app.App) *lkFormBank {
 func (lkfb *lkFormBank) createFields() {
 	const fieldCount = 4
 	lkfb.fields = make([]*form.Input, fieldCount)
-	lkfb.fields[0] = form.NewInput("name", "Имя для данных", true, false)
-	lkfb.fields[1] = form.NewInput("number", "Номер карты", false, false)
-	lkfb.fields[2] = form.NewInput("exp", "Срок действия", false, false)
-	lkfb.fields[3] = form.NewInput("cvv", "CVV", false, false)
+	lkfb.fields[0] = form.NewInput(form.CodeName, "Имя для данных", true, false)
+	lkfb.fields[1] = form.NewInput(form.CodeNumber, "Номер карты", false, false)
+	lkfb.fields[2] = form.NewInput(form.CodeExp, "Срок действия", false, false)
+	lkfb.fields[3] = form.NewInput(form.CodeCVV, "CVV", false, false)
 }
 
 func (lkfb *lkFormBank) WithError(err error) *lkFormBank {
@@ -115,13 +115,13 @@ func (lkfb *lkFormBank) getData() *model.BankData {
 	for _, f := range lkfb.fields {
 		code := f.Code()
 		switch code {
-		case "number":
+		case form.CodeNumber:
 			data.Number = f.Model().Value()
-		case "exp":
+		case form.CodeExp:
 			data.Exp = f.Model().Value()
-		case "cvv":
+		case form.CodeCVV:
 			data.CVV = f.Model().Value()
-		case "name":
+		case form.CodeName:
 			data.Name = f.Model().Value()
 		}
 	}

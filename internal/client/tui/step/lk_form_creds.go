@@ -26,9 +26,9 @@ func NewLKFormCreds(a *app.App) *lkFormCreds {
 func (lkfc *lkFormCreds) createFields() {
 	const fieldCount = 3
 	lkfc.fields = make([]*form.Input, fieldCount)
-	lkfc.fields[0] = form.NewInput("name", "Имя для данных", true, false)
-	lkfc.fields[1] = form.NewInput("login", "Логин", false, false)
-	lkfc.fields[2] = form.NewInput("pwd", "Пароль", false, true)
+	lkfc.fields[0] = form.NewInput(form.CodeName, "Имя для данных", true, false)
+	lkfc.fields[1] = form.NewInput(form.CodeLogin, "Логин", false, false)
+	lkfc.fields[2] = form.NewInput(form.CodePwd, "Пароль", false, true)
 }
 
 func (lkfc *lkFormCreds) WithError(err error) *lkFormCreds {
@@ -114,11 +114,11 @@ func (lkfc *lkFormCreds) getData() *model.CredsData {
 	for _, f := range lkfc.fields {
 		code := f.Code()
 		switch code {
-		case "login":
+		case form.CodeLogin:
 			data.Login = f.Model().Value()
-		case "pwd":
+		case form.CodePwd:
 			data.Password = f.Model().Value()
-		case "name":
+		case form.CodeName:
 			data.Name = f.Model().Value()
 		}
 	}

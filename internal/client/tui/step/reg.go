@@ -23,11 +23,10 @@ func NewReg(a *app.App) *reg {
 }
 
 func (r *reg) createFields() {
-	const fieldCount = 3
+	const fieldCount = 2
 	r.fields = make([]*form.Input, fieldCount)
-	r.fields[0] = form.NewInput("login", "Логин", true, false)
-	r.fields[1] = form.NewInput("pwd", "Пароль", false, true)
-	r.fields[2] = form.NewInput("pwdConfirm", "Повторите пароль", false, true)
+	r.fields[0] = form.NewInput(form.CodeLogin, "Логин", true, false)
+	r.fields[1] = form.NewInput(form.CodePwd, "Пароль", false, true)
 }
 
 func (r *reg) WithError(err error) *reg {
@@ -103,12 +102,10 @@ func (r *reg) getRegData() *model.RegData {
 	for _, f := range r.fields {
 		code := f.Code()
 		switch code {
-		case "login":
+		case form.CodeLogin:
 			data.Login = f.Model().Value()
-		case "pwd":
+		case form.CodePwd:
 			data.Password = f.Model().Value()
-		case "pwdConfirm":
-			data.ConfirmPassword = f.Model().Value()
 		}
 	}
 
