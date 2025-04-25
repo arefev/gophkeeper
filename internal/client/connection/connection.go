@@ -2,6 +2,7 @@ package connection
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -153,7 +154,7 @@ func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType st
 	batchNumber := 1
 	for {
 		num, err := file.Read(buf)
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {
@@ -256,7 +257,7 @@ func (g *grpcClient) FileDownload(ctx context.Context, uuid string) (string, err
 				return "", fmt.Errorf("file download create file failed: %w", err)
 			}
 		}
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {

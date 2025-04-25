@@ -559,6 +559,9 @@ issues:
   exclude-rules:
     - path: "_test\\.go"
       text: "fieldalignment: struct with \\d+ pointer bytes could be \\d+"
+    - path: "internal/client/tui/step"
+      linters:
+        - dupl
   fix: false
   max-issues-per-linter: 0
   max-same-issues: 0

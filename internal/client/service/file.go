@@ -7,10 +7,10 @@ import (
 )
 
 type FileService struct {
+	Output   *os.File
 	Path     string
 	MetaName string
 	MetaType int
-	Output   *os.File
 }
 
 func NewFile() *FileService {
@@ -40,7 +40,10 @@ func (fs *FileService) Write(chunk []byte) error {
 }
 
 func (fs *FileService) Close() error {
-	return fs.Output.Close()
+	if err := fs.Output.Close(); err != nil {
+		return fmt.Errorf("file close failed: %w", err)
+	}
+	return nil
 }
 
 func (fs *FileService) ReadAll() ([]byte, error) {

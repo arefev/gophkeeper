@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -41,7 +42,7 @@ func (s *storageService) Upload(userID int, stream proto.File_UploadServer) erro
 			s.file.SetFile(req.GetName(), "./storage/"+uuid.NewString())
 			s.setMeta(userID, req.GetMeta().GetName(), req.GetMeta().GetType(), req.GetName())
 		}
-		if err == io.EOF {
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {
