@@ -48,7 +48,7 @@ func (lh *listHandler) Get(
 	respList := []*proto.MetaList{}
 
 	for i := range list {
-		uuid := list[i].Uuid.String()
+		uuid := list[i].UUID.String()
 		t := list[i].Type.String()
 		date := list[i].CreatedAt.Format("02.01.2006 15:04:05")
 		meta := &proto.MetaList{

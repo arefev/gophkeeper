@@ -77,7 +77,7 @@ func (m *Meta) FindByUuid(ctx context.Context, uuid string, userID int) (*model.
 	row := stmt.QueryRow(arg)
 	err = row.Scan(
 		&meta.ID,
-		&meta.Uuid,
+		&meta.UUID,
 		&meta.Type,
 		&meta.Name,
 		&meta.UserID,
@@ -151,7 +151,7 @@ func (m *Meta) Get(ctx context.Context, userID int) ([]model.Meta, error) {
 		meta := model.Meta{}
 		err = rows.Scan(
 			&meta.ID,
-			&meta.Uuid,
+			&meta.UUID,
 			&meta.Type,
 			&meta.Name,
 			&meta.UserID,

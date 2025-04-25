@@ -14,7 +14,7 @@ type Meta struct {
 	Type      MetaType  `db:"type"`
 	UserID    int       `db:"user_id"`
 	ID        int       `db:"id"`
-	Uuid      uuid.UUID `db:"uuid"`
+	UUID      uuid.UUID `db:"uuid"`
 }
 
 type File struct {

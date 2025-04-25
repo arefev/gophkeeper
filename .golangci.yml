@@ -562,6 +562,9 @@ issues:
     - path: "internal/client/tui/step"
       linters:
         - dupl
+    - path: "internal/server/handler/middleware/middleware.go"
+      linters:
+        - containedctx
   fix: false
   max-issues-per-linter: 0
   max-same-issues: 0
