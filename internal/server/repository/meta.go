@@ -47,7 +47,7 @@ func (m *Meta) Create(ctx context.Context, meta *model.Meta) error {
 	return nil
 }
 
-func (m *Meta) FindByUuid(ctx context.Context, uuid string, userID int) (*model.Meta, error) {
+func (m *Meta) FindByUUID(ctx context.Context, uuid string, userID int) (*model.Meta, error) {
 	ctx, cancel := context.WithTimeout(ctx, timeCancel)
 	defer cancel()
 
@@ -97,7 +97,7 @@ func (m *Meta) FindByUuid(ctx context.Context, uuid string, userID int) (*model.
 	return meta, nil
 }
 
-func (m *Meta) DeleteByUuid(ctx context.Context, uuid string, userID int) error {
+func (m *Meta) DeleteByUUID(ctx context.Context, uuid string, userID int) error {
 	ctx, cancel := context.WithTimeout(ctx, timeCancel)
 	defer cancel()
 

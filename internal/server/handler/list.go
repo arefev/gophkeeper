@@ -77,7 +77,7 @@ func (lh *listHandler) Delete(
 	}
 
 	err = lh.app.TrManager.Do(ctx, func(ctx context.Context) error {
-		err = lh.app.Rep.Meta.DeleteByUuid(ctx, in.GetUuid(), user.ID)
+		err = lh.app.Rep.Meta.DeleteByUUID(ctx, in.GetUuid(), user.ID)
 		if err != nil {
 			return fmt.Errorf("meta delete failed: %w", err)
 		}

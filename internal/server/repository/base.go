@@ -78,30 +78,6 @@ func (b *Base) execWithArgs(ctx context.Context, args map[string]any, q string) 
 	return nil
 }
 
-func (b *Base) getWithArgs(ctx context.Context, args map[string]any, q string, list any) error {
-	ctx, cancel := context.WithTimeout(ctx, timeCancel)
-	defer cancel()
-
-	stmt, err := b.prepare(ctx, q)
-	if err != nil {
-		return fmt.Errorf("exec with args: prepare fail: %w", err)
-	}
-
-	defer func() {
-		if err := stmt.Close(); err != nil {
-			b.log.Warn("create with args: stmt close fail", zap.Error(err))
-		}
-	}()
-
-	err = stmt.SelectContext(ctx, list, args)
-
-	if err != nil {
-		return fmt.Errorf("create with args: exec query fail: %w", err)
-	}
-
-	return nil
-}
-
 func (b *Base) prepare(ctx context.Context, q string) (*sqlx.NamedStmt, error) {
 	tr, err := b.tr.FromCtx(ctx)
 	if err != nil {

@@ -73,7 +73,7 @@ func (fh *fileHandler) Download(
 	}
 
 	err = fh.app.TrManager.Do(stream.Context(), func(ctx context.Context) error {
-		meta, err = fh.app.Rep.Meta.FindByUuid(ctx, req.GetUuid(), user.ID)
+		meta, err = fh.app.Rep.Meta.FindByUUID(ctx, req.GetUuid(), user.ID)
 		if err != nil {
 			return fmt.Errorf("meta find by uuid failed: %w", err)
 		}
