@@ -39,7 +39,10 @@ func (s *storageService) Upload(userID int, stream proto.File_UploadServer) erro
 	for {
 		req, err := stream.Recv()
 		if s.file.Path == "" {
-			s.file.SetFile(req.GetName(), "./storage/"+uuid.NewString())
+			err := s.file.SetFile(req.GetName(), "./storage/"+uuid.NewString())
+			if err != nil {
+				return fmt.Errorf("file upload set file failed %w", err)
+			}
 			s.setMeta(userID, req.GetMeta().GetName(), req.GetMeta().GetType(), req.GetName())
 		}
 		if errors.Is(err, io.EOF) {

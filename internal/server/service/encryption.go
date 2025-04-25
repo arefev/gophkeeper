@@ -4,6 +4,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"errors"
 	"fmt"
 	"io"
 
@@ -23,13 +24,13 @@ func NewEncryptionService(app *application.App) *encryptionService {
 func (enc *encryptionService) Encrypt(data []byte) ([]byte, error) {
 	block, err := aes.NewCipher([]byte(enc.app.Conf.EncryptionSecret))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ecrypt: new cipher failed: %w", err)
 	}
 
 	ciphertext := make([]byte, aes.BlockSize+len(data))
 	iv := ciphertext[:aes.BlockSize]
 	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ecrypt: read failed: %w", err)
 	}
 
 	stream := cipher.NewCFBEncrypter(block, iv)
@@ -41,11 +42,11 @@ func (enc *encryptionService) Encrypt(data []byte) ([]byte, error) {
 func (enc *encryptionService) Decrypt(data []byte) ([]byte, error) {
 	block, err := aes.NewCipher([]byte(enc.app.Conf.EncryptionSecret))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("decrypt: new cipher failed: %w", err)
 	}
 
 	if len(data) < aes.BlockSize {
-		return nil, fmt.Errorf("ciphertext too short")
+		return nil, errors.New("ciphertext too short")
 	}
 
 	iv := data[:aes.BlockSize]

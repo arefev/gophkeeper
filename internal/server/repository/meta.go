@@ -73,7 +73,7 @@ func (m *Meta) FindByUUID(ctx context.Context, uuid string, userID int) (*model.
 	}()
 
 	meta := &model.Meta{}
-	arg := map[string]interface{}{"uuid": uuid, "user_id": userID}
+	arg := map[string]any{"uuid": uuid, "user_id": userID}
 	row := stmt.QueryRow(arg)
 	err = row.Scan(
 		&meta.ID,
@@ -141,11 +141,17 @@ func (m *Meta) Get(ctx context.Context, userID int) ([]model.Meta, error) {
 	}()
 
 	list := []model.Meta{}
-	arg := map[string]interface{}{"user_id": userID}
+	arg := map[string]any{"user_id": userID}
 	rows, err := stmt.Queryx(arg)
 	if err != nil {
 		return nil, fmt.Errorf("meta get: query failed: %w", err)
 	}
+
+	defer func() {
+		if err := rows.Close(); err != nil {
+			m.log.Warn("meta get: rows close failed", zap.Error(err))
+		}
+	}()
 
 	for rows.Next() {
 		meta := model.Meta{}
