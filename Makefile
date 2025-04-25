@@ -4,6 +4,8 @@ GOLANGCI_LINT_CACHE?=/tmp/gophkeeper-golangci-lint-cache
 USER=CURRENT_UID=$$(id -u):0
 DOCKER_PROJECT_NAME=gophkeeper
 DATABASE_DSN="postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable"
+SRV_LD_FLAGS=-ldflags "-X main.buildVersion=v1.0.1 -X main.buildCommit='test' -X 'main.buildDate=$(shell date +'%Y/%m/%d %H:%M:%S')'"
+CLT_LD_FLAGS=-ldflags "-X main.buildVersion=v1.0.1 -X main.buildCommit='test' -X 'main.buildDate=$(shell date +'%Y/%m/%d %H:%M:%S')'"
 
 
 gofmt:
@@ -27,9 +29,34 @@ client-run: client-build
 
 client-build:
 	go build \
-	-ldflags "-X main.buildVersion=v1.0.1 -X main.buildCommit='test' -X 'main.buildDate=$(shell date +'%Y/%m/%d %H:%M:%S')'" \
+	${CLT_LD_FLAGS} \
 	-o ./cmd/client/client ./cmd/client/
 .PHONY: client-build
+
+
+client-cross-build: client-amd64-windows client-amd64-linux client-amd64-darwin
+.PHONY: client-cross-build
+
+
+client-amd64-windows:
+	GOOS=windows GOARCH=amd64 go build \
+	${CLT_LD_FLAGS} \
+	-o ./bin/client-amd64-windows.exe ./cmd/client/
+.PHONY: client-amd64-windows
+
+
+client-amd64-linux:
+	GOOS=linux GOARCH=amd64 go build \
+	${CLT_LD_FLAGS} \
+	-o ./bin/client-amd64-linux ./cmd/client/
+.PHONY: client-amd64-linux
+
+
+client-amd64-darwin:
+	GOOS=darwin GOARCH=amd64 go build \
+	${CLT_LD_FLAGS} \
+	-o ./bin/client-amd64-darwin ./cmd/client/
+.PHONY: client-amd64-darwin
 
 
 client-build-cover:
@@ -55,7 +82,7 @@ server-run: server-build
 
 server-build:
 	go build \
-	-ldflags "-X main.buildVersion=v1.0.1 -X main.buildCommit='test' -X 'main.buildDate=$(shell date +'%Y/%m/%d %H:%M:%S')'" \
+	${SRV_LD_FLAGS} \
 	-o ./cmd/server/server ./cmd/server/
 .PHONY: server-build
 
