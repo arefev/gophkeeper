@@ -17,12 +17,12 @@ import (
 )
 
 type lkList struct {
+	app     *app.App
+	list    *[]model.MetaListData
 	withMsg string
 	err     string
-	app     *app.App
-	table   table.Model
-	list    *[]model.MetaListData
 	spinner spinner.Model
+	table   table.Model
 }
 
 type IsListLoaded bool
