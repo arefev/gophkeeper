@@ -25,7 +25,7 @@ func NewFileHandler(app *application.App) *fileHandler {
 func (fh *fileHandler) Upload(stream proto.File_UploadServer) error {
 	user, err := service.NewUserService(fh.app).Authorized(stream.Context())
 	if err != nil {
-		return fmt.Errorf("user not found: %w", err)
+		return service.ErrAuthUserNotFound
 	}
 
 	storage := service.NewStorageService(fh.app)
@@ -69,7 +69,7 @@ func (fh *fileHandler) Download(
 
 	user, err := service.NewUserService(fh.app).Authorized(stream.Context())
 	if err != nil {
-		return fmt.Errorf("user not found: %w", err)
+		return service.ErrAuthUserNotFound
 	}
 
 	err = fh.app.TrManager.Do(stream.Context(), func(ctx context.Context) error {

@@ -9,20 +9,20 @@ import (
 type Meta struct {
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
-	Uuid      uuid.UUID `db:"uuid"`
-	Type      MetaType  `db:"type"`
 	Name      string    `db:"name"`
+	File      File
+	Type      MetaType  `db:"type"`
 	UserID    int       `db:"user_id"`
 	ID        int       `db:"id"`
-	File      File
+	Uuid      uuid.UUID `db:"uuid"`
 }
 
 type File struct {
 	CreatedAt time.Time `db:"created_at"`
 	Name      string    `db:"name"`
+	Data      []byte    `db:"data"`
 	MetaID    int       `db:"meta_id"`
 	ID        int       `db:"id"`
-	Data      []byte    `db:"data"`
 }
 
 type MetaType int

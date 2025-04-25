@@ -26,24 +26,17 @@ func (ah *authHandler) Register(
 	in *proto.RegistrationRequest,
 ) (*proto.RegistrationResponse, error) {
 	s := service.NewUserService(ah.app)
-	err := s.Create(ctx, in.User.GetLogin(), in.User.GetPassword())
+	err := s.Create(ctx, in.GetUser().GetLogin(), in.GetUser().GetPassword())
 	if err != nil {
-		ah.app.Log.Debug(
-			"register user failed",
-			zap.Error(err),
-			zap.String("login", in.User.GetLogin()),
-			zap.String("pwd", in.User.GetPassword()),
-		)
-
 		return &proto.RegistrationResponse{}, fmt.Errorf("register create user failed: %w", err)
 	}
 
 	ah.app.Log.Debug(
 		"register user success",
-		zap.String("login", in.User.GetLogin()),
+		zap.String("login", in.GetUser().GetLogin()),
 	)
 
-	token, err := s.Authorize(ctx, in.User.GetLogin(), in.User.GetPassword())
+	token, err := s.Authorize(ctx, in.GetUser().GetLogin(), in.GetUser().GetPassword())
 	if err != nil {
 		return &proto.RegistrationResponse{}, fmt.Errorf("register authorize user failed: %w", err)
 	}
@@ -56,21 +49,14 @@ func (ah *authHandler) Login(
 	in *proto.AuthorizationRequest,
 ) (*proto.AuthorizationResponse, error) {
 	s := service.NewUserService(ah.app)
-	token, err := s.Authorize(ctx, in.User.GetLogin(), in.User.GetPassword())
+	token, err := s.Authorize(ctx, in.GetUser().GetLogin(), in.GetUser().GetPassword())
 	if err != nil {
-		ah.app.Log.Debug(
-			"login user failed",
-			zap.Error(err),
-			zap.String("login", in.User.GetLogin()),
-			zap.String("pwd", in.User.GetPassword()),
-		)
-
 		return &proto.AuthorizationResponse{}, fmt.Errorf("login authorize user failed: %w", err)
 	}
 
 	ah.app.Log.Debug(
 		"login user success",
-		zap.String("login", in.User.GetLogin()),
+		zap.String("login", in.GetUser().GetLogin()),
 	)
 
 	return &proto.AuthorizationResponse{Token: &token.AccessToken}, nil

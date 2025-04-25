@@ -30,7 +30,7 @@ func (lh *listHandler) Get(
 
 	user, err := service.NewUserService(lh.app).Authorized(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("user not found: %w", err)
+		return nil, service.ErrAuthUserNotFound
 	}
 
 	err = lh.app.TrManager.Do(ctx, func(ctx context.Context) error {
@@ -47,15 +47,15 @@ func (lh *listHandler) Get(
 
 	respList := []*proto.MetaList{}
 
-	for _, item := range list {
-		uuid := item.Uuid.String()
-		t := item.Type.String()
-		date := item.CreatedAt.Format("02.01.2006 15:04:05")
+	for i := range list {
+		uuid := list[i].Uuid.String()
+		t := list[i].Type.String()
+		date := list[i].CreatedAt.Format("02.01.2006 15:04:05")
 		meta := &proto.MetaList{
 			Uuid:      &uuid,
 			Type:      &t,
-			Name:      &item.Name,
-			FileName:  &item.File.Name,
+			Name:      &list[i].Name,
+			FileName:  &list[i].File.Name,
 			CreatedAt: &date,
 		}
 		respList = append(respList, meta)
@@ -73,7 +73,7 @@ func (lh *listHandler) Delete(
 	var err error
 	user, err := service.NewUserService(lh.app).Authorized(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("user not found: %w", err)
+		return nil, service.ErrAuthUserNotFound
 	}
 
 	err = lh.app.TrManager.Do(ctx, func(ctx context.Context) error {
