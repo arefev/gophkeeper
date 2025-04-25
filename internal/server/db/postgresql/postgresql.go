@@ -8,18 +8,18 @@ import (
 	"go.uber.org/zap"
 )
 
-type db struct {
+type DB struct {
 	conn *sqlx.DB
 	log  *zap.Logger
 }
 
-func NewDB(log *zap.Logger) *db {
-	return &db{
+func NewDB(log *zap.Logger) *DB {
+	return &DB{
 		log: log,
 	}
 }
 
-func (db *db) Connect(dsn string) (*db, error) {
+func (db *DB) Connect(dsn string) (*DB, error) {
 	conn, err := sqlx.Connect("pgx", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("db connect fail: %w", err)
@@ -30,11 +30,11 @@ func (db *db) Connect(dsn string) (*db, error) {
 	return db, nil
 }
 
-func (db *db) Connection() *sqlx.DB {
+func (db *DB) Connection() *sqlx.DB {
 	return db.conn
 }
 
-func (db *db) Close() error {
+func (db *DB) Close() error {
 	if err := db.conn.Close(); err != nil {
 		return fmt.Errorf("db close fail: %w", err)
 	}

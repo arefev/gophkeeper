@@ -6,3 +6,5 @@ storage/
 *.log
 *.txt
 .env
+test.html
+coverage.out
