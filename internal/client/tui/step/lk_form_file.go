@@ -105,7 +105,7 @@ func (lkff *lkFormFile) View() string {
 	return view.FormWithFields(
 		lkff.fields,
 		"Введите путь до файла для сохранения",
-		"Отправить",
+		form.LabelSend,
 		lkff.err,
 		lkff.focusIndex == len(lkff.fields),
 	)

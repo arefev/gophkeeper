@@ -94,7 +94,13 @@ func (r *reg) updateInputs(msg tea.Msg) tea.Cmd {
 }
 
 func (r *reg) View() string {
-	return view.FormWithFields(r.fields, "Регистрация", "Отправить", r.err, r.focusIndex == len(r.fields))
+	return view.FormWithFields(
+		r.fields,
+		"Регистрация",
+		form.LabelSend,
+		r.err,
+		r.focusIndex == len(r.fields),
+	)
 }
 
 func (r *reg) getRegData() *model.RegData {

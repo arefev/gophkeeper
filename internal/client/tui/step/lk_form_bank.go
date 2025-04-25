@@ -104,7 +104,7 @@ func (lkfb *lkFormBank) View() string {
 	return view.FormWithFields(
 		lkfb.fields,
 		"Введите данные банковской карты для сохранения",
-		"Отправить",
+		form.LabelSend,
 		lkfb.err,
 		lkfb.focusIndex == len(lkfb.fields),
 	)

@@ -13,6 +13,7 @@ const (
 	CodeCVV    string = "cvv"
 	CodeLogin  string = "login"
 	CodePwd    string = "pwd"
+	LabelSend  string = "Отправить"
 )
 
 type Input struct {

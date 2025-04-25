@@ -103,7 +103,7 @@ func (lkfc *lkFormCreds) View() string {
 	return view.FormWithFields(
 		lkfc.fields,
 		"Введите логин/пароль для сохранения",
-		"Отправить",
+		form.LabelSend,
 		lkfc.err,
 		lkfc.focusIndex == len(lkfc.fields),
 	)
