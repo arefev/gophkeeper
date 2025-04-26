@@ -460,4 +460,46 @@ func TestStep(t *testing.T) {
 
 		require.NotEmpty(t, buf.Len())
 	})
+
+	t.Run("download action step success", func(t *testing.T) {
+		const (
+			uuid string = "uuid_test"
+			path string = "path_test"
+		)
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		var buf bytes.Buffer
+		var in bytes.Buffer
+		in.Write([]byte("q"))
+
+		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
+		defer cancel()
+
+		data := &[]model.MetaListData{
+			{
+				UUID: "uuid_test",
+				Type: "type_test",
+				Name: "name_test",
+				File: "file_test",
+				Date: "date_test",
+			},
+		}
+
+		l, err := logger.Build("debug")
+		require.NoError(t, err)
+
+		conn := mock_app.NewMockConnection(ctrl)
+		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(2)
+		conn.EXPECT().FileDownload(gomock.Any(), uuid).MinTimes(1).MaxTimes(1).Return(path, nil)
+		conn.EXPECT().GetList(gomock.Any()).MinTimes(1).MaxTimes(1).Return(data, nil)
+		app := app.NewApp(conn, l)
+
+		p := tea.NewProgram(NewDownloadAction(uuid, app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
+		if _, err := p.Run(); err != nil {
+			require.Contains(t, err.Error(), "context deadline exceeded")
+		}
+
+		require.NotEmpty(t, buf.Len())
+	})
 }
