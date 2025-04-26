@@ -147,6 +147,10 @@ func (m *Meta) Get(ctx context.Context, userID int) ([]model.Meta, error) {
 		return nil, fmt.Errorf("meta get: query failed: %w", err)
 	}
 
+	if rows.Err() != nil {
+		return nil, fmt.Errorf("meta get: rows failed: %w", err)
+	}
+
 	defer func() {
 		if err := rows.Close(); err != nil {
 			m.log.Warn("meta get: rows close failed", zap.Error(err))
