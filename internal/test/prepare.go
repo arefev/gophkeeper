@@ -26,10 +26,10 @@ import (
 )
 
 type prepare struct {
-	dbDSN     string
 	dbConn    *postgresql.DB
 	container *testdb.TestDBContainer
 	srv       *grpc.Server
+	dbDSN     string
 }
 
 func NewPrepare() *prepare {
@@ -48,8 +48,13 @@ func (p *prepare) runDB(ctx context.Context) error {
 }
 
 func (p *prepare) app() (*application.App, error) {
-	os.Setenv("LOG_LEVEL", "debug")
-	os.Setenv("ENCRYPTION_SECRET", "thisis32bitlongpassphraseimusing")
+	if err := os.Setenv("LOG_LEVEL", "debug"); err != nil {
+		return nil, fmt.Errorf("set env LOG_LEVEL fail: %w", err)
+	}
+
+	if err := os.Setenv("ENCRYPTION_SECRET", "thisis32bitlongpassphraseimusing"); err != nil {
+		return nil, fmt.Errorf("set env ENCRYPTION_SECRET fail: %w", err)
+	}
 
 	conf, err := config.NewConfig([]string{})
 	if err != nil {
@@ -92,7 +97,7 @@ func (p *prepare) migrationsUp(dsn string) error {
 	if err != nil {
 		return fmt.Errorf("migrations get dir failed: %w", err)
 	}
-	path := strings.Replace(dir, "internal/test", "cmd/server/db/migrations", -1)
+	path := strings.ReplaceAll(dir, "internal/test", "cmd/server/db/migrations")
 
 	m, err := migrate.New("file://"+path, dsn)
 	if err != nil {
@@ -140,11 +145,11 @@ func (p *prepare) Close(ctx context.Context) error {
 	}
 
 	if err := p.dbConn.Close(); err != nil {
-		return err
+		return fmt.Errorf("db close failed: %w", err)
 	}
 
 	if err := p.container.Close(ctx); err != nil {
-		return err
+		return fmt.Errorf("db container close failed: %w", err)
 	}
 
 	return nil
