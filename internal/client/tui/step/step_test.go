@@ -3,6 +3,7 @@ package step
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
@@ -55,7 +56,7 @@ func TestStep(t *testing.T) {
 		}
 
 		require.NotEmpty(t, buf.Len())
-		require.Contains(t, buf.String(), "## Авторизация")
+		require.Contains(t, buf.String(), "Авторизация")
 	})
 
 	t.Run("login action success", func(t *testing.T) {
@@ -109,7 +110,7 @@ func TestStep(t *testing.T) {
 		}
 
 		require.NotEmpty(t, buf.Len())
-		require.Contains(t, buf.String(), "## Регистрация")
+		require.Contains(t, buf.String(), "Регистрация")
 	})
 
 	t.Run("reg action success", func(t *testing.T) {
@@ -169,6 +170,218 @@ func TestStep(t *testing.T) {
 		}
 
 		require.NotEmpty(t, buf.Len())
-		require.Contains(t, buf.String(), "## Личный кабинет")
+		require.Contains(t, buf.String(), "Личный кабинет")
+	})
+
+	t.Run("lk types step success", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		var buf bytes.Buffer
+		var in bytes.Buffer
+		in.Write([]byte("q"))
+
+		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
+		defer cancel()
+
+		l, err := logger.Build("debug")
+		require.NoError(t, err)
+
+		conn := mock_app.NewMockConnection(ctrl)
+		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(1)
+		app := app.NewApp(conn, l)
+
+		p := tea.NewProgram(NewLKTypes(app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
+		if _, err := p.Run(); err != nil {
+			require.Contains(t, err.Error(), "context deadline exceeded")
+		}
+
+		require.NotEmpty(t, buf.Len())
+		require.Contains(t, buf.String(), "Какие данные вы хотите отправить?")
+	})
+
+	t.Run("lk form creds step success", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		var buf bytes.Buffer
+		var in bytes.Buffer
+		in.Write([]byte("q"))
+
+		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
+		defer cancel()
+
+		l, err := logger.Build("debug")
+		require.NoError(t, err)
+
+		conn := mock_app.NewMockConnection(ctrl)
+		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(1)
+		app := app.NewApp(conn, l)
+
+		p := tea.NewProgram(NewLKFormCreds(app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
+		if _, err := p.Run(); err != nil {
+			require.Contains(t, err.Error(), "context deadline exceeded")
+		}
+
+		require.NotEmpty(t, buf.Len())
+		require.Contains(t, buf.String(), "Введите логин/пароль для сохранения")
+	})
+
+	t.Run("lk form bank step success", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		var buf bytes.Buffer
+		var in bytes.Buffer
+		in.Write([]byte("q"))
+
+		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
+		defer cancel()
+
+		l, err := logger.Build("debug")
+		require.NoError(t, err)
+
+		conn := mock_app.NewMockConnection(ctrl)
+		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(1)
+		app := app.NewApp(conn, l)
+
+		p := tea.NewProgram(NewLKFormBank(app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
+		if _, err := p.Run(); err != nil {
+			require.Contains(t, err.Error(), "context deadline exceeded")
+		}
+
+		require.NotEmpty(t, buf.Len())
+		require.Contains(t, buf.String(), "Введите данные банковской карты для сохранения")
+	})
+
+	t.Run("lk form file step success", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		var buf bytes.Buffer
+		var in bytes.Buffer
+		in.Write([]byte("q"))
+
+		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
+		defer cancel()
+
+		l, err := logger.Build("debug")
+		require.NoError(t, err)
+
+		conn := mock_app.NewMockConnection(ctrl)
+		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(1)
+		app := app.NewApp(conn, l)
+
+		p := tea.NewProgram(NewLKFormFile(app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
+		if _, err := p.Run(); err != nil {
+			require.Contains(t, err.Error(), "context deadline exceeded")
+		}
+
+		require.NotEmpty(t, buf.Len())
+		require.Contains(t, buf.String(), "Введите путь до файла для сохранения")
+	})
+
+	t.Run("creds send action step success", func(t *testing.T) {
+		const mType string = "creds"
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		var buf bytes.Buffer
+		var in bytes.Buffer
+		in.Write([]byte("q"))
+
+		m := &model.CredsData{
+			Name:     "name_test",
+			Login:    "login_test",
+			Password: "password_test",
+		}
+		data := fmt.Sprintf("Login: %s\nPassword: %s", m.Login, m.Password)
+
+		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
+		defer cancel()
+
+		l, err := logger.Build("debug")
+		require.NoError(t, err)
+
+		conn := mock_app.NewMockConnection(ctrl)
+		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(2)
+		conn.EXPECT().TextUpload(gomock.Any(), []byte(data), m.Name, mType).MinTimes(1).MaxTimes(1)
+		app := app.NewApp(conn, l)
+
+		p := tea.NewProgram(NewCredsSendAction(m, app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
+		if _, err := p.Run(); err != nil {
+			require.Contains(t, err.Error(), "context deadline exceeded")
+		}
+
+		require.NotEmpty(t, buf.Len())
+	})
+
+	t.Run("bank send action step success", func(t *testing.T) {
+		const mType string = "card"
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		var buf bytes.Buffer
+		var in bytes.Buffer
+		in.Write([]byte("q"))
+
+		m := &model.BankData{
+			Name:   "name_test",
+			Number: "number_test",
+			Exp:    "exp_test",
+			CVV:    "cvv_test",
+		}
+		data := fmt.Sprintf("Number: %s\nExpired: %s\nCVV: %s", m.Number, m.Exp, m.CVV)
+
+		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
+		defer cancel()
+
+		l, err := logger.Build("debug")
+		require.NoError(t, err)
+
+		conn := mock_app.NewMockConnection(ctrl)
+		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(2)
+		conn.EXPECT().TextUpload(gomock.Any(), []byte(data), m.Name, mType).MinTimes(1).MaxTimes(1)
+		app := app.NewApp(conn, l)
+
+		p := tea.NewProgram(NewBankSendAction(m, app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
+		if _, err := p.Run(); err != nil {
+			require.Contains(t, err.Error(), "context deadline exceeded")
+		}
+
+		require.NotEmpty(t, buf.Len())
+	})
+
+	t.Run("file send action step success", func(t *testing.T) {
+		const mType string = "file"
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		var buf bytes.Buffer
+		var in bytes.Buffer
+		in.Write([]byte("q"))
+
+		m := &model.FileData{
+			Name: "name_test",
+			Path: "path_test",
+		}
+
+		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
+		defer cancel()
+
+		l, err := logger.Build("debug")
+		require.NoError(t, err)
+
+		conn := mock_app.NewMockConnection(ctrl)
+		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(2)
+		conn.EXPECT().FileUpload(gomock.Any(), m.Path, m.Name, mType).MinTimes(1).MaxTimes(1)
+		app := app.NewApp(conn, l)
+
+		p := tea.NewProgram(NewFileSendAction(m, app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
+		if _, err := p.Run(); err != nil {
+			require.Contains(t, err.Error(), "context deadline exceeded")
+		}
+
+		require.NotEmpty(t, buf.Len())
 	})
 }
