@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/arefev/gophkeeper/internal/client/app"
+	application "github.com/arefev/gophkeeper/internal/client/app"
 	mock_app "github.com/arefev/gophkeeper/internal/client/app/mock"
 	"github.com/arefev/gophkeeper/internal/client/tui/model"
 	"github.com/arefev/gophkeeper/internal/logger"
@@ -20,14 +20,13 @@ func TestStep(t *testing.T) {
 	t.Run("start step success", func(t *testing.T) {
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
 		defer cancel()
 
 		l, err := logger.Build("debug")
 		require.NoError(t, err)
-		app := app.NewApp(nil, l)
+		app := application.NewApp(nil, l)
 
 		p := tea.NewProgram(NewStart(app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -41,14 +40,13 @@ func TestStep(t *testing.T) {
 	t.Run("login step success", func(t *testing.T) {
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
 		defer cancel()
 
 		l, err := logger.Build("debug")
 		require.NoError(t, err)
-		app := app.NewApp(nil, l)
+		app := application.NewApp(nil, l)
 
 		p := tea.NewProgram(NewLogin(app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -65,7 +63,6 @@ func TestStep(t *testing.T) {
 
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
 		defer cancel()
@@ -82,7 +79,7 @@ func TestStep(t *testing.T) {
 		conn.EXPECT().Login(gomock.Any(), data.Login, data.Password).MinTimes(1).MaxTimes(1)
 		conn.EXPECT().SetToken(gomock.Any()).MinTimes(1).MaxTimes(1)
 		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(1)
-		app := app.NewApp(conn, l)
+		app := application.NewApp(conn, l)
 
 		p := tea.NewProgram(NewLoginAction(data, app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -95,14 +92,13 @@ func TestStep(t *testing.T) {
 	t.Run("reg step success", func(t *testing.T) {
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
 		defer cancel()
 
 		l, err := logger.Build("debug")
 		require.NoError(t, err)
-		app := app.NewApp(nil, l)
+		app := application.NewApp(nil, l)
 
 		p := tea.NewProgram(NewReg(app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -119,7 +115,6 @@ func TestStep(t *testing.T) {
 
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
 		defer cancel()
@@ -136,7 +131,7 @@ func TestStep(t *testing.T) {
 		conn.EXPECT().Register(gomock.Any(), data.Login, data.Password).MinTimes(1).MaxTimes(1)
 		conn.EXPECT().SetToken(gomock.Any()).MinTimes(1).MaxTimes(1)
 		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(1)
-		app := app.NewApp(conn, l)
+		app := application.NewApp(conn, l)
 
 		p := tea.NewProgram(NewRegAction(app, data), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -152,7 +147,6 @@ func TestStep(t *testing.T) {
 
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
 		defer cancel()
@@ -162,7 +156,7 @@ func TestStep(t *testing.T) {
 
 		conn := mock_app.NewMockConnection(ctrl)
 		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(1)
-		app := app.NewApp(conn, l)
+		app := application.NewApp(conn, l)
 
 		p := tea.NewProgram(NewLK(app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -179,7 +173,6 @@ func TestStep(t *testing.T) {
 
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
 		defer cancel()
@@ -189,7 +182,7 @@ func TestStep(t *testing.T) {
 
 		conn := mock_app.NewMockConnection(ctrl)
 		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(1)
-		app := app.NewApp(conn, l)
+		app := application.NewApp(conn, l)
 
 		p := tea.NewProgram(NewLKTypes(app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -206,7 +199,6 @@ func TestStep(t *testing.T) {
 
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
 		defer cancel()
@@ -216,7 +208,7 @@ func TestStep(t *testing.T) {
 
 		conn := mock_app.NewMockConnection(ctrl)
 		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(1)
-		app := app.NewApp(conn, l)
+		app := application.NewApp(conn, l)
 
 		p := tea.NewProgram(NewLKFormCreds(app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -233,7 +225,6 @@ func TestStep(t *testing.T) {
 
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
 		defer cancel()
@@ -243,7 +234,7 @@ func TestStep(t *testing.T) {
 
 		conn := mock_app.NewMockConnection(ctrl)
 		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(1)
-		app := app.NewApp(conn, l)
+		app := application.NewApp(conn, l)
 
 		p := tea.NewProgram(NewLKFormBank(app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -260,7 +251,6 @@ func TestStep(t *testing.T) {
 
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
 		defer cancel()
@@ -270,7 +260,7 @@ func TestStep(t *testing.T) {
 
 		conn := mock_app.NewMockConnection(ctrl)
 		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(1)
-		app := app.NewApp(conn, l)
+		app := application.NewApp(conn, l)
 
 		p := tea.NewProgram(NewLKFormFile(app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -288,7 +278,6 @@ func TestStep(t *testing.T) {
 
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		m := &model.CredsData{
 			Name:     "name_test",
@@ -306,7 +295,7 @@ func TestStep(t *testing.T) {
 		conn := mock_app.NewMockConnection(ctrl)
 		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(2)
 		conn.EXPECT().TextUpload(gomock.Any(), []byte(data), m.Name, mType).MinTimes(1).MaxTimes(1)
-		app := app.NewApp(conn, l)
+		app := application.NewApp(conn, l)
 
 		p := tea.NewProgram(NewCredsSendAction(m, app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -323,7 +312,6 @@ func TestStep(t *testing.T) {
 
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		m := &model.BankData{
 			Name:   "name_test",
@@ -342,7 +330,7 @@ func TestStep(t *testing.T) {
 		conn := mock_app.NewMockConnection(ctrl)
 		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(2)
 		conn.EXPECT().TextUpload(gomock.Any(), []byte(data), m.Name, mType).MinTimes(1).MaxTimes(1)
-		app := app.NewApp(conn, l)
+		app := application.NewApp(conn, l)
 
 		p := tea.NewProgram(NewBankSendAction(m, app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -359,7 +347,6 @@ func TestStep(t *testing.T) {
 
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		m := &model.FileData{
 			Name: "name_test",
@@ -375,7 +362,7 @@ func TestStep(t *testing.T) {
 		conn := mock_app.NewMockConnection(ctrl)
 		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(2)
 		conn.EXPECT().FileUpload(gomock.Any(), m.Path, m.Name, mType).MinTimes(1).MaxTimes(1)
-		app := app.NewApp(conn, l)
+		app := application.NewApp(conn, l)
 
 		p := tea.NewProgram(NewFileSendAction(m, app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -391,7 +378,6 @@ func TestStep(t *testing.T) {
 
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		data := &[]model.MetaListData{
 			{
@@ -412,7 +398,7 @@ func TestStep(t *testing.T) {
 		conn := mock_app.NewMockConnection(ctrl)
 		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(2)
 		conn.EXPECT().GetList(gomock.Any()).MinTimes(1).MaxTimes(1).Return(data, nil)
-		app := app.NewApp(conn, l)
+		app := application.NewApp(conn, l)
 
 		p := tea.NewProgram(NewLKList(app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -429,7 +415,6 @@ func TestStep(t *testing.T) {
 
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
 		defer cancel()
@@ -451,7 +436,7 @@ func TestStep(t *testing.T) {
 		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(2)
 		conn.EXPECT().Delete(gomock.Any(), uuid).MinTimes(1).MaxTimes(1).Return(nil)
 		conn.EXPECT().GetList(gomock.Any()).MinTimes(1).MaxTimes(1).Return(data, nil)
-		app := app.NewApp(conn, l)
+		app := application.NewApp(conn, l)
 
 		p := tea.NewProgram(NewDeleteAction(uuid, app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
@@ -471,7 +456,6 @@ func TestStep(t *testing.T) {
 
 		var buf bytes.Buffer
 		var in bytes.Buffer
-		in.Write([]byte("q"))
 
 		ctx, cancel := context.WithTimeout(context.TODO(), time.Millisecond*100)
 		defer cancel()
@@ -493,7 +477,7 @@ func TestStep(t *testing.T) {
 		conn.EXPECT().CheckTokenCmd().MinTimes(1).MaxTimes(2)
 		conn.EXPECT().FileDownload(gomock.Any(), uuid).MinTimes(1).MaxTimes(1).Return(path, nil)
 		conn.EXPECT().GetList(gomock.Any()).MinTimes(1).MaxTimes(1).Return(data, nil)
-		app := app.NewApp(conn, l)
+		app := application.NewApp(conn, l)
 
 		p := tea.NewProgram(NewDownloadAction(uuid, app), tea.WithInput(&in), tea.WithOutput(&buf), tea.WithContext(ctx))
 		if _, err := p.Run(); err != nil {
