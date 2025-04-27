@@ -15,12 +15,21 @@ type authHandler struct {
 	app *application.App
 }
 
+// NewAuthHandler create and return pointer on new scruct authHandler
+// 	app - pointer on struct application.App
 func NewAuthHandler(app *application.App) *authHandler {
 	return &authHandler{
 		app: app,
 	}
 }
 
+// Register is a grpc handler for register new user
+// params:
+// 	ctx - context
+//	in - pointer on struct proto.RegistrationRequest, has request data for user registration, etc. login & password
+// return:
+//	*proto.RegistrationResponse - grpc response
+//	error
 func (ah *authHandler) Register(
 	ctx context.Context,
 	in *proto.RegistrationRequest,
@@ -44,6 +53,13 @@ func (ah *authHandler) Register(
 	return &proto.RegistrationResponse{Token: &token.AccessToken}, nil
 }
 
+// Login is a grpc handler for authorization user
+// params:
+// 	ctx - context
+//	in - pointer on struct proto.AuthorizationRequest, has request data for user authorization, etc. login & password
+// return:
+//	*proto.AuthorizationResponse - grpc response
+//	error
 func (ah *authHandler) Login(
 	ctx context.Context,
 	in *proto.AuthorizationRequest,

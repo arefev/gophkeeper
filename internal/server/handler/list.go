@@ -15,12 +15,21 @@ type listHandler struct {
 	app *application.App
 }
 
+// NewListHandler create and return pointer on new scruct listHandler
+// 	app - pointer on struct application.App
 func NewListHandler(app *application.App) *listHandler {
 	return &listHandler{
 		app: app,
 	}
 }
 
+// Get is a grpc handler for get of list meta data
+// params:
+//	ctx context.Context
+// 	in *proto.MetaListRequest - request with data for get list
+// return:
+//	*proto.MetaListResponse - has data with list of meta
+//	error
 func (lh *listHandler) Get(
 	ctx context.Context,
 	in *proto.MetaListRequest,
@@ -66,6 +75,13 @@ func (lh *listHandler) Get(
 	return resp, nil
 }
 
+// Delete is a grpc handler for delete item from list meta data
+// params:
+//	ctx context.Context
+// 	in *proto.MetaDeleteRequest - request with data for delete item, etc. uuid
+// return:
+//	*proto.MetaDeleteResponse - grpc response
+//	error
 func (lh *listHandler) Delete(
 	ctx context.Context,
 	in *proto.MetaDeleteRequest,
