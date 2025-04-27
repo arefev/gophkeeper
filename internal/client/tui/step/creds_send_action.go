@@ -37,7 +37,6 @@ func NewCredsSendAction(data *model.CredsData, a *app.App) *credsSendAction {
 
 func (csa *credsSendAction) ActionCmd() tea.Msg {
 	ctx := context.Background()
-	// TODO: validation needed
 	data := fmt.Sprintf("Login: %s\nPassword: %s", csa.data.Login, csa.data.Password)
 	err := csa.app.Conn.TextUpload(ctx, []byte(data), csa.data.Name, "creds")
 	if err != nil {

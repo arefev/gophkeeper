@@ -42,7 +42,7 @@ func (cnf *Config) initFlags(params []string) error {
 	f := flag.NewFlagSet("main", flag.ExitOnError)
 	f.StringVar(&cnf.Address, "a", address, "address to run server")
 	f.StringVar(&cnf.LogLevel, "l", logLevel, "log level")
-	f.StringVar(&cnf.LogFilePath, "f", logLevel, "log file path")
+	f.StringVar(&cnf.LogFilePath, "f", logFilePath, "log file path")
 	f.StringVar(&cnf.TokenSecret, "t-secret", tokenSecret, "token secret")
 	f.IntVar(&cnf.ChunkSize, "chunk", chunkSize, "file chunk size in bytes")
 	if err := f.Parse(params); err != nil {
