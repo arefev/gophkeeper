@@ -60,7 +60,6 @@ func (g *grpcClient) SetToken(t string) {
 }
 
 func (g *grpcClient) CheckTokenCmd() tea.Msg {
-	// TODO: возможно нужна проверка на актуальность токена
 	if g.token == "" {
 		return CheckAuthFail(true)
 	}

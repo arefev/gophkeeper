@@ -36,7 +36,6 @@ func NewFileSendAction(data *model.FileData, a *app.App) *fileSendAction {
 
 func (fsa *fileSendAction) ActionCmd() tea.Msg {
 	ctx := context.Background()
-	// TODO: validation needed
 	err := fsa.app.Conn.FileUpload(ctx, fsa.data.Path, fsa.data.Name, "file")
 	if err != nil {
 		fsa.app.Log.Error("FileUpload failed", zap.Error(err))

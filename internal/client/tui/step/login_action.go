@@ -34,7 +34,6 @@ func NewLoginAction(data *model.LoginData, a *app.App) *loginAction {
 
 func (la *loginAction) ActionCmd() tea.Msg {
 	ctx := context.Background()
-	// TODO: validation needed
 	token, err := la.app.Conn.Login(ctx, la.loginData.Login, la.loginData.Password)
 	if err != nil {
 		return LoginActionFail{Err: errors.New("неверный логин/пароль")}

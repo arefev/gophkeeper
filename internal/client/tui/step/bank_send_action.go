@@ -37,7 +37,6 @@ func NewBankSendAction(data *model.BankData, a *app.App) *bankSendAction {
 
 func (bsa *bankSendAction) ActionCmd() tea.Msg {
 	ctx := context.Background()
-	// TODO: validation needed
 	data := fmt.Sprintf("Number: %s\nExpired: %s\nCVV: %s", bsa.data.Number, bsa.data.Exp, bsa.data.CVV)
 	err := bsa.app.Conn.TextUpload(ctx, []byte(data), bsa.data.Name, "card")
 	if err != nil {
