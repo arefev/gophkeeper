@@ -7,7 +7,8 @@ import (
 )
 
 // WrappedServerStream struct
-// 	WrappedContext - context using in steaming
+//
+//	WrappedContext - context using in steaming
 type WrappedServerStream struct {
 	grpc.ServerStream
 	WrappedContext context.Context

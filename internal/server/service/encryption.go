@@ -17,6 +17,7 @@ type encryptionService struct {
 
 // NewEncryptionService create new pointer on encryptionService
 // params
+//
 //	app *application.App
 func NewEncryptionService(app *application.App) *encryptionService {
 	return &encryptionService{
@@ -26,8 +27,11 @@ func NewEncryptionService(app *application.App) *encryptionService {
 
 // Encrypt create encrypted slice of bytes
 // params
+//
 //	data []byte - data for encryption
+//
 // return
+//
 //	[]byte - encrypted bytes
 //	error
 func (enc *encryptionService) Encrypt(data []byte) ([]byte, error) {
@@ -50,8 +54,11 @@ func (enc *encryptionService) Encrypt(data []byte) ([]byte, error) {
 
 // Decrypt create decrypted slice of bytes
 // params
+//
 //	data []byte - data for decryption
+//
 // return
+//
 //	[]byte - decrypted bytes
 //	error
 func (enc *encryptionService) Decrypt(data []byte) ([]byte, error) {

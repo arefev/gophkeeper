@@ -17,7 +17,8 @@ type fileHandler struct {
 }
 
 // NewFileHandler create and return pointer on new scruct fileHandler
-// 	app - pointer on struct application.App
+//
+//	app - pointer on struct application.App
 func NewFileHandler(app *application.App) *fileHandler {
 	return &fileHandler{
 		app: app,
@@ -26,8 +27,11 @@ func NewFileHandler(app *application.App) *fileHandler {
 
 // Upload is a grpc stream handler for upload new file on server
 // params:
-// 	stream proto.File_UploadServer - streaming request for get chunks and create file
+//
+//	stream proto.File_UploadServer - streaming request for get chunks and create file
+//
 // return:
+//
 //	error
 func (fh *fileHandler) Upload(stream proto.File_UploadServer) error {
 	user, err := service.NewUserService(fh.app).Authorized(stream.Context())
@@ -68,9 +72,12 @@ func (fh *fileHandler) Upload(stream proto.File_UploadServer) error {
 
 // Download is a grpc stream handler for download file from server
 // params:
+//
 //	req *proto.FileDownloadRequest - has request with data for find file, etc. by uuid
-// 	stream proto.File_DownloadServer - streaming request for send file chunks
+//	stream proto.File_DownloadServer - streaming request for send file chunks
+//
 // return:
+//
 //	error
 func (fh *fileHandler) Download(
 	req *proto.FileDownloadRequest,

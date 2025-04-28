@@ -1,11 +1,12 @@
 // Package using for:
-//  create connection to grpc server
-//	send request to register user
-//	send request to authorize user
-//	send request to upload on server text or file
-//	send request to get list of meta data
-//	send request to delete item from meta data
-// 	send reqeust to download file from server
+//
+//	 create connection to grpc server
+//		send request to register user
+//		send request to authorize user
+//		send request to upload on server text or file
+//		send request to get list of meta data
+//		send request to delete item from meta data
+//		send reqeust to download file from server
 package connection
 
 import (
@@ -119,9 +120,11 @@ func (g *grpcClient) Login(ctx context.Context, login, pwd string) (string, erro
 
 // TextUpload send request to upload on server text information
 // Params
+//
 //	txt []byte - information in bytes
 //	metaName string - name of meta data
 //	metaType string - type ofr meta data [creds, bank, etc...]
+//
 // Return error
 func (g *grpcClient) TextUpload(ctx context.Context, txt []byte, metaName, metaType string) error {
 	md := metadata.New(map[string]string{"token": g.token})
@@ -158,9 +161,11 @@ func (g *grpcClient) TextUpload(ctx context.Context, txt []byte, metaName, metaT
 
 // FileUpload send request to upload on server bynary file
 // Params
+//
 //	path string - path to file for upload
 //	metaName string - name of meta data
 //	metaType string - type of meta data
+//
 // Return error
 func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType string) error {
 	md := metadata.New(map[string]string{"token": g.token})
