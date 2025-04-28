@@ -37,7 +37,7 @@ type grpcClient struct {
 	chunkSize int
 }
 
-// NewGRPCClient create object grpcClient and return pointer
+// NewGRPCClient create object grpcClient and return pointer.
 func NewGRPCClient(chunkSize int, l *zap.Logger) *grpcClient {
 	return &grpcClient{
 		chunkSize: chunkSize,
@@ -45,7 +45,7 @@ func NewGRPCClient(chunkSize int, l *zap.Logger) *grpcClient {
 	}
 }
 
-// Connnect create connection to grpc server
+// Connnect create connection to grpc server.
 func (g *grpcClient) Connect(address string) error {
 	var err error
 	g.conn, err = grpc.NewClient(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -55,7 +55,7 @@ func (g *grpcClient) Connect(address string) error {
 	return nil
 }
 
-// Close closes connection
+// Close closes connection.
 func (g *grpcClient) Close() error {
 	if err := g.conn.Close(); err != nil {
 		return fmt.Errorf("grpc connection close failed: %w", err)
@@ -63,7 +63,7 @@ func (g *grpcClient) Close() error {
 	return nil
 }
 
-// SetToken sets authorization token
+// SetToken sets authorization token.
 func (g *grpcClient) SetToken(t string) {
 	if len(t) == 0 {
 		return
@@ -72,7 +72,7 @@ func (g *grpcClient) SetToken(t string) {
 	g.token = t
 }
 
-// CheckTokenCmd check token on exist
+// CheckTokenCmd check token on exist.
 func (g *grpcClient) CheckTokenCmd() tea.Msg {
 	if g.token == "" {
 		return CheckAuthFail(true)
@@ -80,8 +80,8 @@ func (g *grpcClient) CheckTokenCmd() tea.Msg {
 	return nil
 }
 
-// Register send request to create new user by login and pwd
-// Return authorization token and error
+// Register send request to create new user by login and pwd.
+// Return authorization token and error.
 func (g *grpcClient) Register(ctx context.Context, login, pwd string) (string, error) {
 	client := proto.NewAuthClient(g.conn)
 
@@ -99,8 +99,8 @@ func (g *grpcClient) Register(ctx context.Context, login, pwd string) (string, e
 	return resp.GetToken(), nil
 }
 
-// Register send request to authorize user by login and pwd
-// Return authorization token and error
+// Register send request to authorize user by login and pwd.
+// Return authorization token and error.
 func (g *grpcClient) Login(ctx context.Context, login, pwd string) (string, error) {
 	client := proto.NewAuthClient(g.conn)
 
@@ -118,14 +118,14 @@ func (g *grpcClient) Login(ctx context.Context, login, pwd string) (string, erro
 	return resp.GetToken(), nil
 }
 
-// TextUpload send request to upload on server text information
-// Params
+// TextUpload send request to upload on server text information.
+// Params:
 //
 //	txt []byte - information in bytes
 //	metaName string - name of meta data
 //	metaType string - type ofr meta data [creds, bank, etc...]
 //
-// Return error
+// Return error.
 func (g *grpcClient) TextUpload(ctx context.Context, txt []byte, metaName, metaType string) error {
 	md := metadata.New(map[string]string{"token": g.token})
 	ctx = metadata.NewOutgoingContext(ctx, md)
@@ -159,14 +159,14 @@ func (g *grpcClient) TextUpload(ctx context.Context, txt []byte, metaName, metaT
 	return nil
 }
 
-// FileUpload send request to upload on server bynary file
-// Params
+// FileUpload send request to upload on server bynary file.
+// Params:
 //
 //	path string - path to file for upload
 //	metaName string - name of meta data
 //	metaType string - type of meta data
 //
-// Return error
+// Return error.
 func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType string) error {
 	md := metadata.New(map[string]string{"token": g.token})
 	ctx = metadata.NewOutgoingContext(ctx, md)
@@ -219,8 +219,8 @@ func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType st
 	return nil
 }
 
-// GetList send request to get list meta data for user
-// Return pointer on slice with meta data, and error
+// GetList send request to get list meta data for user.
+// Return pointer on slice with meta data, and error.
 func (g *grpcClient) GetList(ctx context.Context) (*[]model.MetaListData, error) {
 	md := metadata.New(map[string]string{"token": g.token})
 	ctx = metadata.NewOutgoingContext(ctx, md)
@@ -246,8 +246,8 @@ func (g *grpcClient) GetList(ctx context.Context) (*[]model.MetaListData, error)
 	return &list, nil
 }
 
-// Delete send request to delete by uuid item from meta data for user
-// Return error
+// Delete send request to delete by uuid item from meta data for user.
+// Return error.
 func (g *grpcClient) Delete(ctx context.Context, uuid string) error {
 	md := metadata.New(map[string]string{"token": g.token})
 	ctx = metadata.NewOutgoingContext(ctx, md)
@@ -261,8 +261,8 @@ func (g *grpcClient) Delete(ctx context.Context, uuid string) error {
 	return nil
 }
 
-// FileDownload send request to download file (text or bynary) from server
-// Return path of downloaded file or error
+// FileDownload send request to download file (text or bynary) from server.
+// Return path of downloaded file or error.
 func (g *grpcClient) FileDownload(ctx context.Context, uuid string) (string, error) {
 	md := metadata.New(map[string]string{"token": g.token})
 	ctx = metadata.NewOutgoingContext(ctx, md)
