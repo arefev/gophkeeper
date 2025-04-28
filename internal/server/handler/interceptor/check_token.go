@@ -17,6 +17,9 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// StreamCheckToken is a grpc stream interceptor for checking authorization token
+// return:
+//	grpc.StreamServerInterceptor
 func (i *interceptor) StreamCheckToken() grpc.StreamServerInterceptor {
 	return func(srv any, ss grpc.ServerStream, info *grpc.StreamServerInfo, handler grpc.StreamHandler) error {
 		ctx, err := i.checkToken(ss.Context())
@@ -32,6 +35,9 @@ func (i *interceptor) StreamCheckToken() grpc.StreamServerInterceptor {
 	}
 }
 
+// StreamCheckToken is a grpc unary interceptor for checking authorization token
+// return:
+//	grpc.StreamServerInterceptor
 func (i *interceptor) UnaryCheckToken() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req any, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
 		if _, ok := info.Server.(proto.AuthServer); ok {

@@ -15,12 +15,21 @@ type encryptionService struct {
 	app *application.App
 }
 
+// NewEncryptionService create new pointer on encryptionService
+// params
+//	app *application.App
 func NewEncryptionService(app *application.App) *encryptionService {
 	return &encryptionService{
 		app: app,
 	}
 }
 
+// Encrypt create encrypted slice of bytes
+// params
+//	data []byte - data for encryption
+// return
+//	[]byte - encrypted bytes
+//	error
 func (enc *encryptionService) Encrypt(data []byte) ([]byte, error) {
 	block, err := aes.NewCipher([]byte(enc.app.Conf.EncryptionSecret))
 	if err != nil {
@@ -39,6 +48,12 @@ func (enc *encryptionService) Encrypt(data []byte) ([]byte, error) {
 	return ciphertext, nil
 }
 
+// Decrypt create decrypted slice of bytes
+// params
+//	data []byte - data for decryption
+// return
+//	[]byte - decrypted bytes
+//	error
 func (enc *encryptionService) Decrypt(data []byte) ([]byte, error) {
 	block, err := aes.NewCipher([]byte(enc.app.Conf.EncryptionSecret))
 	if err != nil {
