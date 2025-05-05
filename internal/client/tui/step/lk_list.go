@@ -87,10 +87,14 @@ func (lkl *lkList) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return lkl, tea.Quit
 
 		case tea.KeyEnter:
-			return NewDownloadAction(lkl.table.SelectedRow()[0], lkl.app).Exec()
+			if len(lkl.table.SelectedRow()) > 0 {
+				return NewDownloadAction(lkl.table.SelectedRow()[0], lkl.app).Exec()
+			}
 
 		case tea.KeyDelete:
-			return NewDeleteAction(lkl.table.SelectedRow()[0], lkl.app).Exec()
+			if len(lkl.table.SelectedRow()) > 0 {
+				return NewDeleteAction(lkl.table.SelectedRow()[0], lkl.app).Exec()
+			}
 
 		default:
 			lkl.table, cmd = lkl.table.Update(msg)
