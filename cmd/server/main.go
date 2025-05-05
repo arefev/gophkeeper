@@ -111,9 +111,9 @@ func runServer(ctx context.Context, app *application.App, c *config.Config, l *z
 	proto.RegisterListServer(s, handler.NewListHandler(app))
 
 	go func() {
+		defer s.Stop()
 		<-ctx.Done()
 		l.Info("Server stopped")
-		s.Stop()
 	}()
 
 	l.Info("Server running", zap.String("port", c.Address), zap.String("log level", c.LogLevel))
