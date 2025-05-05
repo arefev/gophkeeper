@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
+	"strings"
 )
 
 type FileService struct {
@@ -22,6 +24,23 @@ func (fs *FileService) SetFile(fileName, path string) error {
 	if err != nil {
 		return fmt.Errorf("setFile mkdir failed: %w", err)
 	}
+
+	count := 0
+	entries, err := os.ReadDir("./")
+	if err != nil {
+		return fmt.Errorf("setFile readdir failed: %w", err)
+	}
+
+	for _, e := range entries {
+		if strings.Contains(e.Name(), fileName) {
+			count++
+		}
+	}
+
+	if count > 0 {
+		fileName = strconv.Itoa(count) + "_" + fileName
+	}
+
 	fs.Path = filepath.Join(path, fileName)
 	file, err := os.Create(fs.Path)
 	if err != nil {
