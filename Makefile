@@ -13,7 +13,15 @@ gofmt:
 .PHONY: gofmt
 
 
-containers:
+image-server:
+	$(USER) docker build \
+	--build-arg SERVER_BUILD_VERSION=$(SERVER_BUILD_VERSION) \
+	--build-arg SERVER_BUILD_COMMIT=$(SERVER_BUILD_COMMIT) \
+	-t "gophkeeper-server" ./
+.PHONY: image-server
+
+
+containers: image-server
 	$(USER) docker-compose --project-name $(DOCKER_PROJECT_NAME) up -d
 .PHONY: containers
 

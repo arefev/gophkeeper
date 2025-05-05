@@ -13,5 +13,19 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_DB: ${DB_NAME}
 
+  gophkeeper-server:
+    image: gophkeeper-server
+    container_name: gophkeeper_server
+    restart: always
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    environment:
+      - DB_HOST=gophkeeper-db
+      - DB_PORT=${DB_CONTAINER_PORT}
+    env_file: 
+      - .env
+    depends_on:
+      - gophkeeper-db
+
 volumes:
   gophkeeper-db-data:
