@@ -2,12 +2,10 @@ package test
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"net"
 	"os"
-	"strings"
 
 	"github.com/arefev/gophkeeper/internal/logger"
 	"github.com/arefev/gophkeeper/internal/proto"
@@ -19,9 +17,6 @@ import (
 	"github.com/arefev/gophkeeper/internal/server/repository"
 	"github.com/arefev/gophkeeper/internal/server/repository/testdb"
 	"github.com/arefev/gophkeeper/internal/server/trm"
-	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"google.golang.org/grpc"
 )
 
@@ -66,13 +61,12 @@ func (p *prepare) app() (*application.App, error) {
 		return nil, fmt.Errorf("logger build fail: %w", err)
 	}
 
-	db, err := postgresql.NewDB(l).Connect(p.dbDSN)
-	if err != nil {
+	db := postgresql.NewDB(l).DSN(p.dbDSN)
+	if err := db.Connect(); err != nil {
 		return nil, fmt.Errorf("db trm connect fail: %w", err)
 	}
 
-	err = p.migrationsUp(p.dbDSN)
-	if err != nil {
+	if err := db.MigrationsUp(); err != nil {
 		return nil, fmt.Errorf("run: migration up fail: %w", err)
 	}
 
@@ -90,26 +84,6 @@ func (p *prepare) app() (*application.App, error) {
 	p.dbConn = db
 
 	return app, nil
-}
-
-func (p *prepare) migrationsUp(dsn string) error {
-	dir, err := os.Getwd()
-	if err != nil {
-		return fmt.Errorf("migrations get dir failed: %w", err)
-	}
-	path := strings.ReplaceAll(dir, "internal/test", "cmd/server/db/migrations")
-
-	m, err := migrate.New("file://"+path, dsn)
-	if err != nil {
-		return fmt.Errorf("migrations instance fail: %w", err)
-	}
-
-	err = m.Up()
-	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
-		return fmt.Errorf("migrations up fail: %w", err)
-	}
-
-	return nil
 }
 
 func (p *prepare) server(app *application.App) error {

@@ -2,13 +2,11 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"net"
 	"os"
 	"os/signal"
-	"path/filepath"
 	"syscall"
 
 	"github.com/arefev/gophkeeper/internal/logger"
@@ -20,9 +18,6 @@ import (
 	"github.com/arefev/gophkeeper/internal/server/handler/interceptor"
 	"github.com/arefev/gophkeeper/internal/server/repository"
 	"github.com/arefev/gophkeeper/internal/server/trm"
-	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -55,9 +50,8 @@ func run(ctx context.Context) error {
 		return fmt.Errorf("run: logger build fail: %w", err)
 	}
 
-	databaseDSN := databaseDSN(conf)
-	db, err := postgresql.NewDB(l).Connect(databaseDSN)
-	if err != nil {
+	db := postgresql.NewDB(l).DSNFromCreds(conf.DBHost, conf.DBPort, conf.DBName, conf.DBUser, conf.DBPassword)
+	if err := db.Connect(); err != nil {
 		return fmt.Errorf("run: db trm connect fail: %w", err)
 	}
 
@@ -67,8 +61,7 @@ func run(ctx context.Context) error {
 		}
 	}()
 
-	err = migrationsUp(databaseDSN)
-	if err != nil {
+	if err := db.MigrationsUp(); err != nil {
 		return fmt.Errorf("run: migration up fail: %w", err)
 	}
 
@@ -123,35 +116,4 @@ func runServer(ctx context.Context, app *application.App, c *config.Config, l *z
 	}
 
 	return nil
-}
-
-func migrationsUp(dsn string) error {
-	ex, err := os.Executable()
-	if err != nil {
-		return fmt.Errorf("get executable path fail: %w", err)
-	}
-
-	filePath := filepath.Dir(ex)
-	m, err := migrate.New("file://"+filePath+"/db/migrations", dsn)
-	if err != nil {
-		return fmt.Errorf("migrations instance fail: %w", err)
-	}
-
-	err = m.Up()
-	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
-		return fmt.Errorf("migrations up fail: %w", err)
-	}
-
-	return nil
-}
-
-func databaseDSN(cnf *config.Config) string {
-	host := net.JoinHostPort(cnf.DBHost, cnf.DBPort)
-	return fmt.Sprintf(
-		"postgres://%s:%s@%s/%s?sslmode=disable",
-		cnf.DBName,
-		cnf.DBPassword,
-		host,
-		cnf.DBName,
-	)
 }
