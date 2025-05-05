@@ -46,7 +46,7 @@ func (enc *encryptionService) Encrypt(data []byte) ([]byte, error) {
 		return nil, fmt.Errorf("ecrypt: read failed: %w", err)
 	}
 
-	stream := cipher.NewCFBEncrypter(block, iv)
+	stream := cipher.NewCTR(block, iv)
 	stream.XORKeyStream(ciphertext[aes.BlockSize:], data)
 
 	return ciphertext, nil
@@ -74,7 +74,7 @@ func (enc *encryptionService) Decrypt(data []byte) ([]byte, error) {
 	iv := data[:aes.BlockSize]
 	data = data[aes.BlockSize:]
 
-	stream := cipher.NewCFBDecrypter(block, iv)
+	stream := cipher.NewCTR(block, iv)
 	stream.XORKeyStream(data, data)
 
 	return data, nil
