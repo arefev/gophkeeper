@@ -26,7 +26,7 @@ func main() {
 }
 
 func run() error {
-	fmt.Printf("Build version: %s\nBuild date: %s\nBuild commit: %s\n", buildVersion, buildDate, buildCommit)
+	log.Printf("Build version: %s\nBuild date: %s\nBuild commit: %s\n", buildVersion, buildDate, buildCommit)
 
 	conf, err := config.NewConfig(os.Args[1:])
 	if err != nil {
