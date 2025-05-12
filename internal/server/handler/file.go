@@ -119,7 +119,12 @@ func (fh *fileHandler) Download(
 		next := min(read+max, size)
 		chunk := data[read:next]
 
-		err := stream.Send(&proto.FileDownloadResponse{Chunk: chunk, Name: &meta.File.Name})
+		resp := proto.FileDownloadResponse_builder{
+			Chunk: chunk,
+			Name:  &meta.File.Name,
+		}.Build()
+
+		err := stream.Send(resp)
 		if err != nil {
 			return fmt.Errorf("download stream failed: %w", err)
 		}

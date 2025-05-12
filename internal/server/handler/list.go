@@ -64,18 +64,19 @@ func (lh *listHandler) Get(
 		uuid := list[i].UUID.String()
 		t := list[i].Type.String()
 		date := list[i].CreatedAt.Format("02.01.2006 15:04:05")
-		meta := &proto.MetaList{
+
+		meta := proto.MetaList_builder{
 			Uuid:      &uuid,
 			Type:      &t,
 			Name:      &list[i].Name,
 			FileName:  &list[i].File.Name,
 			CreatedAt: &date,
-		}
+		}.Build()
+
 		respList = append(respList, meta)
 	}
 
-	resp := &proto.MetaListResponse{MetaList: respList}
-
+	resp := proto.MetaListResponse_builder{MetaList: respList}.Build()
 	return resp, nil
 }
 

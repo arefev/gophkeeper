@@ -60,7 +60,10 @@ func (s *storageService) Upload(userID int, stream proto.File_UploadServer) erro
 	}
 
 	s.app.Log.Debug("file uploaded", zap.Uint32("size", fileSize))
-	if err := stream.SendAndClose(&proto.FileUploadResponse{Size: &fileSize}); err != nil {
+
+	resp := proto.FileUploadResponse_builder{}.Build()
+	resp.SetSize(fileSize)
+	if err := stream.SendAndClose(resp); err != nil {
 		return fmt.Errorf("file upload SendAndClose failed: %w", err)
 	}
 

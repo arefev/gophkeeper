@@ -54,7 +54,8 @@ func (ah *authHandler) Register(
 		return &proto.RegistrationResponse{}, fmt.Errorf("register authorize user failed: %w", err)
 	}
 
-	return &proto.RegistrationResponse{Token: &token.AccessToken}, nil
+	resp := proto.RegistrationResponse_builder{Token: &token.AccessToken}.Build()
+	return resp, nil
 }
 
 // Login is a grpc handler for authorization user
@@ -82,5 +83,6 @@ func (ah *authHandler) Login(
 		zap.String("login", in.GetUser().GetLogin()),
 	)
 
-	return &proto.AuthorizationResponse{Token: &token.AccessToken}, nil
+	resp := proto.AuthorizationResponse_builder{Token: &token.AccessToken}.Build()
+	return resp, nil
 }

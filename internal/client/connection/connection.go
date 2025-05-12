@@ -85,12 +85,12 @@ func (g *grpcClient) CheckTokenCmd() tea.Msg {
 func (g *grpcClient) Register(ctx context.Context, login, pwd string) (string, error) {
 	client := proto.NewAuthClient(g.conn)
 
-	resp, err := client.Register(ctx, &proto.RegistrationRequest{
-		User: &proto.User{
+	resp, err := client.Register(ctx, proto.RegistrationRequest_builder{
+		User: proto.User_builder{
 			Login:    &login,
 			Password: &pwd,
-		},
-	})
+		}.Build(),
+	}.Build())
 
 	if err != nil {
 		return "", fmt.Errorf("grpc Register failed: %w", err)
@@ -104,12 +104,12 @@ func (g *grpcClient) Register(ctx context.Context, login, pwd string) (string, e
 func (g *grpcClient) Login(ctx context.Context, login, pwd string) (string, error) {
 	client := proto.NewAuthClient(g.conn)
 
-	resp, err := client.Login(ctx, &proto.AuthorizationRequest{
-		User: &proto.User{
+	resp, err := client.Login(ctx, proto.AuthorizationRequest_builder{
+		User: proto.User_builder{
 			Login:    &login,
 			Password: &pwd,
-		},
-	})
+		}.Build(),
+	}.Build())
 
 	if err != nil {
 		return "", fmt.Errorf("grpc Login failed: %w", err)
@@ -137,14 +137,14 @@ func (g *grpcClient) TextUpload(ctx context.Context, txt []byte, metaName, metaT
 	}
 
 	fileName := metaType + ".txt"
-	err = stream.Send(&proto.FileUploadRequest{
+	err = stream.Send(proto.FileUploadRequest_builder{
 		Chunk: txt,
 		Name:  &fileName,
-		Meta: &proto.Meta{
+		Meta: proto.Meta_builder{
 			Name: &metaName,
 			Type: &metaType,
-		},
-	})
+		}.Build(),
+	}.Build())
 	if err != nil {
 		return fmt.Errorf("grpc text upload send failed: %w", err)
 	}
@@ -195,14 +195,14 @@ func (g *grpcClient) FileUpload(ctx context.Context, path, metaName, metaType st
 		}
 		chunk := buf[:num]
 
-		r := &proto.FileUploadRequest{
+		r := proto.FileUploadRequest_builder{
 			Chunk: chunk,
 			Name:  &fileName,
-			Meta: &proto.Meta{
+			Meta: proto.Meta_builder{
 				Name: &metaName,
 				Type: &metaType,
-			},
-		}
+			}.Build(),
+		}.Build()
 		if err := stream.Send(r); err != nil {
 			return fmt.Errorf("grpc file upload stream send failed: %w", err)
 		}
@@ -253,7 +253,7 @@ func (g *grpcClient) Delete(ctx context.Context, uuid string) error {
 	ctx = metadata.NewOutgoingContext(ctx, md)
 	client := proto.NewListClient(g.conn)
 
-	_, err := client.Delete(ctx, &proto.MetaDeleteRequest{Uuid: &uuid})
+	_, err := client.Delete(ctx, proto.MetaDeleteRequest_builder{Uuid: &uuid}.Build())
 	if err != nil {
 		return fmt.Errorf("grpc FileDelete failed: %w", err)
 	}
@@ -269,7 +269,7 @@ func (g *grpcClient) FileDownload(ctx context.Context, uuid string) (string, err
 
 	client := proto.NewFileClient(g.conn)
 
-	req := &proto.FileDownloadRequest{Uuid: &uuid}
+	req := proto.FileDownloadRequest_builder{Uuid: &uuid}.Build()
 	stream, err := client.Download(ctx, req)
 
 	if err != nil {

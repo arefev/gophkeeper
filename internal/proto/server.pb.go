@@ -9,8 +9,8 @@ package proto
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	_ "google.golang.org/protobuf/types/gofeaturespb"
 	reflect "reflect"
-	sync "sync"
 	unsafe "unsafe"
 )
 
@@ -22,11 +22,13 @@ const (
 )
 
 type User struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Login         *string                `protobuf:"bytes,1,opt,name=Login" json:"Login,omitempty"`
-	Password      *string                `protobuf:"bytes,2,opt,name=Password" json:"Password,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Login       *string                `protobuf:"bytes,1,opt,name=Login"`
+	xxx_hidden_Password    *string                `protobuf:"bytes,2,opt,name=Password"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *User) Reset() {
@@ -54,30 +56,87 @@ func (x *User) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use User.ProtoReflect.Descriptor instead.
-func (*User) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{0}
-}
-
 func (x *User) GetLogin() string {
-	if x != nil && x.Login != nil {
-		return *x.Login
+	if x != nil {
+		if x.xxx_hidden_Login != nil {
+			return *x.xxx_hidden_Login
+		}
+		return ""
 	}
 	return ""
 }
 
 func (x *User) GetPassword() string {
-	if x != nil && x.Password != nil {
-		return *x.Password
+	if x != nil {
+		if x.xxx_hidden_Password != nil {
+			return *x.xxx_hidden_Password
+		}
+		return ""
 	}
 	return ""
 }
 
+func (x *User) SetLogin(v string) {
+	x.xxx_hidden_Login = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *User) SetPassword(v string) {
+	x.xxx_hidden_Password = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *User) HasLogin() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *User) HasPassword() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *User) ClearLogin() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Login = nil
+}
+
+func (x *User) ClearPassword() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Password = nil
+}
+
+type User_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Login    *string
+	Password *string
+}
+
+func (b0 User_builder) Build() *User {
+	m0 := &User{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Login != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Login = b.Login
+	}
+	if b.Password != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Password = b.Password
+	}
+	return m0
+}
+
 type RegistrationRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	User          *User                  `protobuf:"bytes,1,opt,name=User" json:"User,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_User *User                  `protobuf:"bytes,1,opt,name=User"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *RegistrationRequest) Reset() {
@@ -105,23 +164,49 @@ func (x *RegistrationRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RegistrationRequest.ProtoReflect.Descriptor instead.
-func (*RegistrationRequest) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{1}
-}
-
 func (x *RegistrationRequest) GetUser() *User {
 	if x != nil {
-		return x.User
+		return x.xxx_hidden_User
 	}
 	return nil
 }
 
+func (x *RegistrationRequest) SetUser(v *User) {
+	x.xxx_hidden_User = v
+}
+
+func (x *RegistrationRequest) HasUser() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_User != nil
+}
+
+func (x *RegistrationRequest) ClearUser() {
+	x.xxx_hidden_User = nil
+}
+
+type RegistrationRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	User *User
+}
+
+func (b0 RegistrationRequest_builder) Build() *RegistrationRequest {
+	m0 := &RegistrationRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_User = b.User
+	return m0
+}
+
 type RegistrationResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Token         *string                `protobuf:"bytes,1,opt,name=token" json:"token,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Token       *string                `protobuf:"bytes,1,opt,name=token"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *RegistrationResponse) Reset() {
@@ -149,23 +234,55 @@ func (x *RegistrationResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use RegistrationResponse.ProtoReflect.Descriptor instead.
-func (*RegistrationResponse) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{2}
-}
-
 func (x *RegistrationResponse) GetToken() string {
-	if x != nil && x.Token != nil {
-		return *x.Token
+	if x != nil {
+		if x.xxx_hidden_Token != nil {
+			return *x.xxx_hidden_Token
+		}
+		return ""
 	}
 	return ""
 }
 
+func (x *RegistrationResponse) SetToken(v string) {
+	x.xxx_hidden_Token = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *RegistrationResponse) HasToken() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *RegistrationResponse) ClearToken() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Token = nil
+}
+
+type RegistrationResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Token *string
+}
+
+func (b0 RegistrationResponse_builder) Build() *RegistrationResponse {
+	m0 := &RegistrationResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Token != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Token = b.Token
+	}
+	return m0
+}
+
 type AuthorizationRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	User          *User                  `protobuf:"bytes,1,opt,name=User" json:"User,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_User *User                  `protobuf:"bytes,1,opt,name=User"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *AuthorizationRequest) Reset() {
@@ -193,23 +310,49 @@ func (x *AuthorizationRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AuthorizationRequest.ProtoReflect.Descriptor instead.
-func (*AuthorizationRequest) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{3}
-}
-
 func (x *AuthorizationRequest) GetUser() *User {
 	if x != nil {
-		return x.User
+		return x.xxx_hidden_User
 	}
 	return nil
 }
 
+func (x *AuthorizationRequest) SetUser(v *User) {
+	x.xxx_hidden_User = v
+}
+
+func (x *AuthorizationRequest) HasUser() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_User != nil
+}
+
+func (x *AuthorizationRequest) ClearUser() {
+	x.xxx_hidden_User = nil
+}
+
+type AuthorizationRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	User *User
+}
+
+func (b0 AuthorizationRequest_builder) Build() *AuthorizationRequest {
+	m0 := &AuthorizationRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_User = b.User
+	return m0
+}
+
 type AuthorizationResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Token         *string                `protobuf:"bytes,1,opt,name=token" json:"token,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Token       *string                `protobuf:"bytes,1,opt,name=token"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *AuthorizationResponse) Reset() {
@@ -237,24 +380,58 @@ func (x *AuthorizationResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AuthorizationResponse.ProtoReflect.Descriptor instead.
-func (*AuthorizationResponse) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{4}
-}
-
 func (x *AuthorizationResponse) GetToken() string {
-	if x != nil && x.Token != nil {
-		return *x.Token
+	if x != nil {
+		if x.xxx_hidden_Token != nil {
+			return *x.xxx_hidden_Token
+		}
+		return ""
 	}
 	return ""
 }
 
+func (x *AuthorizationResponse) SetToken(v string) {
+	x.xxx_hidden_Token = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *AuthorizationResponse) HasToken() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *AuthorizationResponse) ClearToken() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Token = nil
+}
+
+type AuthorizationResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Token *string
+}
+
+func (b0 AuthorizationResponse_builder) Build() *AuthorizationResponse {
+	m0 := &AuthorizationResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Token != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Token = b.Token
+	}
+	return m0
+}
+
 type Meta struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Type          *string                `protobuf:"bytes,1,opt,name=type" json:"type,omitempty"`
-	Name          *string                `protobuf:"bytes,2,opt,name=name" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Type        *string                `protobuf:"bytes,1,opt,name=type"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *Meta) Reset() {
@@ -282,32 +459,91 @@ func (x *Meta) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use Meta.ProtoReflect.Descriptor instead.
-func (*Meta) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{5}
-}
-
 func (x *Meta) GetType() string {
-	if x != nil && x.Type != nil {
-		return *x.Type
+	if x != nil {
+		if x.xxx_hidden_Type != nil {
+			return *x.xxx_hidden_Type
+		}
+		return ""
 	}
 	return ""
 }
 
 func (x *Meta) GetName() string {
-	if x != nil && x.Name != nil {
-		return *x.Name
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
 	}
 	return ""
 }
 
+func (x *Meta) SetType(v string) {
+	x.xxx_hidden_Type = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *Meta) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *Meta) HasType() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *Meta) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *Meta) ClearType() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Type = nil
+}
+
+func (x *Meta) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Name = nil
+}
+
+type Meta_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Type *string
+	Name *string
+}
+
+func (b0 Meta_builder) Build() *Meta {
+	m0 := &Meta{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Type != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Type = b.Type
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Name = b.Name
+	}
+	return m0
+}
+
 type FileUploadRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Chunk         []byte                 `protobuf:"bytes,1,opt,name=chunk" json:"chunk,omitempty"`
-	Name          *string                `protobuf:"bytes,2,opt,name=name" json:"name,omitempty"`
-	Meta          *Meta                  `protobuf:"bytes,3,opt,name=meta" json:"meta,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Chunk       []byte                 `protobuf:"bytes,1,opt,name=chunk"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
+	xxx_hidden_Meta        *Meta                  `protobuf:"bytes,3,opt,name=meta"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *FileUploadRequest) Reset() {
@@ -335,37 +571,113 @@ func (x *FileUploadRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FileUploadRequest.ProtoReflect.Descriptor instead.
-func (*FileUploadRequest) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{6}
-}
-
 func (x *FileUploadRequest) GetChunk() []byte {
 	if x != nil {
-		return x.Chunk
+		return x.xxx_hidden_Chunk
 	}
 	return nil
 }
 
 func (x *FileUploadRequest) GetName() string {
-	if x != nil && x.Name != nil {
-		return *x.Name
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
 	}
 	return ""
 }
 
 func (x *FileUploadRequest) GetMeta() *Meta {
 	if x != nil {
-		return x.Meta
+		return x.xxx_hidden_Meta
 	}
 	return nil
 }
 
+func (x *FileUploadRequest) SetChunk(v []byte) {
+	if v == nil {
+		v = []byte{}
+	}
+	x.xxx_hidden_Chunk = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 3)
+}
+
+func (x *FileUploadRequest) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 3)
+}
+
+func (x *FileUploadRequest) SetMeta(v *Meta) {
+	x.xxx_hidden_Meta = v
+}
+
+func (x *FileUploadRequest) HasChunk() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *FileUploadRequest) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *FileUploadRequest) HasMeta() bool {
+	if x == nil {
+		return false
+	}
+	return x.xxx_hidden_Meta != nil
+}
+
+func (x *FileUploadRequest) ClearChunk() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Chunk = nil
+}
+
+func (x *FileUploadRequest) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *FileUploadRequest) ClearMeta() {
+	x.xxx_hidden_Meta = nil
+}
+
+type FileUploadRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Chunk []byte
+	Name  *string
+	Meta  *Meta
+}
+
+func (b0 FileUploadRequest_builder) Build() *FileUploadRequest {
+	m0 := &FileUploadRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Chunk != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 3)
+		x.xxx_hidden_Chunk = b.Chunk
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 3)
+		x.xxx_hidden_Name = b.Name
+	}
+	x.xxx_hidden_Meta = b.Meta
+	return m0
+}
+
 type FileUploadResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Size          *uint32                `protobuf:"varint,1,opt,name=size" json:"size,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Size        uint32                 `protobuf:"varint,1,opt,name=size"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *FileUploadResponse) Reset() {
@@ -393,23 +705,54 @@ func (x *FileUploadResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FileUploadResponse.ProtoReflect.Descriptor instead.
-func (*FileUploadResponse) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{7}
-}
-
 func (x *FileUploadResponse) GetSize() uint32 {
-	if x != nil && x.Size != nil {
-		return *x.Size
+	if x != nil {
+		return x.xxx_hidden_Size
 	}
 	return 0
 }
 
+func (x *FileUploadResponse) SetSize(v uint32) {
+	x.xxx_hidden_Size = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *FileUploadResponse) HasSize() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *FileUploadResponse) ClearSize() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Size = 0
+}
+
+type FileUploadResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Size *uint32
+}
+
+func (b0 FileUploadResponse_builder) Build() *FileUploadResponse {
+	m0 := &FileUploadResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Size != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Size = *b.Size
+	}
+	return m0
+}
+
 type FileDownloadRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Uuid          *string                `protobuf:"bytes,1,opt,name=uuid" json:"uuid,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Uuid        *string                `protobuf:"bytes,1,opt,name=uuid"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *FileDownloadRequest) Reset() {
@@ -437,24 +780,58 @@ func (x *FileDownloadRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FileDownloadRequest.ProtoReflect.Descriptor instead.
-func (*FileDownloadRequest) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{8}
-}
-
 func (x *FileDownloadRequest) GetUuid() string {
-	if x != nil && x.Uuid != nil {
-		return *x.Uuid
+	if x != nil {
+		if x.xxx_hidden_Uuid != nil {
+			return *x.xxx_hidden_Uuid
+		}
+		return ""
 	}
 	return ""
 }
 
+func (x *FileDownloadRequest) SetUuid(v string) {
+	x.xxx_hidden_Uuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *FileDownloadRequest) HasUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *FileDownloadRequest) ClearUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Uuid = nil
+}
+
+type FileDownloadRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Uuid *string
+}
+
+func (b0 FileDownloadRequest_builder) Build() *FileDownloadRequest {
+	m0 := &FileDownloadRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Uuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Uuid = b.Uuid
+	}
+	return m0
+}
+
 type FileDownloadResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Chunk         []byte                 `protobuf:"bytes,1,opt,name=chunk" json:"chunk,omitempty"`
-	Name          *string                `protobuf:"bytes,2,opt,name=name" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Chunk       []byte                 `protobuf:"bytes,1,opt,name=chunk"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,2,opt,name=name"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *FileDownloadResponse) Reset() {
@@ -482,34 +859,93 @@ func (x *FileDownloadResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use FileDownloadResponse.ProtoReflect.Descriptor instead.
-func (*FileDownloadResponse) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{9}
-}
-
 func (x *FileDownloadResponse) GetChunk() []byte {
 	if x != nil {
-		return x.Chunk
+		return x.xxx_hidden_Chunk
 	}
 	return nil
 }
 
 func (x *FileDownloadResponse) GetName() string {
-	if x != nil && x.Name != nil {
-		return *x.Name
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
 	}
 	return ""
 }
 
+func (x *FileDownloadResponse) SetChunk(v []byte) {
+	if v == nil {
+		v = []byte{}
+	}
+	x.xxx_hidden_Chunk = v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 2)
+}
+
+func (x *FileDownloadResponse) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 2)
+}
+
+func (x *FileDownloadResponse) HasChunk() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *FileDownloadResponse) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *FileDownloadResponse) ClearChunk() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Chunk = nil
+}
+
+func (x *FileDownloadResponse) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Name = nil
+}
+
+type FileDownloadResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Chunk []byte
+	Name  *string
+}
+
+func (b0 FileDownloadResponse_builder) Build() *FileDownloadResponse {
+	m0 := &FileDownloadResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Chunk != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 2)
+		x.xxx_hidden_Chunk = b.Chunk
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 2)
+		x.xxx_hidden_Name = b.Name
+	}
+	return m0
+}
+
 type MetaList struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Uuid          *string                `protobuf:"bytes,1,opt,name=uuid" json:"uuid,omitempty"`
-	Type          *string                `protobuf:"bytes,2,opt,name=type" json:"type,omitempty"`
-	Name          *string                `protobuf:"bytes,3,opt,name=name" json:"name,omitempty"`
-	FileName      *string                `protobuf:"bytes,4,opt,name=fileName" json:"fileName,omitempty"`
-	CreatedAt     *string                `protobuf:"bytes,5,opt,name=createdAt" json:"createdAt,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Uuid        *string                `protobuf:"bytes,1,opt,name=uuid"`
+	xxx_hidden_Type        *string                `protobuf:"bytes,2,opt,name=type"`
+	xxx_hidden_Name        *string                `protobuf:"bytes,3,opt,name=name"`
+	xxx_hidden_FileName    *string                `protobuf:"bytes,4,opt,name=fileName"`
+	xxx_hidden_CreatedAt   *string                `protobuf:"bytes,5,opt,name=createdAt"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *MetaList) Reset() {
@@ -537,48 +973,180 @@ func (x *MetaList) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use MetaList.ProtoReflect.Descriptor instead.
-func (*MetaList) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{10}
-}
-
 func (x *MetaList) GetUuid() string {
-	if x != nil && x.Uuid != nil {
-		return *x.Uuid
+	if x != nil {
+		if x.xxx_hidden_Uuid != nil {
+			return *x.xxx_hidden_Uuid
+		}
+		return ""
 	}
 	return ""
 }
 
 func (x *MetaList) GetType() string {
-	if x != nil && x.Type != nil {
-		return *x.Type
+	if x != nil {
+		if x.xxx_hidden_Type != nil {
+			return *x.xxx_hidden_Type
+		}
+		return ""
 	}
 	return ""
 }
 
 func (x *MetaList) GetName() string {
-	if x != nil && x.Name != nil {
-		return *x.Name
+	if x != nil {
+		if x.xxx_hidden_Name != nil {
+			return *x.xxx_hidden_Name
+		}
+		return ""
 	}
 	return ""
 }
 
 func (x *MetaList) GetFileName() string {
-	if x != nil && x.FileName != nil {
-		return *x.FileName
+	if x != nil {
+		if x.xxx_hidden_FileName != nil {
+			return *x.xxx_hidden_FileName
+		}
+		return ""
 	}
 	return ""
 }
 
 func (x *MetaList) GetCreatedAt() string {
-	if x != nil && x.CreatedAt != nil {
-		return *x.CreatedAt
+	if x != nil {
+		if x.xxx_hidden_CreatedAt != nil {
+			return *x.xxx_hidden_CreatedAt
+		}
+		return ""
 	}
 	return ""
 }
 
+func (x *MetaList) SetUuid(v string) {
+	x.xxx_hidden_Uuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 5)
+}
+
+func (x *MetaList) SetType(v string) {
+	x.xxx_hidden_Type = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 1, 5)
+}
+
+func (x *MetaList) SetName(v string) {
+	x.xxx_hidden_Name = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 2, 5)
+}
+
+func (x *MetaList) SetFileName(v string) {
+	x.xxx_hidden_FileName = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 3, 5)
+}
+
+func (x *MetaList) SetCreatedAt(v string) {
+	x.xxx_hidden_CreatedAt = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 4, 5)
+}
+
+func (x *MetaList) HasUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *MetaList) HasType() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 1)
+}
+
+func (x *MetaList) HasName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 2)
+}
+
+func (x *MetaList) HasFileName() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 3)
+}
+
+func (x *MetaList) HasCreatedAt() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 4)
+}
+
+func (x *MetaList) ClearUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Uuid = nil
+}
+
+func (x *MetaList) ClearType() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 1)
+	x.xxx_hidden_Type = nil
+}
+
+func (x *MetaList) ClearName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 2)
+	x.xxx_hidden_Name = nil
+}
+
+func (x *MetaList) ClearFileName() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 3)
+	x.xxx_hidden_FileName = nil
+}
+
+func (x *MetaList) ClearCreatedAt() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 4)
+	x.xxx_hidden_CreatedAt = nil
+}
+
+type MetaList_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Uuid      *string
+	Type      *string
+	Name      *string
+	FileName  *string
+	CreatedAt *string
+}
+
+func (b0 MetaList_builder) Build() *MetaList {
+	m0 := &MetaList{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Uuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 5)
+		x.xxx_hidden_Uuid = b.Uuid
+	}
+	if b.Type != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 1, 5)
+		x.xxx_hidden_Type = b.Type
+	}
+	if b.Name != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 2, 5)
+		x.xxx_hidden_Name = b.Name
+	}
+	if b.FileName != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 3, 5)
+		x.xxx_hidden_FileName = b.FileName
+	}
+	if b.CreatedAt != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 4, 5)
+		x.xxx_hidden_CreatedAt = b.CreatedAt
+	}
+	return m0
+}
+
 type MetaListRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -608,16 +1176,23 @@ func (x *MetaListRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use MetaListRequest.ProtoReflect.Descriptor instead.
-func (*MetaListRequest) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{11}
+type MetaListRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 MetaListRequest_builder) Build() *MetaListRequest {
+	m0 := &MetaListRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
 }
 
 type MetaListResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	MetaList      []*MetaList            `protobuf:"bytes,1,rep,name=metaList" json:"metaList,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state               protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_MetaList *[]*MetaList           `protobuf:"bytes,1,rep,name=metaList"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *MetaListResponse) Reset() {
@@ -645,23 +1220,40 @@ func (x *MetaListResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use MetaListResponse.ProtoReflect.Descriptor instead.
-func (*MetaListResponse) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{12}
-}
-
 func (x *MetaListResponse) GetMetaList() []*MetaList {
 	if x != nil {
-		return x.MetaList
+		if x.xxx_hidden_MetaList != nil {
+			return *x.xxx_hidden_MetaList
+		}
 	}
 	return nil
 }
 
+func (x *MetaListResponse) SetMetaList(v []*MetaList) {
+	x.xxx_hidden_MetaList = &v
+}
+
+type MetaListResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	MetaList []*MetaList
+}
+
+func (b0 MetaListResponse_builder) Build() *MetaListResponse {
+	m0 := &MetaListResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	x.xxx_hidden_MetaList = &b.MetaList
+	return m0
+}
+
 type MetaDeleteRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Uuid          *string                `protobuf:"bytes,1,opt,name=uuid" json:"uuid,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                  protoimpl.MessageState `protogen:"opaque.v1"`
+	xxx_hidden_Uuid        *string                `protobuf:"bytes,1,opt,name=uuid"`
+	XXX_raceDetectHookData protoimpl.RaceDetectHookData
+	XXX_presence           [1]uint32
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
 }
 
 func (x *MetaDeleteRequest) Reset() {
@@ -689,20 +1281,52 @@ func (x *MetaDeleteRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use MetaDeleteRequest.ProtoReflect.Descriptor instead.
-func (*MetaDeleteRequest) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{13}
-}
-
 func (x *MetaDeleteRequest) GetUuid() string {
-	if x != nil && x.Uuid != nil {
-		return *x.Uuid
+	if x != nil {
+		if x.xxx_hidden_Uuid != nil {
+			return *x.xxx_hidden_Uuid
+		}
+		return ""
 	}
 	return ""
 }
 
+func (x *MetaDeleteRequest) SetUuid(v string) {
+	x.xxx_hidden_Uuid = &v
+	protoimpl.X.SetPresent(&(x.XXX_presence[0]), 0, 1)
+}
+
+func (x *MetaDeleteRequest) HasUuid() bool {
+	if x == nil {
+		return false
+	}
+	return protoimpl.X.Present(&(x.XXX_presence[0]), 0)
+}
+
+func (x *MetaDeleteRequest) ClearUuid() {
+	protoimpl.X.ClearPresent(&(x.XXX_presence[0]), 0)
+	x.xxx_hidden_Uuid = nil
+}
+
+type MetaDeleteRequest_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+	Uuid *string
+}
+
+func (b0 MetaDeleteRequest_builder) Build() *MetaDeleteRequest {
+	m0 := &MetaDeleteRequest{}
+	b, x := &b0, m0
+	_, _ = b, x
+	if b.Uuid != nil {
+		protoimpl.X.SetPresentNonAtomic(&(x.XXX_presence[0]), 0, 1)
+		x.xxx_hidden_Uuid = b.Uuid
+	}
+	return m0
+}
+
 type MetaDeleteResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
+	state         protoimpl.MessageState `protogen:"opaque.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -732,9 +1356,16 @@ func (x *MetaDeleteResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use MetaDeleteResponse.ProtoReflect.Descriptor instead.
-func (*MetaDeleteResponse) Descriptor() ([]byte, []int) {
-	return file_internal_proto_server_proto_rawDescGZIP(), []int{14}
+type MetaDeleteResponse_builder struct {
+	_ [0]func() // Prevents comparability and use of unkeyed literals for the builder.
+
+}
+
+func (b0 MetaDeleteResponse_builder) Build() *MetaDeleteResponse {
+	m0 := &MetaDeleteResponse{}
+	b, x := &b0, m0
+	_, _ = b, x
+	return m0
 }
 
 var File_internal_proto_server_proto protoreflect.FileDescriptor
@@ -742,7 +1373,7 @@ var File_internal_proto_server_proto protoreflect.FileDescriptor
 const file_internal_proto_server_proto_rawDesc = "" +
 	"\n" +
 	"\x1binternal/proto/server.proto\x12\n" +
-	"gophkeeper\"8\n" +
+	"gophkeeper\x1a!google/protobuf/go_features.proto\"8\n" +
 	"\x04User\x12\x14\n" +
 	"\x05Login\x18\x01 \x01(\tR\x05Login\x12\x1a\n" +
 	"\bPassword\x18\x02 \x01(\tR\bPassword\";\n" +
@@ -788,19 +1419,7 @@ const file_internal_proto_server_proto_rawDesc = "" +
 	"\bDownload\x12\x1f.gophkeeper.FileDownloadRequest\x1a .gophkeeper.FileDownloadResponse\"\x000\x012\x91\x01\n" +
 	"\x04List\x12@\n" +
 	"\x03Get\x12\x1b.gophkeeper.MetaListRequest\x1a\x1c.gophkeeper.MetaListResponse\x12G\n" +
-	"\x06Delete\x12\x1d.gophkeeper.MetaDeleteRequest\x1a\x1e.gophkeeper.MetaDeleteResponseB\x12Z\x10gophkeeper/protob\beditionsp\xe8\a"
-
-var (
-	file_internal_proto_server_proto_rawDescOnce sync.Once
-	file_internal_proto_server_proto_rawDescData []byte
-)
-
-func file_internal_proto_server_proto_rawDescGZIP() []byte {
-	file_internal_proto_server_proto_rawDescOnce.Do(func() {
-		file_internal_proto_server_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_internal_proto_server_proto_rawDesc), len(file_internal_proto_server_proto_rawDesc)))
-	})
-	return file_internal_proto_server_proto_rawDescData
-}
+	"\x06Delete\x12\x1d.gophkeeper.MetaDeleteRequest\x1a\x1e.gophkeeper.MetaDeleteResponseB\x1aZ\x10gophkeeper/proto\x92\x03\x05\xd2>\x02\x10\x03b\beditionsp\xe8\a"
 
 var file_internal_proto_server_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_internal_proto_server_proto_goTypes = []any{
