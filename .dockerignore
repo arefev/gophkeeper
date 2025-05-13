@@ -1,0 +1,9 @@
+.git
+golangci-lint/
+for-upload/
+storage/
+*.log
+*.txt
+.env
+test.html
+coverage.out

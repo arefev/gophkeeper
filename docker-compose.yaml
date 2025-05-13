@@ -1,0 +1,31 @@
+services:
+
+  gophkeeper-db:
+    image: postgres:17.2
+    container_name: gophkeeper_db
+    restart: always
+    ports:
+      - ${DB_PORT}:${DB_CONTAINER_PORT}
+    volumes:
+      - gophkeeper-db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+
+  gophkeeper-server:
+    image: gophkeeper-server
+    container_name: gophkeeper_server
+    restart: always
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+    environment:
+      - DB_HOST=gophkeeper-db
+      - DB_PORT=${DB_CONTAINER_PORT}
+    env_file: 
+      - .env
+    depends_on:
+      - gophkeeper-db
+
+volumes:
+  gophkeeper-db-data:
